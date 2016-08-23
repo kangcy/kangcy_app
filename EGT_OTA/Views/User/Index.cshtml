@@ -46,7 +46,7 @@
 <script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/jqgrid/jqGrid.js")"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        PartialButton("71");
+        PartialButton("21");
         GetGrid();
 
         //重置
@@ -91,8 +91,8 @@
                     {
                         label: '启用', name: 'Status', index: 'Status', width: 45, align: 'center',
                         formatter: function (cellvalue, options, rowObject) {
-                            if (cellvalue == '2') return "<img src='/Content/Template/Images/checkokmark.gif'/>";
                             if (cellvalue == '1') return "<img src='/Content/Template/Images/checknomark.gif'/>";
+                            if (cellvalue == '2') return "<img src='/Content/Template/Images/checkokmark.gif'/>";
                         }
                     },
                     { label: '真实姓名', name: 'RealName', index: "RealName", width: 100 },
@@ -104,7 +104,7 @@
                     { label: '创建时间', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" },
                     { label: '上次登陆', name: 'LastLoginDate', index: "LastLoginDate", width: 150, align: "center" },
                     { label: '登陆次数', name: 'LoginTimes', index: "LoginTimes", width: 100, align: "center" }
-                    ],
+            ],
             viewrecords: true,
             pager: 'pager', //分页工具栏 
             rowNum: 20,

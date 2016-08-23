@@ -109,7 +109,7 @@ namespace EGT_OTA.Controllers
             }
             model.Name = ZNRequest.GetString("Name");
             model.Auth = ZNRequest.GetString("Auth");
-            model.Status = ZNRequest.GetInt("Status");
+            model.Status = Enum_Status.Audit;
             model.UpdateDate = DateTime.Now;
             model.UpdateUserID = user.ID;
             model.UpdateIP = Tools.GetClientIP;

@@ -122,8 +122,7 @@ namespace EGT_OTA.Controllers
             {
                 model = new UserInfo();
             }
-            var Password = DesEncryptHelper.Encrypt(ZNRequest.GetString("Password")); //DEncrypt.Encrypt(loginPwd); //密码加密
-            model.Password = Password;
+            model.Password = DesEncryptHelper.Encrypt(ZNRequest.GetString("Password")); ;
             model.UserName = UserName;
             model.Sex = ZNRequest.GetInt("Sex");
             model.Age = ZNRequest.GetInt("Age");
@@ -132,7 +131,7 @@ namespace EGT_OTA.Controllers
             model.Email = ZNRequest.GetString("Email");
             model.RealName = ZNRequest.GetString("RealName");
             model.RoleID = ZNRequest.GetInt("RoleID");
-            model.Status = ZNRequest.GetInt("Status");
+            model.Status = Enum_Status.Audit;
             try
             {
                 if (model.ID == 0)
