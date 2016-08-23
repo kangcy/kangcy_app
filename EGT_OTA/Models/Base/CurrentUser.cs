@@ -107,6 +107,15 @@ namespace EGT_OTA.Models
             set;
         }
 
+        /// <summary>
+        /// 是否超级管理员
+        /// </summary>
+        public bool IsSuperAdminstrator
+        {
+            get;
+            set;
+        }
+
         #endregion
 
         #region 公共方法
@@ -122,6 +131,10 @@ namespace EGT_OTA.Models
             {
                 return false;
             }
+            if (this.IsSuperAdminstrator)
+            {
+                return true;
+            }
             return user.RoleID == roleID;
         }
 
@@ -135,6 +148,10 @@ namespace EGT_OTA.Models
             if (user == null)
             {
                 return false;
+            }
+            if (this.IsSuperAdminstrator)
+            {
+                return true;
             }
             return true;
         }
@@ -167,6 +184,10 @@ namespace EGT_OTA.Models
             {
                 return false;
             }
+            if (this.IsSuperAdminstrator)
+            {
+                return true;
+            }
             if (string.IsNullOrWhiteSpace(user.Power) || string.IsNullOrWhiteSpace(power))
             {
                 return false;
@@ -187,6 +208,7 @@ namespace EGT_OTA.Models
         private void GetCurrentUser()
         {
             this.IsAuthenticated = false;
+            this.IsSuperAdminstrator = false;
             if (currentUserID > 0)
             {
                 //实例化当前登录用户
@@ -199,6 +221,7 @@ namespace EGT_OTA.Models
                 user.UserName = System.Web.Configuration.WebConfigurationManager.AppSettings["admin_name"];
                 user.Password = System.Web.Configuration.WebConfigurationManager.AppSettings["admin_password"];
                 user.RoleID = -1;
+                this.IsSuperAdminstrator = true;
             }
             if (user != null)
             {

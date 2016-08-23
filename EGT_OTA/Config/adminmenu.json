@@ -13,7 +13,7 @@
         "FullName": "产品管理",
         "Icon": "fa-list",
         "Location": "/Department/Index",
-        "Button": ",刷新,新增,编辑,删除,启用,取消启用,"
+        "Button": ",刷新,新增,编辑,删除,"
     },
     {
         "ModuleId": "2",

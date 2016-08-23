@@ -101,20 +101,19 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Manage()
         {
-            JsonObject message = new JsonObject();
-            if (!CurrentUser.HasPower(""))
-            {
-                return Json(new { result = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
-            }
+            var result = false;
+            var message = string.Empty;
             int id = ZNRequest.GetInt("ID");
+            if ((id == 0 && !CurrentUser.HasPower("21-2")) || (id > 0 && !CurrentUser.HasPower("21-3")))
+            {
+                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
+            }
             var UserName = ZNRequest.GetString("UserName");
             if (db.Exists<UserInfo>(x => x.UserName == UserName && x.ID != id))
             {
                 return Json(new { result = "该用户名已被注册" }, JsonRequestBehavior.AllowGet);
             }
-            UserInfo user = CurrentUser.User;
             UserInfo model = null;
-
             if (id > 0)
             {
                 model = db.Single<UserInfo>(x => x.ID == id);
@@ -134,7 +133,6 @@ namespace EGT_OTA.Controllers
             model.RealName = ZNRequest.GetString("RealName");
             model.RoleID = ZNRequest.GetInt("RoleID");
             model.Status = ZNRequest.GetInt("Status");
-            var result = "0";
             try
             {
                 if (model.ID == 0)
@@ -143,20 +141,19 @@ namespace EGT_OTA.Controllers
                     model.LastLoginDate = DateTime.Now;
                     model.LastLoginIP = Tools.GetClientIP;
                     model.LoginTimes = 0;
-                    db.Add<UserInfo>(model);
+                    result = Tools.SafeInt(db.Add<UserInfo>(model)) > 0;
                 }
                 else
                 {
-                    db.Update<UserInfo>(model);
+                    result = db.Update<UserInfo>(model) > 0;
                 }
-                result = "1";
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
-                result = ex.Message;
+                message = ex.Message;
             }
-            return Json(new { result = result }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -164,11 +161,12 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Delete()
         {
-            if (!CurrentUser.HasPower(""))
+            var result = false;
+            var message = string.Empty;
+            if (!CurrentUser.HasPower("21-4"))
             {
-                return Json(new { result = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
-            string result = "0";
             var ids = ZNRequest.GetString("ids");
             List<UserInfo> list = new List<UserInfo>();
             try
@@ -184,14 +182,14 @@ namespace EGT_OTA.Controllers
                         list.Add(model);
                     }
                 }
-                result = db.DeleteMany<UserInfo>(list).ToString();
+                result = db.DeleteMany<UserInfo>(list) > 0;
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
-                result = ex.Message;
+                message = ex.Message;
             }
-            return Json(new { result = result }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

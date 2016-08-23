@@ -1170,8 +1170,6 @@
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
-    <Content Include="Views\Role\Jurisdiction.cshtml" />
-    <Content Include="Views\Role\Menus.cshtml" />
     <Content Include="Views\Country\Edit.cshtml" />
     <Content Include="Views\Country\Index.cshtml" />
     <Content Include="Views\City\Edit.cshtml" />
@@ -1200,7 +1198,7 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>53266</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:5050/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

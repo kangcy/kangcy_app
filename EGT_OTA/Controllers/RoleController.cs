@@ -46,25 +46,6 @@ namespace EGT_OTA.Controllers
             return View(model);
         }
 
-
-        /// <summary>
-        /// 权限管理
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Jurisdiction()
-        {
-            return View();
-        }
-
-        /// <summary>
-        /// 菜单管理
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Menus()
-        {
-            return View();
-        }
-
         /// <summary>
         /// 列表
         /// </summary>
@@ -72,43 +53,30 @@ namespace EGT_OTA.Controllers
         {
             var pager = new Pager();
             string Name = ZNRequest.GetString("Name");
-            var all = db.All<Role>().ToList();
-            if (!string.IsNullOrEmpty(Name))
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Role>();
+            if (!string.IsNullOrWhiteSpace(Name))
             {
-                all = all.FindAll(x => x.Name.Contains(Name));
+                query = query.And("Name").Like("%" + Name + "%");
             }
-            int recordCount = all.Count;
-            var list = all;
-            int totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; // 计算总页数 
-            StringWriter sw = new StringWriter();
-            JsonWriter writer = new JsonTextWriter(sw);
-            writer.WriteStartObject();
-            writer.WritePropertyName("page");
-            writer.WriteValue(pager.Index);
-            writer.WritePropertyName("records");
-            writer.WriteValue(recordCount);
-            writer.WritePropertyName("total");
-            writer.WriteValue(totalPage);
-            writer.WritePropertyName("rows");
-            writer.WriteStartArray();
-            for (int i = 0, len = list.Count; i < len; i++)
+            var recordCount = query.GetRecordCount();
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Role>();
+            var newlist = (from l in list
+                           select new
+                           {
+                               ID = l.ID,
+                               Name = l.Name,
+                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                               Status = l.Status
+                           }).ToList();
+            var result = new
             {
-                writer.WriteStartObject();
-                writer.WritePropertyName("ID");
-                writer.WriteValue(list[i].ID);
-                writer.WritePropertyName("Name");
-                writer.WriteValue(list[i].Name);
-                writer.WritePropertyName("CreateDate");
-                writer.WriteValue(list[i].CreateDate.ToString("yyyy-MM-dd hh:mm:ss"));
-                writer.WritePropertyName("Status");
-                writer.WriteValue(list[i].Status);
-                writer.WriteEndObject();
-            }
-            writer.WriteEndArray();
-            writer.WriteEndObject();
-            writer.Flush();
-            writer.Close();
-            return Content(sw.GetStringBuilder().ToString());
+                page = pager.Index,
+                records = recordCount,
+                total = totalPage,
+                rows = newlist
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -116,14 +84,13 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Manage()
         {
+            var result = false;
+            var message = string.Empty;
             int id = ZNRequest.GetInt("ID");
-
-            //新增、编辑权限
             if ((id == 0 && !CurrentUser.HasPower("22-2")) || (id > 0 && !CurrentUser.HasPower("22-3")))
             {
-                return Json(new { result = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
-
             var UserName = ZNRequest.GetString("UserName");
             if (db.Exists<UserInfo>(x => x.UserName == UserName))
             {
@@ -146,8 +113,6 @@ namespace EGT_OTA.Controllers
             model.UpdateDate = DateTime.Now;
             model.UpdateUserID = user.ID;
             model.UpdateIP = Tools.GetClientIP;
-            var result = false;
-            var message = string.Empty;
             try
             {
                 if (model.ID == 0)
@@ -175,34 +140,34 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Delete()
         {
-            if (!CurrentUser.HasPower(""))
+            var result = false;
+            var message = string.Empty;
+            if (!CurrentUser.HasPower("22-4"))
             {
-                return Json(new { result = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
-            string result = "0";
             var id = ZNRequest.GetInt("ids");
             var model = db.Single<Role>(x => x.ID == id);
             try
             {
                 if (model != null)
                 {
-                    //判断是否存在用户
                     if (!db.Exists<UserInfo>(x => x.RoleID == id))
                     {
-                        result = db.Delete<Role>(id).ToString();
+                        result = db.Delete<Role>(id) > 0;
                     }
                     else
                     {
-                        result = "存在关联用户";
+                        message = "存在关联用户";
                     }
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
-                result = ex.Message;
+                message = ex.Message;
             }
-            return Json(new { result = result }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -210,13 +175,13 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Audit()
         {
+            var result = false;
+            var message = string.Empty;
             if (!CurrentUser.HasPower(""))
             {
-                return Json(new { result = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
-            string result = "0";
-            int status = ZNRequest.GetInt("status");
-            status = status == 1 ? Enum_Status.Approved : Enum_Status.Audit;
+            int status = ZNRequest.GetInt("status") == 1 ? Enum_Status.Approved : Enum_Status.Audit;
             var ids = ZNRequest.GetString("ids");
             List<Role> list = new List<Role>();
             try
@@ -233,14 +198,14 @@ namespace EGT_OTA.Controllers
                     }
                     list.Add(model);
                 }
-                result = db.UpdateMany<Role>(list).ToString();
+                result = db.UpdateMany<Role>(list) > 0;
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
-                result = ex.Message;
+                message = ex.Message;
             }
-            return Json(new { result = result }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
