@@ -1,0 +1,207 @@
+﻿
+body, html, ul, li
+{
+    padding: 0;
+    margin: 0;
+    display: block;
+    font: normal 12px/1.5 'microsoft yahei';
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+html, body
+{
+    width: 100%;
+    height: 100%;
+}
+
+li
+{
+    list-style: none;
+}
+
+input
+{
+    outline: none;
+}
+
+a
+{
+    text-decoration: none;
+    color: black;
+}
+
+    a:visited
+    {
+        text-decoration: none;
+    }
+
+.mCSB_container
+{
+    margin: 0 !important;
+}
+
+.mCSB_scrollTools
+{
+    width: 0 !important;
+}
+
+/*登录页面背景区域*/
+body > .loginArea
+{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    background: url(images/loginBackgroun.png) no-repeat;
+    background-size: 100% 100%;
+    position: relative;
+}
+
+    /*登陆框区域*/
+    body > .loginArea > .enterBox
+    {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        overflow: hidden;
+        box-sizing: border-box;
+        padding: 0;
+        border-radius: 8px;
+        margin: -175.5px 0 0 -263px;
+    }
+
+        body > .loginArea > .enterBox > .head
+        {
+            background-color: #0e2f74;
+            height: 92px;
+            overflow: hidden;
+            padding: 8px 0;
+            margin: 0;
+            box-sizing: border-box;
+            width: 526px;
+        }
+
+            body > .loginArea > .enterBox > .head span
+            {
+                color: white;
+            }
+
+            body > .loginArea > .enterBox > .head > .title
+            {
+                font-size: 48px;
+                letter-spacing: 1px;
+                margin: 0 auto;
+                display: block;
+                text-align: center;
+            }
+
+                body > .loginArea > .enterBox > .head > .title > .version
+                {
+                    background-color: #0a2151;
+                    padding: 2px;
+                    border-radius: 5px;
+                    font-size: 18px;
+                    margin-left: 4px;
+                }
+
+        body > .loginArea > .enterBox > .content
+        {
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            background-color: #cde8ff;
+        }
+
+            body > .loginArea > .enterBox > .content > .rows
+            {
+                overflow: hidden;
+                box-sizing: border-box;
+                padding: 0;
+                margin: 18px auto 0 auto;
+                width: 71%;
+                position: relative;
+            }
+
+                body > .loginArea > .enterBox > .content > .rows > .title
+                {
+                    display: block;
+                    padding: 0;
+                    margin: 0;
+                    overflow: hidden;
+                    box-sizing: border-box;
+                    font-size: 16px;
+                    color: #66717a;
+                }
+
+                body > .loginArea > .enterBox > .content > .rows > input
+                {
+                    border: 1px solid #bbbbbb;
+                    background-color: #ffffff;
+                    border-radius: 6px;
+                    overflow: hidden;
+                    height: 45px;
+                    font-size: 18px;
+                    padding: 0 0 0 11px;
+                    box-sizing: border-box;
+                    width: 100%;
+                    margin-top: 2px;
+                }
+
+                body > .loginArea > .enterBox > .content > .rows > img
+                {
+                    position: absolute;
+                    bottom: 10px;
+                    right: 9px;
+                    cursor: pointer;
+                    overflow: hidden;
+                    box-sizing: border-box;
+                    padding: 0;
+                    margin: 0;
+                }
+
+            body > .loginArea > .enterBox > .content > .bottom
+            {
+                overflow: hidden;
+                padding: 0;
+                width: 71%;
+                margin: 17px auto;
+            }
+
+                body > .loginArea > .enterBox > .content > .bottom > .learnUserName
+                {
+                    display: block;
+                    height: 18px;
+                    width: 18px;
+                    padding: 0;
+                    margin: 14px 0 0 0;
+                    overflow: hidden;
+                    float: left;
+                }
+
+                body > .loginArea > .enterBox > .content > .bottom > .title
+                {
+                    font-size: 15px;
+                    display: block;
+                    float: left;
+                    overflow: hidden;
+                    padding: 0;
+                    box-sizing: border-box;
+                    margin: 11px 0 0 4px;
+                    color: #5b646b;
+                }
+
+                body > .loginArea > .enterBox > .content > .bottom > .loginBtn
+                {
+                    float: right;
+                    display: block;
+                    background-color: #428bca;
+                    color: white;
+                    font-size: 22px;
+                    letter-spacing: 7px;
+                    padding: 7px 21px 7px 31px;
+                    border-radius: 7px;
+                }

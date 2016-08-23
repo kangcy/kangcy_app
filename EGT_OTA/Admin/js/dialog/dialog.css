@@ -1,0 +1,146 @@
+/*蒙层***/
+.divCover{margin:0;padding:0;border:0;background-color:transparent;background-image:none;position: absolute;top: 0px;left: 0px;background: #000;height: 100%;width: 100%;filter:alpha(opacity=30);-moz-opacity:0.3;opacity:0.3; }
+.iframeCover{margin:0;padding:0;border:0;background-color:transparent;background-image:none;position: absolute;top: 0px;left: 0px;background: #000;height: 100%;width: 100%;filter:alpha(opacity=30);-moz-opacity:0.3;pacity:0.3;}
+.dialogLoading{width:160px;height:24px;background:url(../dialog/images/loading.gif) no-repeat;position:absolute;top:50%;left:50%;margin-top:-12px;margin-left:-80px;z-index:100;}
+/*灰色主题***/
+.dialog-gray-container{border: 6px solid #ccc;position: absolute;background:#fff;font-size:12px;/* border-radius:10px;-moz-border-radius:5px;-webkit-border-radius:10px;-khtml-border-radius:10px;behavior:url(/theme/border-radius.htc);*/}
+.dialog-gray-container .dialogTitle{height: 30px;line-height:30px;font-weight:bold;background: #eee;border: 1px solid #aaa;cursor: move;clear:both;*zoom:1;overflow:hidden;}
+.dialog-gray-container .dialogTitle-left{width:11px;height:32px;float:left;display:inline;}
+.dialog-gray-container .dialogTitle-center{float:left;display:inline;}
+.dialog-gray-container .dialogTitle-text{margin-left:5px;color:#333;float:left;display:inline;}
+.dialog-gray-container .dialogClose{width:14px;height:14px;line-height:14px;color:#000;text-align:center;margin-top:8px;border:1px solid #ccc;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;}
+.dialog-gray-container .dialogCloseHover{color:#ff0000;}
+/*.dialog-gray-container .dialogMaximize{width:14px;height:14px;line-height:14px;color:#000;text-align:center;margin-top:8px;border:1px solid #608DBC;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;background:#FFF url(../dialog/images/icon.gif) -2px -2px no-repeat;}
+.dialog-gray-container .dialogMaximizeHover{background:#FFF  url(../dialog/images/icon.gif) -2px -14px no-repeat;}
+.dialog-gray-container .dialogNormal{background: #FFF url(../dialog/images/icon.gif) -16px -2px no-repeat;}
+.dialog-gray-container .dialogNormalHover{background: #FFF url(../dialog/images/icon.gif) -16px -14px no-repeat;}*/
+.dialog-gray-container .dialogTitle-right{width:11px;height:32px;float:right;display:inline;}
+.dialog-gray-container .dialogContent{border: 1px solid #aaa;border-bottom: none;padding:5px 5px 6px 5px;line-height:1.5em;overflow:auto;font-size:12px;}
+.dialog-gray-container .dialogIframe{margin:0;padding:0;}
+.dialog-gray-container .dialogBottom{height: 32px;line-height:32px;font-weight:bold;background: #eee;border: 1px solid #aaa;border-top: 1px dashed #aaa;clear:both;*zoom:1;overflow:hidden;}
+.dialog-gray-container .dialogBottom-left{width:11px;height: 30px;float:left;}
+.dialog-gray-container .dialogBottom-center{text-align:right;float:left;}
+.dialog-gray-container .dialogBottom-right{width:11px;height: 30px;float:right;}
+.dialog-gray-container .dialogBottom a.normal{width:70px;height:24px;line-height:24px;margin:3px 5px;border:1px solid #666;background: ccc;text-align: center;letter-spacing: 0.2em;cursor:pointer;display:inline-block;}
+.dialog-gray-container .dialogBottom a:hover{background: #eee;}
+
+/*默认主题(蓝色)***/
+.dialog-default-container{position: absolute;font-size:12px;}
+.dialog-default-container .dialogTitle{height: 32px;line-height:32px;font-weight:bold;cursor: move;clear:both;*zoom:1;overflow:hidden;border-bottom: 1px  solid #0f6da1;}
+.dialog-default-container .dialogTitle-left{width:11px;height:32px;background: url(../dialog/images/blue/tl.gif) 0 0 no-repeat;float:left;}
+.dialog-default-container .dialogTitle-center{height:32px;background: url(../dialog/images/blue/tc.gif);float:left;}
+.dialog-default-container .dialogTitle-text{margin-left:5px;color:#fff;float:left;display:inline;}
+.dialog-default-container .dialogClose{width:14px;height:14px;line-height:14px;color:#000;text-align:center;margin-top:8px;border:1px solid #608DBC;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;}
+.dialog-default-container .dialogCloseHover{color:#ff0000;}
+.dialog-default-container .dialogMaximize{width:14px;height:14px;line-height:14px;color:#000;text-align:center;margin-top:8px;border:1px solid #608DBC;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;background:#FFF url(../dialog/images/icon.gif) -2px -2px no-repeat;}
+.dialog-default-container .dialogMaximizeHover{background:#FFF  url(../dialog/images/icon.gif) -2px -14px no-repeat;}
+.dialog-default-container .dialogNormal{background: #FFF url(../dialog/images/icon.gif) -16px -2px no-repeat;}
+.dialog-default-container .dialogNormalHover{background: #FFF url(../dialog/images/icon.gif) -16px -14px no-repeat;}
+.dialog-default-container .dialogTitle-right{width:11px;height:32px;background: url(../dialog/images/blue/tr.gif) no-repeat;float:right;}
+.dialog-default-container .dialogContent{background:#fff;border-left: 1px solid #0f6da1;border-right: 1px solid #0f6da1;/*border-bottom:1px solid #0f6da1;*/padding:5px;}
+.dialog-default-container .dialogIframe{margin:0;padding:0;}
+.dialog-default-container .dialogBottom{height: 30px;line-height:30px;font-weight:bold;background: #a2c6dc;border: 1px solid #0f6da1;border-top: 0/*1px dashed #0f6da1*/;clear:both;*zoom:1;overflow:hidden;}
+.dialog-default-container .dialogBottom-left{width:11px;height: 30px;float:left;}
+.dialog-default-container .dialogBottom-center{height: 30px;text-align:right;float:left;}
+.dialog-default-container .dialogBottom-right{width:11px;height: 30px;float:right;}
+.dialog-default-container .dialogBottom a.normal{width:70px;height:24px;line-height:24px;margin:3px 5px;border:0;background: url(../dialog/images/blue/b-normal.gif);color: #FFFFFF;text-align: center;letter-spacing: 0.2em;cursor:pointer;display:inline-block;}
+.dialog-default-container .dialogBottom a:hover{background: url(../dialog/images/blue/b-hover.gif);}
+
+/*橙色主题***/
+.dialog-orange-container{position: absolute;font-size:12px;}
+.dialog-orange-container .dialogTitle{height: 32px;line-height:32px;font-weight:bold;cursor: move;clear:both;*zoom:1;overflow:hidden;border-bottom: 1px  solid #c15a0f;}
+.dialog-orange-container .dialogTitle-left{width:11px;height:32px;background: url(images/orange/tl.gif) 0 0 no-repeat;float:left;}
+.dialog-orange-container .dialogTitle-center{background: url(images/orange/tc.gif);float:left;}
+.dialog-orange-container .dialogTitle-text{margin-left:5px;color:#fff;float:left;display:inline;}
+.dialog-orange-container .dialogClose{width:14px;height:14px;line-height:14px;color:#c05b0d;text-align:center;margin-top:8px;border:1px solid #c15a0f;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;}
+.dialog-orange-container .dialogCloseHover{color:#ff0000;}
+.dialog-orange-container .dialogMaximize{width:14px;height:14px;line-height:14px;color:#000;text-align:center;margin-top:8px;border:1px solid #608DBC;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;background:#FFF url(../dialog/images/icon.gif) -2px -2px no-repeat;}
+.dialog-orange-container .dialogMaximizeHover{background:#FFF  url(../dialog/images/icon.gif) -2px -14px no-repeat;}
+.dialog-orange-container .dialogNormal{background: #FFF url(../dialog/images/icon.gif) -16px -2px no-repeat;}
+.dialog-orange-container .dialogNormalHover{background: #FFF url(../dialog/images/icon.gif) -16px -14px no-repeat;}
+.dialog-orange-container .dialogTitle-right{width:11px;height:32px;background: url(images/orange/tr.gif) no-repeat;float:right;}
+.dialog-orange-container .dialogContent{background:#fff;border-left: 1px solid #c15a0f;border-right: 1px solid #c15a0f;padding:5px;}
+.dialog-orange-container .dialogIframe{margin:0;padding:0;}
+.dialog-orange-container .dialogBottom{height: 30px;line-height:28px;font-weight:bold;background: #fec79e;border: 1px solid #c15a0f;border-top: 0/*1px dashed #c15a0f*/;clear:both;*zoom:1;overflow:hidden;}
+.dialog-orange-container .dialogBottom-left{width:11px;height: 28px;float:left;}
+.dialog-orange-container .dialogBottom-center{height: 28px;text-align:right;float:left;}
+.dialog-orange-container .dialogBottom-right{width:11px;height: 28px;float:right;}
+.dialog-orange-container .dialogBottom a.normal{width:55px;height:22px;line-height:24px;margin:3px 5px;border:0;background: url(images/orange/b-normal.gif);color: #FFFFFF;text-align: center;letter-spacing: 0.2em;cursor:pointer;display:inline-block;}
+.dialog-orange-container .dialogBottom a:hover{background: url(images/orange/b-hover.gif);}
+
+/*粉红色主题***/
+.dialog-pink-container{position: absolute;font-size:12px;}
+.dialog-pink-container .dialogTitle{height: 32px;line-height:32px;font-weight:bold;cursor: move;clear:both;*zoom:1;overflow:hidden;border-bottom: 1px  solid #dd6a6d;}
+.dialog-pink-container .dialogTitle-left{width:11px;height:32px;background: url(images/pink/tl.gif) 0 0 no-repeat;float:left;}
+.dialog-pink-container .dialogTitle-center{background: url(images/pink/tc.gif);float:left;}
+.dialog-pink-container .dialogTitle-text{margin-left:5px;color:#d23b3f;float:left;display:inline;}
+.dialog-pink-container .dialogClose{width:14px;height:14px;line-height:14px;color:#d23b3f;text-align:center;margin-top:8px;border:1px solid #dd6a6d;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;}
+.dialog-pink-container .dialogCloseHover{color:#ff0000;}
+.dialog-pink-container .dialogMaximize{width:14px;height:14px;line-height:14px;color:#000;text-align:center;margin-top:8px;border:1px solid #608DBC;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;background:#FFF url(../dialog/images/icon.gif) -2px -2px no-repeat;}
+.dialog-pink-container .dialogMaximizeHover{background:#FFF  url(../dialog/images/icon.gif) -2px -14px no-repeat;}
+.dialog-pink-container .dialogNormal{background: #FFF url(../dialog/images/icon.gif) -16px -2px no-repeat;}
+.dialog-pink-container .dialogNormalHover{background: #FFF url(../dialog/images/icon.gif) -16px -14px no-repeat;}
+.dialog-pink-container .dialogTitle-right{width:11px;height:32px;background: url(images/pink/tr.gif) no-repeat;float:right;}
+.dialog-pink-container .dialogContent{background:#fff;border-left: 1px solid #dd6a6d;border-right: 1px solid #dd6a6d;padding:5px;}
+.dialog-pink-container .dialogIframe{margin:0;padding:0;}
+.dialog-pink-container .dialogBottom{height: 30px;line-height:28px;font-weight:bold;background: #ffd5d6;border: 1px solid #dd6a6d;border-top: 0/*1px dashed #dd6a6d*/;clear:both;*zoom:1;overflow:hidden;}
+.dialog-pink-container .dialogBottom-left{width:11px;height: 28px;float:left;}
+.dialog-pink-container .dialogBottom-center{height: 28px;text-align:right;float:left;}
+.dialog-pink-container .dialogBottom-right{width:11px;height: 28px;float:right;}
+.dialog-pink-container .dialogBottom a.normal{width:55px;height:22px;line-height:24px;margin:3px 5px;border:0;background: url(images/pink/b-normal.gif);color: #d23b3f;text-align: center;letter-spacing: 0.2em;cursor:pointer;display:inline-block;}
+.dialog-pink-container .dialogBottom a:hover{background: url(images/pink/b-hover.gif);}
+
+
+/*登陆主题***/
+.dialog-djdefault-container{position: absolute;font-size:12px;}
+.dialog-djdefault-container .dialogTitle{height: 32px;line-height:32px;font-weight:bold;cursor: move;clear:both;*zoom:1;overflow:hidden;}
+.dialog-djdefault-container .dialogTitle-left{width:9px;height:32px;background:url(../dialog/images/djdefault/djdefault.png) no-repeat 0px 0px;float:left;}
+.dialog-djdefault-container .dialogTitle-center{background:url(../dialog/images/djdefault/djdefault.png) repeat-x 0px -47px;float:left;}
+.dialog-djdefault-container .dialogTitle-text{margin-left:5px;color:#000;float:left;display:inline;}
+.dialog-djdefault-container .dialogClose{width:14px;height:14px;line-height:14px;color:#000;text-align:center;margin-top:8px;border:1px solid #000;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;}
+.dialog-djdefault-container .dialogCloseHover{color:#bbb;}
+.dialog-djdefault-container .dialogMaximize{width:14px;height:14px;line-height:14px;color:#000;text-align:center;margin-top:8px;border:1px solid #608DBC;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;background:#FFF url(../dialog/images/icon.gif) -2px -2px no-repeat;}
+.dialog-djdefault-container .dialogMaximizeHover{background:#FFF  url(../dialog/images/icon.gif) -2px -14px no-repeat;}
+.dialog-djdefault-container .dialogNormal{background: #FFF url(../dialog/images/icon.gif) -16px -2px no-repeat;}
+.dialog-djdefault-container .dialogNormalHover{background: #FFF url(../dialog/images/icon.gif) -16px -14px no-repeat;}
+.dialog-djdefault-container .dialogTitle-right{width:13px;height:32px;background:url(../dialog/images/djdefault/djdefault.png) no-repeat -12px 0px;float:right;}
+.dialog-djdefault-container .dialogContent{background:#fff;border-left: 1px solid #dfdfde;border-right: 1px solid #dedddd;padding:15px 5px 5px 10px;}
+.dialog-djdefault-container .dialogIframe{margin:0;padding:0;}
+.dialog-djdefault-container .dialogBottom{height: 45px;line-height:43px;font-weight:bold;clear:both;*zoom:1;overflow:hidden;}
+.dialog-djdefault-container .dialogBottom-left{width:9px;height: 43px;float:left;background:url(../dialog/images/djdefault/djdefault.png) no-repeat -44px 0px;}
+.dialog-djdefault-container .dialogBottom-center{height: 43px;text-align:center;float:left;background:url(../dialog/images/djdefault/djdefault.png) repeat-x 0px -81px;}
+.dialog-djdefault-container .dialogBottom-right{width:13px;height: 43px;float:right;background:url(../dialog/images/djdefault/djdefault.png) no-repeat -27px 0px;}
+.dialog-djdefault-container .dialogBottom a.normal{width:70px;height:28px;line-height:24px;margin:0px 5px 5px 6px;border:0;background:url(../dialog/images/djdefault/djdefault.png) no-repeat 0px -158px;color: #000;text-align: center;letter-spacing: 0.2em;cursor:pointer;display:inline-block;}
+.dialog-djdefault-container .dialogBottom a:hover{background:url(../dialog/images/djdefault/djdefault.png) no-repeat 0px -128px;}
+.dialog-djdefault-container table{ width:300px; height:160px;font-size:14px; font-family:"Microsoft YaHei", "黑体", "宋体";}
+.dialog-djdefault-container input{ height:26px; width:190px; padding::0px; border:1px solid #999;}
+.dialog-djdefault-container th{ width:70px; font-weight:normal; text-align:right;}
+.dialog-djdefault-container th a{ font-size:12px;}
+.dialog-djdefault-container td{ padding-top:8px; padding-right:20px; text-align:center;}
+
+/*质感灰texgray***/
+.dialog-texgray-container{position: absolute;font-size:12px;border: 6px solid #ccc;}
+.dialog-texgray-container .dialogTitle{font-weight:bold;cursor: move;clear:both;zoom:1;overflow:hidden; background: url(../dialog/images/qlog.png) 0 -1px repeat-x;}
+.dialog-texgray-container .dialogTitle-left{float:left;width:11px;}
+.dialog-texgray-container .dialogTitle-right{float:right;width:11px;}
+.dialog-texgray-container .dialogTitle-center{float:left;}
+.dialog-texgray-container .dialogTitle-text{float:left;display:inline;width: 88px; height: 36px; margin-top:11px; border: 1px solid #c6c6c6; font-size: 14px; line-height: 36px; text-align: center; cursor: pointer; color: #777; }
+.dialog-texgray-container .dialogTitle-current{ border-bottom: 1px solid #FFF; font-weight: bold; cursor: default; color: #555; background-color: #FFF; }
+.dialog-texgray-container .dialogTitle-last{ border-left: none; }
+.dialog-texgray-container .dialogClose{ float:right; width: 24px; height: 24px; margin: 12px 1px 13px 1px; cursor: pointer; text-indent:-9999px; overflow:hidden; background: url(../dialog/images/qlog.png) -1px -96px no-repeat; }
+.dialog-texgray-container .dialogCloseHover{margin: 11px 0 12px 0; border: 1px solid #c6c6c6;}
+.dialog-texgray-container .dialogMaximize{ float:right; width: 24px; height: 24px; margin: 12px 1px 13px 1px; cursor: pointer; text-indent:-9999px; overflow:hidden; background: url(../dialog/images/qlog.png) -240px -97px no-repeat; }
+.dialog-texgray-container .dialogMaximizeHover{margin: 11px 0 12px 0; border: 1px solid #c6c6c6;}
+/*.dialog-texgray-container .dialogMaximize{width:14px;height:14px;line-height:14px;color:#000;text-align:center;margin-top:8px;border:1px solid #608DBC;font-family:Arial;font-size:16px;background:#fff;cursor:pointer;display:inline-block;float:right;background:#FFF url(../dialog/images/icon.gif) -240px -97px no-repeat;}*/
+.dialog-texgray-container .dialogMaximizeHover{background:#FFF  url(../dialog/images/icon.gif) -2px -14px no-repeat;}
+.dialog-texgray-container .dialogNormal{background: #FFF url(../dialog/images/icon.gif) -16px -2px no-repeat;}
+.dialog-texgray-container .dialogNormalHover{background: #FFF url(../dialog/images/icon.gif) -16px -14px no-repeat;}
+.dialog-texgray-container .dialogContent{background:#fff; padding:5px;}
+.dialog-texgray-container .dialogIframe{margin:0;padding:0;}
+.dialog-texgray-container .dialogBottom{font-weight:bold;background: #FFF; clear:both;zoom:1;overflow:hidden;}
+.dialog-texgray-container .dialogBottom-left{width:11px; height:100%; float:left;}
+.dialog-texgray-container .dialogBottom-center{height:100%; text-align:center;float:left;}
+.dialog-texgray-container .dialogBottom-right{width:11px; height:100%; float:right;}
+.dialog-texgray-container .dialogBottom a.normal{letter-spacing: 0.2em;display:inline-block; width: 88px; height: 36px; margin:8px 0 0 13px; font:normal 17px "Microsoft YaHei"; color: #FFF; line-height: 36px; text-align: center; cursor: pointer; background: url(../dialog/images/qlog.png) -43px -90px no-repeat;}
+.dialog-texgray-container .dialogBottom a:hover{}
+.dialog-texgray-container .dialogBottom a.dialog-ok{background-position: -133px -90px; }

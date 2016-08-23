@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <script src="../../js/jquery.js" type="text/javascript"></script>
+
+    <script src="../../js/common.js" type="text/javascript"></script>
+
+</head>
+<body>
+    <input type="button" id="btnShowDialog" value="提示对话框" />
+</body>
+
+<script type="text/javascript">
+    var customOption = frameElement.customOption;
+    $(function() {
+        $("#btnShowDialog").click(function() {
+            Dialog.open({
+                dialogTitle: "提示对话框",
+                width: 400,
+                height: 160,
+                content: "必需填写用户名。\n\n必需填写密码",
+                dataSource: "local",
+                cancelButton: { isShow: false }
+            });
+        });
+    });
+
+    function okButtonClick() {
+        if (customOption.onOkButtonClick && typeof customOption.onOkButtonClick == "function") {
+            customOption.onOkButtonClick("Hello");
+        }
+        Dialog.close();
+    }
+</script>
+
+</html>

@@ -1,0 +1,64 @@
+﻿* { padding: 0; margin: 0; }
+body {background:#fff;font-family:\5B8B\4F53,Arial, Helvetica, sans-serif;line-height:1.5; font-size:12px; height:100%; width:100%; }
+ol, ul { list-style:none; }
+fieldset { border:0; }
+img{ vertical-align:middle; border:0; }
+table { border-collapse:collapse; border-spacing:0; }
+.table{margin-bottom: 5px; }
+textarea{resize: none;outline: none;}
+input, select,button{ vertical-align:middle;font-size:12px; z-index:1987;outline:none; }
+select.bselect, select.bselect option {font-size: 15px;line-height: 26px;_margin-top: -1px;font-family: "Microsoft YaHei";padding: 0px 0px 0px 5px;color: #f00;}
+input.txt{padding:3px 10px; *padding:2px 5px 0px;cursor:pointer; line-height:16px;}
+input.txt_1,button{padding:2px 5px;*padding:0px 0;line-height:18px; height:22px;cursor:pointer;}
+a{ color:#d64c15;  text-decoration:none; }
+a:hover{ text-decoration:underline;}
+.floatLeft { float:left;}
+.floatRight { float:right;  }
+.clearLeft{clear:left}
+.clearRight{clear:right}
+.clear { clear:both; }
+.clear1{overflow:hidden;zoom:1}
+.zoom{zoom:1}
+.hide{display:none}
+.bggray{ background:#f5f5f5;}
+.marT3{margin-top:3px!important}
+.marT5{margin-top:5px!important}
+.marT10{margin-top:10px!important}
+.marT15{margin-top:15px!important}
+.marT25{margin-top:25px!important}
+.marL5{margin-left:5px!important}
+.marB10{margin-bottom:10px!important}
+.fSize12{font-size:12px!important}
+.fSize13{font-size:12px!important}
+.fSize14{font-size:14px!important}
+.fSize16{font-size:16px!important}
+.fRed{color:#f00!important}
+.fNobold{font-weight:normal!important}
+.tLeft{text-align:left!important}
+.tCenter{text-align:center!important}
+.tRight{text-align:right!important}
+
+/*----------------------------------------------------------------------------*/
+
+.wrap{padding:5px 0px 5px 0px; /* position:relative*/}
+.main{background:url(../Images/check_tit.jpg) repeat-x left top; height:auto; overflow:hidden; padding:8px 0;}
+.main_top{background:url(../Images/bg_munu.jpg) repeat-x; border:1px #DADADA solid; padding:5px 10px 10px; height:100%;}
+.main_top h2{ font-weight:normal;font-size:13px;border-bottom:1px #dbdbdb dotted; padding:5px 0; margin-bottom:10px;}
+.main_top h2 a{color:#666;}
+.main_top ul li,.main_top ul li a{ line-height:26px; font-size:12px; color:#000;}
+.main_top ul li em{ font-weight:normal; font-size:12px; color:#666; float:right}
+.main_right{ padding-left:265px;}
+.main_mid table td{line-height:26px;}
+.main_mid table td span{ margin-left:30px;}
+.main_mid h4{color: #5B4617;font-size:15px;background:url(../Images/infor.png) no-repeat 0 3px; padding-left:22px; }
+.main_mid table td p{ padding:5px 10px; }
+.probody{ margin-bottom:15px;}
+
+.pic{margin:10px;text-align: center;float: left;}
+.pic img{width: 100px;height: 100px;float:left;}
+.pic .textarea{width:330px;height:100px;float:left;margin-left:10px;}
+.pic a{float:left;margin-left:10px;}
+
+/* 标签 */
+#tags-select a{display: block;float: left;height: 24px;line-height: 24px;padding: 0 8px;overflow: hidden;border: 1px solid #ddd;background-color: #f5f5f5;margin: 5px 5px 0 0;font-size: 12px;}
+#tags-select a.checked{color: Red;font-weight: bold;}

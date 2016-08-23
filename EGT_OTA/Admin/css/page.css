@@ -1,0 +1,77 @@
+﻿/***
+ * 页面样式
+ * 2010-11-24
+***/
+div.container { margin: 3px;padding: 0px;}
+div.content { overflow: auto; border: 1px solid #99bbe8; border-top: 0; padding: 5px; }
+div.contentBT { border-top: 1px solid #99bbe8; }
+div.topTitle { height: 25px; line-height: 25px; border: 1px solid #99bbe8; border-top: 0px; color: #15428b; font-weight: bold; white-space: nowrap; background: url(/admin/theme/default/images/headbg.gif) repeat-x top; display: block; overflow: hidden; position: relative; }
+div.topTitle .icon { width: 16px; height: 16px; margin: 4px 10px; float: left; background: url(/admin/theme/default/images/grid.png) no-repeat; }
+div.search { padding: 5px; background: #fafafa url(/units/flexigrid/images/bbitblue/page-bg.gif) repeat-x top; position: relative; border: 1px solid #99BBE8; border-top: 0; overflow: hidden; /*display: none; */ }
+div.search .sTitle { width: 80px; height: 30px; float: left; }
+div.search .sContent { text-align: center; float: left; }
+div.search .sContent .sItem { height: 22px; margin: 0; margin-bottom: 5px; text-align: left; float: left; vertical-align: middle; overflow: hidden; }
+div.search .sContent .sItem .label { width: 100px; margin-right: 3px; text-align: right; display: block; float: left; }
+div.search .sContent .qsbox { width: 200px; }
+div.search .sConten .qtype { width: 90px; }
+div.search .sButton { width: 150px; text-align: center; float: left; }
+div.search .button { padding: 3px 10px; border: 1px solid #ccc; }
+div.search .btnSearch { }
+div.search .btnClear { }
+div.search2 { clear: both; /*float: left; width: 1024px;*/ }
+div.search2 input { vertical-align: middle; border: solid 1px #7F9DB9; }
+div.search2 select { vertical-align: middle; width: 90px; border: solid 1px #7F9DB9; }
+div.toolBar { height: 28px; padding-left: 5px; border: 1px solid #99bbe8; border-top: 0px; background: #ccc url(/admin/theme/default/images/tbg.gif) repeat-x top; position: relative; overflow: hidden; }
+div.tbBorderTop { border-top: 1px solid #99bbe8; }
+div.toolBar .searcharea { float: right;border:0px; margin-top:2px; margin-right: 5px; }
+/**操作按钮样式**/
+div.toolBar div.btnseparator { float: left; height: 18px; border-left: 1px solid #ccc; border-right: 1px solid #fff; margin: 1px; margin-top: 4px; }
+div.toolBar div.fbutton { height: 22px; padding: 1px; margin: 2px; /*border: 1px solid #fff; background: #eee;*/ float: left; cursor: pointer; }
+div.toolBar div.fbutton div { float: left; padding: 2px 3px; }
+div.toolBar div.fbutton span { float: left; display: block; }
+div.toolBar div.fbutton:hover { border: #466094 1px solid; padding: 0; background-color: #EDF1D5; }
+div.toolBar div.fbutton:hover div { padding: 1px 2px; border-left: 1px solid #fff; border-top: 1px solid #fff; border-right: 1px solid #eee; border-bottom: 1px solid #eee; }
+
+/*弹出窗口标签样式***/
+.dialogTag { height: 30px; position: relative;overflow: hidden; }
+.dialogTag ul { height: 30px; position: absolute; z-index: 1; }
+.dialogTag ul li { margin: 0 5px; padding: 5px 10px; border: 1px solid #ccc; margin-bottom: 1px; background: #eee; float: left; cursor: pointer; }
+.dialogTag ul li.current { border-bottom: #fff; background: #fff; cursor: default; }
+.dialogTagContainer { /*border: 1px solid #ccc;*/ padding: 5px;padding-bottom:0px; }
+
+/**通用操作图标**/
+div.fbutton .add {width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat 0px -520px; }/**add**/
+div.fbutton .edit { width:16px;height:16px; background: url(/images/icons/icon.png) no-repeat -342px -26px; }/**edit**/
+div.fbutton .delete { width:16px;height:16px; background: url(/images/icons/icon.png) no-repeat -20px -520px; }/**delete**/
+div.fbutton .auditing { width:16px;height:16px; background: url(/images/icons/icon.png) no-repeat -66px -520px; }/**accept**/
+div.fbutton .recommend { width:16px;height:16px; background: url(/images/icons/icon.png) no-repeat -342px -260px; }/**accept**/
+div.fbutton .ontop { width:16px;height:16px; background: url(/images/icons/icon.png) no-repeat -158px -494px; }/**ontop**/
+div.fbutton .sort { width:16px;height:16px; background: url(/images/icons/icon.png) no-repeat -90px -520px; }/**sort**/
+div.fbutton .print { width:16px;height:16px; background: url(/images/icons/icon.png) no-repeat -20px -156px; }/**print**/
+div.fbutton .export { width:16px;height:16px; background: url(/images/icons/icon.png) no-repeat -112px -286px; }/**export**/
+div.fbutton .cancel { width:16px;height:16px; background: url(/images/icons/icon.png) no-repeat -40px -520px; }/**cancel**/
+div.fbutton .listView { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -20px -208px;  }/**listView**/
+div.fbutton .treeView { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -112px -520px;  }/**treeView**/
+div.fbutton .expandAll { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -204px -494px;  }/**expandAll**/
+div.fbutton .closeAll { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -250px -494px;  }/**closeAll**/
+div.fbutton .upload { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -204px -286px;  }/**upload**/
+/**电子商务操作图标**/
+div.fbutton .confirmOrder { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -66px -260px;  }/**confirmOrder**/
+div.fbutton .sendGoods { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -138px -520px;  }/**sendGoods**/
+div.fbutton .confirmPay { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -158px -520px;  }/**confirmPay**/
+div.fbutton .onSale { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -184px -520px;  }/**onSale**/
+div.fbutton .unOnSale { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -204px -520px;  }/**unOnSale**/
+/**erp**/
+div.fbutton .details { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -296px -442px;  }/**details**/
+div.fbutton .outbound { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -230px -520px;  }/**outbound**/
+div.fbutton .store { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -250px -520px;  }/**store**/
+div.fbutton .pack { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -270px -520px;  }/**pack**/
+div.fbutton .pay { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -296px -520px;  }/**pay**/
+div.fbutton .refund { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -318px -520px;  }/**refund**/
+div.fbutton .account { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -342px -520px;  }/**account**/
+div.fbutton .lock { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -365px -520px;  }/**lock**/
+div.fbutton .unlock { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -388px -520px;  }/**unlock**/
+div.fbutton .proback { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -342px -286px;  }/**proback**/
+div.fbutton .exproduct { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -20px -312px;  }/**exproduct**/
+div.fbutton .sendSMS { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -410px -520px;  }/**sendSMS**/
+div.fbutton .copy { width:16px;height:16px;background: url(/images/icons/icon.png) no-repeat -434px -520px;  }/**copy**/

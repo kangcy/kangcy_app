@@ -1,0 +1,155 @@
+﻿@model EGT_OTA.Models.UserInfo
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>编辑</title>
+    <link href="@Url.Content("~/Scripts/Bootstrap/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Template/Styles/tip.css")" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <form id="form1">
+    <div id="message" style="display: none">
+    </div>
+    <div class="main" style="width: 98%; margin: 15px auto">
+        <table id="tbl" class="table table-hover table-bordered">
+            <tr class="tdbg" align="center">
+                <td class="head">
+                    <strong>用户名：</strong>
+                </td>
+                <td>
+                    <input type="text" id="txtUserName" class="form-control" maxlength="20" placeholder="请填写用户名"
+                        value="@Model.UserName" datacol="yes" err="用户名" checkexpession="NotNull" />
+                </td>
+                <td class="head">
+                    <strong>密码：</strong>
+                </td>
+                <td>
+                    <input type="text" id="txtPassword" class="form-control" maxlength="20"  placeholder="请填写密码"
+                        value="@Model.Password" maxlength="225" datacol="yes" err="密码" checkexpession="NotNull" />
+                </td>
+            </tr>
+            <tr class="tdbg" align="center">
+                <td class="head">
+                    <strong>真实姓名：</strong>
+                </td>
+                <td>
+                    <input type="text" id="txtRealName" class="form-control" maxlength="20"  placeholder="请填写真实姓名"
+                        value="@Model.RealName"maxlength="225"  datacol="yes" err="真实姓名" checkexpession="NotNull" />
+                </td>
+                <td class="head">
+                    <strong>性别：</strong>
+                </td>
+                <td>
+                    <select id="selSex" class="form-control">
+                        @Html.Raw(ViewBag.Sex)
+                    </select>
+                </td>
+            </tr>
+            <tr class="tdbg" align="center">
+                <td class="head">
+                    <strong>年龄：</strong>
+                </td>
+                <td>
+                    <input type="text" id="txtAge" class="form-control" maxlength="2"  placeholder="请填写年龄"
+                        value="@Model.Age"maxlength="225"  datacol="yes" err="年龄" checkexpession="NotNull" onkeyup="this.value=this.value.replace(/\D/g,'')" />
+                </td>
+                <td class="head">
+                    <strong>微信：</strong>
+                </td>
+                <td>
+                    <input type="text" id="txtWeixin" class="form-control" maxlength="225"  placeholder="请填写微信"
+                        value="@Model.Weixin" maxlength="225" datacol="yes" err="微信" checkexpession="NotNull" />
+                </td>
+            </tr>
+            <tr class="tdbg" align="center">
+                <td class="head">
+                    <strong>QQ：</strong>
+                </td>
+                <td>
+                    <input type="text" id="txtQQ" class="form-control" maxlength="100"  placeholder="请填写QQ"
+                        value="@Model.QQ"maxlength="225"  datacol="yes" err="QQ" checkexpession="NotNull" />
+                </td>
+                <td class="head">
+                    <strong>邮箱：</strong>
+                </td>
+                <td>
+                    <input type="text" id="txtEmail" class="form-control" maxlength="225" placeholder="请填写邮箱"
+                        value="@Model.Email" maxlength="225" datacol="yes" err="邮箱" checkexpession="NotNull" />
+                </td>
+            </tr>
+            <tr class="tdbg" align="center">
+                <td class="head">
+                    <strong>是否启用：</strong>
+                </td>
+                <td>
+                    <select id="selStatus" class="form-control">
+                        @Html.Raw(ViewBag.Status)
+                    </select>
+                </td>
+                <td class="head">
+                    <strong>角色：</strong>
+                </td>
+                <td>
+                    <select id="selRole" class="form-control">
+                        @Html.Raw(ViewBag.Role)
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+    </form>
+</body>
+<script type="text/javascript" src="@Url.Content("~/Admin/js/jquery.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Admin/js/common.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/learunui-framework.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/validator/learunui-validator.js")"></script>
+<script type="text/javascript">
+    //保存事件
+    function AcceptClick() {
+        if (!CheckDataValid('#form1')) {
+            return false;
+        }
+        Loading(true, "正在提交数据...");
+        window.setTimeout(function () {
+            var oData = {};
+            oData["ID"] = "@Model.ID";
+            oData["UserName"] = $.trim($("#txtUserName").val());
+            oData["Password"] = $.trim($("#txtPassword").val());
+            oData["RealName"] = $.trim($("#txtRealName").val());
+            oData["Age"] = $.trim($("#txtAge").val());
+            oData["Weixin"] = $.trim($("#txtWeixin").val());
+            oData["QQ"] = $.trim($("#txtQQ").val());
+            oData["Email"] = $.trim($("#txtEmail").val());
+            oData["RoleID"] = $("#selRole").val();
+            oData["Sex"] = $("#selSex").val();
+            oData["Status"] = $("#selStatus").val();
+            $.ajax({
+                type: "POST",
+                url: "/User/Manage",
+                cache: false,
+                dataType: "json",
+                data: $.param(oData),
+                success: function (data) {
+                    var message = "";
+                    var result = 0;
+                    if (data.result == "1") {
+                        message = "成功";
+                        result = 1;
+                    }
+                    else {
+                        message = data.result;
+                    }
+                    tipDialog(message, 3, result);
+                    if (data.result == "1") {
+                        top.frames[tabiframeId()].windowload();
+                        closeDialog();
+                    }
+                }
+            });
+        }, 200);
+    }
+</script>
+</html>

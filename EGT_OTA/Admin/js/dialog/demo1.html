@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <script src="../../js/jquery.js" type="text/javascript"></script>
+
+    <script src="../../js/common.js" type="text/javascript"></script>
+
+</head>
+<body>
+    <div>
+        <input type="button" id="btnShowDialog" value="第二个Iframe对话框" />
+        <br />
+        <span id="spResult"></span>
+    </div>
+</body>
+
+<script type="text/javascript">
+    var customOption = frameElement.customOption;
+    $(function() {
+        $("#btnShowDialog").click(function() {
+            Dialog.open({
+                dialogTitle: "第二个Iframe对话框",
+                width: 500,
+                height: 400,
+                dataSource: "iframe",
+                url: 'demo2.html',
+                okButton: { value: "确定提交" },
+                customOption: {
+                    onOkButtonClick: function(val) {
+                        $("#spResult").html(val);
+                    }
+                }
+            });
+        });
+    });
+    function okButtonClick() {
+        return true;
+    }
+</script>
+
+</html>

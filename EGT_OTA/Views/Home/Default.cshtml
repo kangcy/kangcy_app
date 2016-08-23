@@ -1,0 +1,29 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>首页</title>
+    <!--框架必需start-->
+    <link href="@Url.Content("~/Content/Template/Styles/learunui-framework.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Content/Template/Styles/learunui-accordion.css")" rel="stylesheet">
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jQuery.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/learunui-framework.js")"></script>
+    <!--框架必需end-->
+    <script type="text/javascript">
+        function NewTabchange(e) {
+            $(e).parent().find('div').removeClass("actived");
+            $(e).addClass("actived");
+        }
+    </script>
+    <style type="text/css">
+        .grid tbody td
+        {
+            padding-left: 3px;
+        }
+    </style>
+</head>
+<body>
+</body>
+</html>

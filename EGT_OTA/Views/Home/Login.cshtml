@@ -1,0 +1,103 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录</title>
+    <link href="@Url.Content("~/Content/Login/login.css")" rel="stylesheet">
+</head>
+<body>
+    <div class="loginArea">
+        <!--登录框区域-->
+        <div class="enterBox">
+            <div class="head">
+                <span class="title">智能营销平台<span class="version">V6.0</span></span>
+            </div>
+            <!--输入框区域-->
+            <div class="content">
+                <div class="rows">
+                    <span class="title">用户名</span>
+                    <input type="text" id="txtName">
+                </div>
+                <div class="rows">
+                    <span class="title">密码</span>
+                    <input type="password" id="txtPwd">
+                    <img src="@Url.Content("~/Content/Login/images/keyboard.png")" alt="键盘">
+                </div>
+                <div class="bottom">
+                    <input type="checkbox" class="learnUserName"><span class="title">记住用户名</span>
+                    <a href="javascript:void(0);" class="loginBtn" id="btnlogin">登录</a>
+                </div>
+            </div>
+            <!--输入框区域-->
+        </div>
+        <!--登录框区域-->
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery-1.11.2.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/layer1.9.3/layer/layer.js")"></script>
+<script type="text/javascript">
+    $(function () {
+        //登陆
+        $("#btnlogin").click(function () {
+            login();
+        });
+        $(document).keydown(function (event) {
+            if (event.keyCode == 13) {
+                login();
+            }
+        });
+        //重置
+        $("#reset").click(function () {
+            $("#txtName,#txtPwd").val("");
+        });
+    });
+
+    //登录验证
+    function login() {
+        var $this = $("#login");
+        $this.attr("disabled", "disabled");
+        var loginName = $.trim($("#txtName").val());
+        var password = $.trim($("#txtPwd").val());
+        var message = [];
+        if (loginName == '')
+            message.push("请填写登录名<br />");
+        if (password == '')
+            message.push("请填写登陆密码<br />");
+        if (message.length > 0) {
+            layer.msg(message.join(""));
+            $this.removeAttr("disabled");
+            return;
+        }
+        var param = { LoginName: loginName, Password: password };
+        $.ajax({
+            type: "POST",
+            cache: false,
+            dataType: "json",
+            url: "@Url.Content("~/Home/AdminLogin")",
+            data: $.param(param),
+            success: function (data) {
+                if (data.status == true) {
+                    window.location = "@Url.Content("~/Home/Index")";
+                }
+                else {
+                    layer.msg(data.result);
+                }
+            }
+        });
+    }
+
+    function run() {
+        var myDate = new Date();
+        var nowtime = myDate.toLocaleString();
+        $("#time").html("&nbsp;" + nowtime);
+        setTimeout("run() ", 1000);
+    }
+</script>
+

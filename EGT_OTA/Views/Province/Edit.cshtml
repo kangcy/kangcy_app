@@ -1,0 +1,91 @@
+﻿@model EGT_OTA.Models.Province
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>编辑</title>
+    <link href="@Url.Content("~/Scripts/Bootstrap/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/Template/Styles/tip.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Admin/css/base.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Admin/css/page.css")" />
+</head>
+<body>
+    <form id="form1" style="height: 100%;">
+        <div class="container">
+            <div class="dialogTag">
+                <ul>
+                    <li class="current" rel="divBase">基本信息</li>
+                </ul>
+            </div>
+            <div class="clear">
+            </div>
+            <div class="dialogTagContainer">
+                <div id="message" style="display: none">
+                </div>
+                <div id="divBase">
+                    <table id="tbl" class="table table-hover table-bordered">
+                        <tr class="tdbg" align="center">
+                            <td class="head">
+                                <strong>省份名称：</strong>
+                            </td>
+                            <td colspan="3">
+                                <input type="text" id="Name" class="form-control" placeholder="请填写省份名称"
+                        value="@Model.Name" maxlength="225" datacol="yes" err="省份名称" checkexpession="NotNull" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jQuery.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Admin/js/common.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Admin/js/jquery.idTabs.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/learunui-framework.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/validator/learunui-validator.js")"></script>
+<script type="text/javascript">
+    $(function () {
+        $(".dialogTag ul").idTabs();
+    });
+
+    //保存事件
+    function AcceptClick() {
+        if (!CheckDataValid('#form1')) {
+            return false;
+        }
+        Loading(true, "正在提交数据...");
+        window.setTimeout(function () {
+            var oData = {};
+            oData["ID"] = "@Model.ID";
+            oData["Name"] = $.trim($("#Name").val());
+            oData["CountryID"] = "@Model.CountryID";
+            $.ajax({
+                type: "POST",
+                url: "/Province/Manage",
+                cache: false,
+                dataType: "json",
+                data: $.param(oData),
+                success: function (data) {
+                    var message = "";
+                    var result = 0;
+                    if (data.result == "1") {
+                        message = "成功";
+                        result = 1;
+                    }
+                    else {
+                        message = data.result;
+                    }
+                    tipDialog(message, 3, result);
+                    if (data.result == "1") {
+                        top.frames[tabiframeId()].windowload();
+                        closeDialog();
+                    }
+                }
+            });
+        }, 200);
+    }
+</script>
+</html>

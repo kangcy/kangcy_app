@@ -1,0 +1,14 @@
+﻿[2011-09-11] 
+添加选项：closeSameLevel，用以设置在展开某个节点时是否隐藏其他的同级节点 
+ 
+[2011-09-13] 
+添加了点击节点标题后展开子节点的功能：titleClickSwitchChildren
+ 
+添加了自定义节点样式的功能customStyle{}
+ 
+ 
+[2011-09-29]
+编辑了回调函数onRename方法传递的函数，将原来的节点名称作为方法的第三个参数传递给此回调函数。
+  
+[2011-10-06]
+为removeNode方法添加参数applyBeforRemove,若设置为false，将不再调用beforRemove方法

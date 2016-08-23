@@ -1,0 +1,92 @@
+﻿[
+    {
+        "ButtonId": "1",
+        "ParentId": "0",
+        "Code": "lr-replace",
+        "FullName": "刷新",
+        "Icon": "arrow_refresh.png",
+        "Category": "1",
+        "JsEvent": "windowload()",
+        "Split": "1"
+    },
+    {
+        "ButtonId": "2",
+        "ParentId": "0",
+        "Code": "lr-add",
+        "FullName": "新增",
+        "Icon": "add.png",
+        "Category": "1",
+        "JsEvent": "btn_add()",
+        "Split": "0"
+    },
+    {
+        "ButtonId": "3",
+        "ParentId": "0",
+        "Code": "lr-edit",
+        "FullName": "编辑",
+        "Icon": "edit.gif",
+        "Category": "1",
+        "JsEvent": "btn_edit()",
+        "Split": "0"
+    },
+    {
+        "ButtonId": "4",
+        "ParentId": "0",
+        "Code": "lr-delete",
+        "FullName": "删除",
+        "Icon": "DeleteRed.png",
+        "Category": "1",
+        "JsEvent": "btn_delete()",
+        "Split": "1"
+    },
+    {
+        "ButtonId": "5",
+        "ParentId": "0",
+        "Code": "lr-used",
+        "FullName": "启用",
+        "Icon": "accept.png",
+        "Category": "1",
+        "JsEvent": "btn_used()",
+        "Split": "0"
+    },
+    {
+        "ButtonId": "6",
+        "ParentId": "0",
+        "Code": "lr-noused",
+        "FullName": "取消启用",
+        "Icon": "accept.png",
+        "Category": "1",
+        "JsEvent": "btn_noused()",
+        "Split": "0"
+    },
+    {
+        "ButtonId": "7",
+        "ParentId": "0",
+        "Code": "lr-audit",
+        "FullName": "审核",
+        "Icon": "accept.png",
+        "Category": "1",
+        "JsEvent": "btn_audit()",
+        "Split": "0"
+    },
+    {
+        "ButtonId": "8",
+        "ParentId": "0",
+        "Code": "lr-noaudit",
+        "FullName": "取消审核",
+        "Icon": "accept.png",
+        "Category": "1",
+        "JsEvent": "btn_noaudit()",
+        "Split": "0"
+    },
+    {
+        "ButtonId": "9",
+        "ParentId": "0",
+        "Code": "lr-back",
+        "FullName": "返回",
+        "Icon": "back.png",
+        "Category": "1",
+        "JsEvent": "btn_back()",
+        "Split": "0"
+    }
+]

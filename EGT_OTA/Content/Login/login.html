@@ -1,0 +1,263 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <title>管理平台</title>
+    <style type="text/css">
+        html, body
+        {
+            height: 100%;
+        }
+        body
+        {
+            margin-left: 0px;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 0px;
+            overflow: hidden;
+        }
+        .STYLE3
+        {
+            color: #528311;
+            font-size: 12px;
+        }
+        .STYLE4
+        {
+            color: #42870a;
+            font-size: 12px;
+        }
+        .text
+        {
+            height: 18px;
+            width: 130px;
+            border: solid 1px #cadcb2;
+            font-size: 12px;
+            color: #81b432;
+        }
+        
+        .form-control
+        {
+            display: inline-block;
+            height: 25px;
+            padding: 6px 12px;
+            font-size: 13px;
+            line-height: 25px;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+            -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            color: #999;
+        }
+        
+        .btn-primary
+        {
+            color: #fff;
+            background-color: #428bca;
+            border-color: #357ebd;
+        }
+        
+        .btn-default
+        {
+            color: #333;
+            background-color: #fff;
+            border-color: #ccc;
+        }
+        
+        .btn
+        {
+            display: inline-block;
+            margin-bottom: 0;
+            font-weight: normal;
+            text-align: center;
+            vertical-align: middle;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            padding: 6px 12px;
+            font-size: 13px;
+            line-height: 15px;
+            border-radius: 4px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body onload="run()">
+    <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td bgcolor="#e5f6cf">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td height="608" background="/Admin2/Login/images/login_03.gif">
+                <table width="862" border="0" align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td height="266" background="/Admin2/Login/images/login_04.gif">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="95">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td width="424" height="95" background="/Admin2/Login/images/login_06.gif">
+                                        &nbsp;
+                                    </td>
+                                    <td width="183" background="/Admin2/Login/images/login_07.gif">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td width="21%" height="30">
+                                                    <div align="center">
+                                                        <span class="STYLE3">用户</span></div>
+                                                </td>
+                                                <td width="79%" height="30">
+                                                    <input type="text" id="txtName" class="text form-control" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td height="30">
+                                                    <div align="center">
+                                                        <span class="STYLE3">密码</span></div>
+                                                </td>
+                                                <td height="30">
+                                                    <input type="password" id="txtPwd" class="text form-control" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td height="30">
+                                                    &nbsp;
+                                                </td>
+                                                <td height="30">
+                                                    <img src="/Admin2/Login/images/dl.gif" width="81" height="22" border="0" usemap="#Map">
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td width="255" background="/Admin2/Login/images/login_08.gif">
+                                        &nbsp;
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="247" valign="top" background="/Admin2/Login/images/login_09.gif">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td width="22%" height="30">
+                                        &nbsp;
+                                    </td>
+                                    <td width="56%">
+                                        &nbsp;
+                                    </td>
+                                    <td width="22%">
+                                        &nbsp;
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        &nbsp;
+                                    </td>
+                                    <td height="30">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td width="44%" height="20">
+                                                    &nbsp;
+                                                </td>
+                                                <td width="56%" class="STYLE4" id="time">
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        &nbsp;
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#a2d962">
+                &nbsp;
+            </td>
+        </tr>
+    </table>
+    <input id="btnRegister" type="button" value="注册" />
+    <map name="Map">
+        <area id="login" shape="rect" coords="3,3,36,19" href="#">
+        <area id="reset" shape="rect" coords="40,3,78,18" href="#">
+    </map>
+</body>
+<script type="text/javascript" src="/Scripts/jQuery.js"></script>
+<script type="text/javascript" src="/Scripts/layer1.9.3/layer/layer.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //登陆
+        $("#login").click(function () {
+            login();
+        });
+        $(document).keydown(function (event) {
+            if (event.keyCode == 13) {
+                login();
+            }
+        });
+        //重置
+        $("#reset").click(function () {
+            $("#txtName,#txtPwd").val("");
+        });
+    });
+
+    //登录验证
+    function login() {
+        var $this = $("#login");
+        $this.attr("disabled", "disabled");
+        var loginName = $.trim($("#txtName").val());
+        var password = $.trim($("#txtPwd").val());
+        var message = [];
+        if (loginName == '')
+            message.push("请填写登录名<br />");
+        if (password == '')
+            message.push("请填写登陆密码<br />");
+        if (message.length > 0) {
+            layer.msg(message.join(""));
+            $this.removeAttr("disabled");
+            return;
+        }
+        var param = { Manager: 1, LoginName: loginName, Password: password };
+        $.ajax({
+            type: "POST",
+            cache: false,
+            dataType: "json",
+            url: "user.axd?t=AdminLogin",
+            data: $.param(param),
+            success: function (msg) {
+                if (msg.error) {
+                    layer.msg(msg.error);
+                    return;
+                }
+                if (msg.success) {
+                    window.location = "/Admin2/Index.aspx";
+                }
+            }
+        });
+    }
+
+    function run() {
+        var myDate = new Date();
+        var nowtime = myDate.toLocaleString();
+        $("#time").html("&nbsp;" + nowtime);
+        setTimeout("run() ", 1000);
+    } 
+</script>
+</html>

@@ -1,0 +1,42 @@
+﻿[
+    {
+        "ModuleId": "1",
+        "ParentId": "0",
+        "FullName": "系统管理",
+        "Icon": "fa-user",
+        "Location": "",
+        "Button": ""
+    },
+    {
+        "ModuleId": "11",
+        "ParentId": "1",
+        "FullName": "产品管理",
+        "Icon": "fa-list",
+        "Location": "/Department/Index",
+        "Button": ",刷新,新增,编辑,删除,启用,取消启用,"
+    },
+    {
+        "ModuleId": "2",
+        "ParentId": "0",
+        "FullName": "账户管理",
+        "Icon": "fa-cog",
+        "Location": "",
+        "Button": ""
+    },
+    {
+        "ModuleId": "21",
+        "ParentId": "2",
+        "FullName": "用户管理",
+        "Icon": "fa-list",
+        "Location": "/User/Index",
+        "Button": ",刷新,新增,编辑,删除,启用,取消启用,"
+    },
+    {
+        "ModuleId": "22",
+        "ParentId": "2",
+        "FullName": "角色管理",
+        "Icon": "fa-list",
+        "Location": "/Role/Index",
+        "Button": ",刷新,新增,编辑,删除,启用,取消启用,"
+    }
+]

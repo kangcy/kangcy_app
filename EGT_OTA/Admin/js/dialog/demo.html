@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>弹出窗口实例</title>
+    <link href="/theme/default/style/base.css" rel="stylesheet" type="text/css" />
+
+    <script src="/js/jquery.js" type="text/javascript"></script>
+
+    <script src="/js/common.js" type="text/javascript"></script>
+
+    <script src="/units/dialog/dialog.js" type="text/javascript"></script>
+
+</head>
+<body>
+    <div style="height: 100px;">
+    </div>
+    <input type="button" id="btnShowDialog" value="蓝色主题（默认）" />
+    <input type="button" id="btnShowDialog1" value="灰色主题" />
+    <input type="button" id="btnShowDialog2" value="橙色主题" />
+    <input type="button" id="btnShowDialog3" value="登陆框" />
+</body>
+<script type="text/javascript">
+    $("#btnShowDialog").click(function() {
+        Dialog.confirm({
+            confirm: function() {
+                Dialog.open({
+                    title: "测试",
+                    width: 600,
+                    height: 400,
+                    content: "必需填写用户名。",
+                    dataSource: 'iframe',
+                    url: 'ajax.aspx',
+                    customButtons: [
+                        { id: "btnSaveClose", value: "保存关闭", click: function(event, data) { alert("保存关闭"); }, closeDialog: true },
+                        { id: "btnSaveNew", value: "保存新增", click: function(event, data) { alert("保存新增"); } }
+                    ]
+                });
+            },
+            cancel: function() {
+                alert("cancel");
+            },
+            content: "您确认要打开新的窗口吗？"
+        });
+    });
+
+    $("#btnShowDialog1").click(function() {
+        Dialog.open({
+            title: "测试",
+            width: 600,
+            height: 400,
+            content: "必需填写用户名。",
+            dataSource: 'iframe',
+            url: 'demo1.html',
+            theme: "gray",
+            showCover: false,
+            left: 50,
+            top: 50
+        });
+    });
+
+    $("#btnShowDialog2").click(function() {
+        Dialog.open({
+            title: "测试",
+            width: 600,
+            height: 400,
+            content: "必需填写用户名。",
+            dataSource: 'iframe',
+            url: 'demo1.html',
+            theme: "orange",
+            showCover: false,
+            okButton: { value: "登 录", isShow: true }
+        });
+    });
+
+    $("#btnShowDialog3").click(function() {
+        Dialog.login({
+            theme: "djdefault",
+            dataSource: 'login',
+        });
+    });
+</script>
+
+</html>

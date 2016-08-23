@@ -1,0 +1,133 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Index</title>
+    <link href="@Url.Content("~/Content/Template/Styles/learunui-framework.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/Template/Scripts/jqgrid/css/jqgrid.css")" rel="stylesheet" />
+</head>
+<body>
+    <div id="layout" class="layout">
+        <!--中间-->
+        <div class="layoutPanel layout-center">
+            <div class="btnbartitle">
+                <div>
+                    收费景点列表<span id="CenterTitle"></span>
+                </div>
+            </div>
+            <div class="tools_bar" style="border-top: none; margin-bottom: 0px;">
+                <div class="PartialButton">
+                    <div class="divSearch">
+                        <button class="btn btn-default fr" id="btnReset">
+                            重置</button>
+                        <button class="btn btn-primary fr" id="btnSearch">
+                            查询</button>
+                        <input type="text" id="txtName" class="text form-control fr" placeholder="请填写国家名称" />
+                    </div>
+                </div>
+            </div>
+            <table id="gridTable">
+            </table>
+            <div id="pager" class="scroll">
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jQuery.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/learunui-framework.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/jqgrid/jquery-ui-custom.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/jqgrid/grid.locale-cn.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/jqgrid/jqGrid.js")"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        PartialButton("73");
+        GetGrid();
+
+        //重置
+        $("#btnReset").click(function () {
+            $("#txtName").val("");
+            var url = "/Country/List";
+            $("#gridTable").jqGrid('setGridParam', { url: url }).trigger('reloadGrid');
+        });
+
+        //筛选
+        $("#btnSearch").click(function () {
+            var Name = $.trim($("#txtName").val());
+
+            var url = new StringBuilder();
+            url.append("/Country/List?1=1");
+            if (Name != "") {
+                url.append("&Name=" + escape(Name));
+            }
+            $("#gridTable").jqGrid('setGridParam', { url: url.toString() }).trigger('reloadGrid');
+        });
+    });
+    //加载表格
+    function GetGrid() {
+        $("#gridTable").jqGrid({
+            url: "/Country/List",
+            datatype: "json",
+            height: $(window).height() - 133,
+            autowidth: true,
+            colModel: [
+                { label: '主键', name: 'ID', index: "ID", hidden: true },
+                { label: '名称', name: 'Name', index: "Name", width: 200 },
+                { label: '创建日期', name: 'CreateDate', index: "CreateDate", width: 150 }
+            ],
+            viewrecords: true,
+            pager: 'pager', //分页工具栏 
+            rowNum: 20,
+            rowList: [10, 20, 30], //可调整每页显示的记录数
+            sortname: 'SortCode',
+            sortorder: 'asc',
+            multiselect: false, //是否支持多选 
+            rownumbers: true,
+            shrinkToFit: false,
+            gridview: true
+        });
+    }
+    //新增
+    function btn_add() {
+        var url = "/Country/Edit";
+        openDialog(url, "Form", "新增", 1200, 600, function (iframe) {
+            top.frames[iframe].AcceptClick()
+        });
+    }
+    //编辑
+    function btn_edit() {
+        var KeyValue = GetJqGridRowValue("#gridTable", "ID");
+        if (IsChecked(KeyValue)) {
+            var url = "/Country/Edit?id=" + KeyValue;
+            openDialog(url, "Form", "编辑", 1200, 600, function (iframe) {
+                top.frames[iframe].AcceptClick();
+            });
+        }
+    }
+    //删除
+    function btn_delete() {
+        var KeyValue = GetJqGridRowValue("#gridTable", "ID");
+        if (IsDelData(KeyValue)) {
+            var delparm = 'ids=' + KeyValue;
+            delConfig('/Country/Delete', delparm, KeyValue.split(",").length);
+        }
+    }
+    //查看省份
+    function btn_province() {
+        var KeyValue = GetJqGridRowValue("#gridTable", "ID");
+        if (IsChecked(KeyValue)) {
+            var url = "/Province/Index?CountryID=" + KeyValue;
+            window.location.href = url;
+        }
+    }
+    //刷新
+    function windowload() {
+        $("#gridTable").trigger("reloadGrid"); //重新载入  
+    }
+    //自应高度
+    $(window).resize(function () {
+        $("#gridTable").setGridHeight($(window).height() - 133);
+    });
+</script>
+</html>

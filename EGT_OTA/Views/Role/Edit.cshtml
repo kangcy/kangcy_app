@@ -1,0 +1,130 @@
+﻿@model EGT_OTA.Models.Role
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>编辑</title>
+    <link href="@Url.Content("~/Scripts/Bootstrap/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Template/Styles/tip.css")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Scripts/ztree/zTreeStyle/zTreeStyle.css")" type="text/css">
+</head>
+<body>
+    <form id="form1">
+        <div id="message" style="display: none">
+        </div>
+        <div class="main" style="width: 98%; margin: 15px auto">
+            <table id="tbl" class="table table-hover table-bordered">
+                <tr class="tdbg" align="center">
+                    <td class="head">
+                        <strong>角色名：</strong>
+                    </td>
+                    <td>
+                        <input type="text" id="txtName" class="form-control" maxlength="50"  placeholder="请填写角色名"
+                        value="@Model.Name" datacol="yes" err="角色名" checkexpession="NotNull" />
+                    </td>
+                </tr>
+                <tr class="tdbg" align="center">
+                    <td class="head">
+                        <strong>是否启用：</strong>
+                    </td>
+                    <td>
+                        <select id="selStatus" class="form-control">
+                            @Html.Raw(ViewBag.Used)
+                        </select>
+                    </td>
+                </tr>
+                <tr class="tdbg" align="center">
+                    <td class="head" style="vertical-align: top;">
+                        <strong>权限：</strong>
+                    </td>
+                    <td>
+                        <ul id="treeDemo" class="ztree">
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</body>
+<script type="text/javascript" src="@Url.Content("~/Admin/js/jquery.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Admin/js/common.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/learunui-framework.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/validator/learunui-validator.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/ztree/jquery.ztree.core.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/ztree/jquery.ztree.excheck.js")"></script>
+<script type="text/javascript">
+    $(function () {
+        GetTree();
+    });
+
+    //加载左边树
+    var divTree;
+    function GetTree() {
+        var setting = {
+            check: {
+                enable: true
+            },
+            view: {
+                expandSpeed: "",
+                titleClickOpenChildren: true,
+                selectedMulti: false
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            }
+        };
+        divTree = $.fn.zTree.init($("#treeDemo"), setting, eval(@Html.Raw(ViewBag.MenuTree)));
+    }
+
+    //保存事件
+    function AcceptClick() {
+        if (!CheckDataValid('#form1')) {
+            return false;
+        }
+        Loading(true, "正在提交数据...");
+        window.setTimeout(function () {
+            var oData = {};
+            oData["ID"] = "@Model.ID";
+            oData["Name"] = $.trim($("#txtName").val());
+            oData["Status"] = $("#selStatus").val();
+            var auth = [];
+            var nodes = divTree.transformToArray(divTree.getNodes());
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                if (node.checked) {
+                    auth.push(node.auth);
+                }
+            }
+            oData["Auth"] = "," + auth.join(",") + ",";
+
+            $.ajax({
+                type: "POST",
+                url: "/Role/Manage",
+                cache: false,
+                dataType: "json",
+                data: $.param(oData),
+                success: function (data) {
+                    var message = "";
+                    var result = 0;
+                    if (data.result) {
+                        message = "成功";
+                        result = 1;
+                    }
+                    else {
+                        message = data.message;
+                    }
+                    tipDialog(message, 3, result);
+                    if (data.result) {
+                        top.frames[tabiframeId()].windowload();
+                        closeDialog();
+                    }
+                }
+            });
+        }, 200);
+    }
+</script>
+</html>

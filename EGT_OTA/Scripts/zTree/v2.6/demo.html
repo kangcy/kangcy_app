@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link rel="stylesheet" href="zTreeStyle/zTreeStyle.css" type="text/css" />
+    <link rel="stylesheet" href="zTreeStyle/zTreeIcons.css" type="text/css" />
+
+    <script src="../../js/jquery.js" type="text/javascript"></script>
+
+    <script src="jquery.ztree.js" type="text/javascript"></script>
+
+</head>
+<body>
+    <ul id="tree" style="width: 300px; overflow: hidden;">
+    </ul>
+</body>
+
+<script type="text/javascript">
+    var setting = {
+        showLine: true,
+        checkable: false,
+        callback: {
+            click: function(event, treeID, node) {
+                alert(node.tagID);
+                if (node.parentNode) {
+                    alert(node.parentNode.tagID);
+                }
+            }
+        },
+        closeSameLevel: true,
+        expandSpeed: ""
+    };
+
+    var zTreeNodes = [
+        { "name": "google", "tagID": "tagID", open: true, titleNode: { cssClass: "normal current" },
+            nodes: [{ "name": "gmail", tagID: "subTag", open: true, nodes: [{ "name": "gmail", tagID: "subTag" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank"}] },
+            { "name": "igoogle", nodes: [{ "name": "gmail", tagID: "subTag" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank"}]}]
+        },
+        { "name": "baidu", "tagID": "tagID", titleNode: { cssClass: "normal" }, nodes: [{ "name": "gmail", tagID: "subTag", nodes: [{ "name": "gmail", tagID: "subTag" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank"}] }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank"}] },
+        { "name": "sina", "tagID": "tagID", titleNode: { cssClass: "normal" }, nodes: [{ "name": "gmail", tagID: "subTag", nodes: [{ "name": "gmail", tagID: "subTag" }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank"}] }, { "name": "igoogle", "url": "http://g.cn", "target": "_blank"}] }
+    ];
+
+    var zTree = $("#tree").zTree(setting, zTreeNodes);
+</script>
+
+</html>

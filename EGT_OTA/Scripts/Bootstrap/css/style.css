@@ -1,0 +1,598 @@
+﻿/* i8 fix for form input height in fluid rows */
+.ie8 .row-fluid [class*="span"] {
+    min-height: 20px !important;
+}
+
+.icon-btn {
+    height: 70px;
+    width: 50px;
+    margin: 10px 0px 10px 0px;
+    padding: 16px 0px 0px 0px;
+    font-size: 10px;
+    background-color: #fff !important;
+    border: 1px solid #ccc;
+    display:block !important;
+    color: #646464 !important;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    -webkit-transition: all 0.3s ease !important;
+    -moz-transition: all 0.3s ease !important;
+    -ms-transition: all 0.3s ease !important;
+    -o-transition: all 0.3s ease !important;
+    transition: all 0.3s ease !important;
+}
+
+.ie8 .icon-btn:hover {
+    filter: none !important;
+}
+
+.icon-btn:hover {
+    border: 1px solid #404040;
+    background: #fff !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+    color: #444 !important;
+    -webkit-transition: all 0.3s ease !important;
+    -moz-transition: all 0.3s ease !important;
+    -ms-transition: all 0.3s ease !important;
+    -o-transition: all 0.3s ease !important;
+    transition: all 0.3s ease !important;
+}
+
+.icon-btn i {
+    font-size: 20px;
+    color: #777 !important;
+}
+
+.icon-btn div {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 12px !important;
+    font-family: Arial;
+}
+
+.icon-btn .badge {
+    position: absolute;
+    font-size: 10px !important;
+    top: 26px;
+    right: -8px;
+    height: 14px;
+    padding: 3px 7px;
+    color: white !important;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    text-shadow: none;
+    font-family: Arial;
+}
+
+.icon-btn:hover .badge {
+    -webkit-transition: all 0.3s ease !important;
+    -moz-transition: all 0.3s ease !important;
+    -ms-transition: all 0.3s ease !important;
+    -o-transition: all 0.3s ease !important;
+    transition: all 0.3s ease !important;
+}
+
+.icon-btn i {
+    -webkit-transition: all .5s ease-in-out;
+    -moz-transition: all .5s ease-in-out;
+    -o-transition: all .5s ease-in-out;
+    -ms-transition: all .5s ease-in-out;
+}
+
+.icon-btn:hover i {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    color: #fff;
+    opacity: 1;
+}
+
+/*fontawesome*/
+
+.fontawesome-icon-list .span3{
+    margin-left: 0;
+}
+.fontawesome-icon-list .span3 i{
+    font-size: 16px;
+}
+.fontawesome-icon-list .span3 a{
+    color: #888888;
+}
+
+/* star rating */
+.rating {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    font-size: 30px;
+}
+.rating span.star,
+.rating span.star {
+    font-family: FontAwesome;
+    font-weight: normal;
+    font-style: normal;
+    display: inline-block;
+}
+.rating span.star:hover,
+.rating span.star:hover {
+    cursor: pointer;
+}
+.rating span.star:before,
+.rating span.star:before {
+    content: "\f006";
+    padding-right: 5px;
+    color: #999999;
+}
+.rating span.star:hover:before,
+.rating span.star:hover:before,
+.rating span.star:hover ~ span.star:before,
+.rating span.star:hover ~ span.star:before {
+    content: "\f005";
+    color: #87bb33;
+}
+
+/* adjust uniform components */
+.radio, .checkbox {
+    padding-left: 0px !important;
+}
+
+.controls > .radio,
+.controls > .checkbox {
+    display: inline-block;
+    padding: 0 !important;
+    margin: 0 25px 0 0 !important;
+}
+
+.controls > .radio.line,
+.controls > .checkbox.line {
+    display: block;
+    padding: 0 !important;
+    margin: 0 !important;
+    margin-top: 5px !important;
+}
+
+.controls .text {
+    display: block;
+    margin-top: 5px;
+}
+
+.checkbox  div.checker {
+    margin-right: 2px !important;
+}
+
+.uploader {
+    margin-top: 2px !important;
+}
+
+/*toggle style*/
+
+.toggle-button label {
+    background: #fefefe !important;
+    border-radius: 0 !important;
+
+}
+
+/* line 83, ../sass/bootstrap-toggle-buttons.scss */
+.toggle-button span.labelRight {
+    background: #fefefe !important;
+}
+/* line 91, ../sass/bootstrap-toggle-buttons.scss */
+.toggle-button span.primary, .toggle-button span.labelLeft {
+    color: #fefefe;
+    background: #4e89c7 !important;
+
+}
+/* line 96, ../sass/bootstrap-toggle-buttons.scss */
+.toggle-button span.info {
+    color: #fefefe;
+    background: #3daced !important;
+
+}
+/* line 102, ../sass/bootstrap-toggle-buttons.scss */
+.toggle-button span.success {
+    color: #fefefe;
+    background: #97c80b !important;
+
+}
+/* line 108, ../sass/bootstrap-toggle-buttons.scss */
+.toggle-button span.warning {
+    color: #fefefe;
+    background: #f9b400 !important;
+
+}
+/* line 114, ../sass/bootstrap-toggle-buttons.scss */
+.toggle-button span.danger {
+    color: #fefefe;
+    background: #e24b53 !important;
+
+}
+
+/* font awesome icon classes */
+[class^="icon-"], [class*=" icon-"],[class^="icon-"]:hover, [class*=" icon-"]:hover {
+    background: none !important;
+}
+
+/* hide by default ie8*/
+.visible-ie8 {
+    display: none;
+}
+
+.tab-content {
+    padding: 0px;
+    overflow: hidden;
+}
+
+/*navigation*/
+
+.bs-docs-example .navbar-inner .nav .dropdown-toggle:hover,
+.bs-docs-example .navbar .nav li.dropdown.active > .dropdown-toggle,
+.bs-docs-example .navbar .nav li.dropdown.open.active > .dropdown-toggle,
+.bs-docs-example .navbar-inner .nav .dropdown.open .dropdown-toggle{
+    background-color: #E5E5E5 !important;
+    color: #555555;
+}
+
+.bs-docs-example .navbar .nav > .active > a,
+.bs-docs-example .navbar .nav > .active > a:hover,
+.bs-docs-example .navbar .nav > .active > a:focus {
+    box-shadow: none;
+}
+
+.bs-docs-example .navbar-inner {
+    background: #f2f2f2;
+}
+
+/*flot chart*/
+
+.plots{
+    margin-top: 20px;
+    width:100%;
+    height:300px
+}
+
+.metro_tips {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 2px;
+}
+
+/*easy pie chart*/
+.easy-pie-chart {
+    display: inline-block;
+    margin: 0px 18px;
+}
+
+.easy-pie-chart .title {
+    text-align: center;
+}
+.update-btn {
+    float: right;
+    margin-top: 3px;
+}
+
+/*spark line chart*/
+
+.sparkline {
+    padding: 9px 13px;
+    display: inline-block;
+    text-align: center;
+}
+.sparkline .sparkline-tittle {
+    font-size: 16px;
+    padding-top: 15px;
+    display: inline-block;
+    font-weight:normal;
+    font-family: "MyriadPro-Light";
+}
+
+/* charts & stats */
+.chart, .pie, .bars {
+    height: 300px;
+}
+
+.stat {
+    margin: 0px;
+    padding: 0px;
+}
+
+.item-list.table .percent {
+    width: 30px;
+    float: right;
+    margin-right: 10px;
+    margin-top: 3px;
+}
+
+.item-list.table .title {
+    padding-top: -5px;
+}
+
+.stat .title {
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size1: 13px;
+}
+
+.stat.good .percent  {
+    color: #52e136;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.stat.bad .percent {
+    color: #d12610;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.stat.ok .percent {
+    color: #37b7f3;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* general list for item with picture */
+ul.item-list li .pic {
+    height: 50px;
+    width: 50px;
+    float: left;
+    margin-top: 3px;
+    margin-right: 5px;
+    -webkit-border-radius: 2px !important;
+    -moz-border-radius: 2px !important;
+    border-radius: 2px !important;
+}
+ul.item-list {
+    margin: 0px;
+    list-style: none;
+}
+ul.item-list li {
+    /*padding: 11px 0;*/
+    list-style: none;
+    border-top: 1px solid white;
+    border-bottom: 10px solid #fff;
+    font-size: 12px;
+    background: #ededed;
+}
+ul.item-list li:first-child {
+    border-top: none;
+    /*border-bottom: 1px solid #EBEBEB;*/
+}
+ul.item-list li:last-child {
+    border-top: none;
+    border-bottom: none;
+}
+ul.item-list li .label {
+    margin-right: 5px;
+    padding: 12px !important;
+}
+
+ul.item-list .pull-right span {
+    padding: 9px !important;
+    display: inline-block;
+}
+
+
+/* general purpose block with css3 gradient background */
+.block {
+    line-height: 18px;
+    margin: 0 0 20px 0;
+    padding: 10px;
+    text-align: center;
+}
+
+/* metro dashboard states */
+.metro-nav {
+    font-family: 'MyriadPro-Light';
+    position: relative;
+    z-index: 101;
+}
+
+.metro-nav .nav-block-orange {
+    background: #f37b53;
+}
+
+.metro-nav .nav-block-yellow {
+    background: #FFB400;
+}
+
+.metro-nav .nav-block-blue {
+    background: #0DAED3;
+}
+
+.metro-nav .nav-block-green {
+    background: #74B749;
+}
+
+.metro-nav .nav-block-red {
+    background:#de577b;
+}
+
+.metro-nav .nav-block-purple {
+    background:  #9d4a9c;
+}
+.metro-nav .nav-block-grey {
+    background:  #77808a;
+}
+/*---new add--*/
+.metro-nav .nav-light-blue {
+    background:  #61b9ff;
+}
+.metro-nav .nav-light-green {
+    background:  #00a489;
+}
+.metro-nav .nav-deep-terques {
+    background:  #0bc0cb;
+}
+.metro-nav .nav-light-purple {
+    background:  #847cc5;
+}
+.metro-nav .nav-light-yellow {
+    background:  #e5bc64;
+}
+.metro-nav .nav-deep-gray {
+    background:  #434343;
+}
+.metro-nav .nav-light-brown {
+    background:  #ab8465;
+}
+.metro-nav .nav-deep-red {
+    background:  #b33062;
+}
+.metro-nav .nav-olive {
+    background:  #959801;
+}
+.metro-nav .nav-deep-thistle {
+    background:  #9e7698;
+}
+
+.metro-fix-view .metro-nav-block.double {
+    width: 251px !important;
+}
+
+.metro-fix-view .metro-nav-block.long {
+    width: 251px !important;
+    height: 235px !important;
+}
+
+.metro-fix-view .metro-nav-block.long .value {
+    padding-top: 30px !important;
+    display: inline-block;
+}
+
+.metro-fix-view .metro-nav-block.long .value i {
+    font-size: 90px;
+}
+
+.metro-fix-view .metro-nav-block {
+    color: white;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-weight: 300;
+    height: 120px;
+    letter-spacing: 0.02em;
+    line-height: 20px;
+    margin: 0 1% 1% 0;
+    overflow: hidden;
+    position: relative;
+    text-decoration: none;
+    width: 120px !important;
+    z-index: 1;
+}
+
+
+.metro-nav .metro-nav-block.double {
+    width: 35%;
+}
+
+.metro-nav .metro-nav-block {
+    color: white;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-weight: 300;
+    height:150px;
+    letter-spacing: 0.02em;
+    line-height: 20px;
+    margin: 0 1% 1% 0;
+    overflow: hidden;
+    position: relative;
+    text-decoration: none;
+    width: 28%;
+    z-index: 1;
+}
+
+.metro-nav .metro-nav-block i {
+    font-size: 50px;
+    margin-top: 20px;
+    display: inline-block;
+}
+
+.metro-nav .metro-nav-block:last-child {
+    margin-right: 0;
+}
+
+.metro-nav .metro-nav-block a {
+    color: white;
+    font-size: 18px;
+    font-weight: 400;
+    height: 90%;
+    line-height: 16px;
+    overflow: hidden;
+    padding: 5px 10px;
+    position: absolute;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    width: 88%;
+    text-decoration: none;
+}
+
+.metro-nav .metro-nav-block a i {
+    transition: all 0.5s ease-in-out 0s;
+    -moz-transition: all 0.5s ease-in-out 0s;
+    -webkit-transition: all 0.5s ease-in-out 0s;
+    -o-transition: all 0.5s ease-in-out 0s;
+}
+
+.metro-nav .metro-nav-block a .info {
+    transition: all 0.4s ease-in-out 0s;
+    -moz-transition: all 0.4s ease-in-out 0s;
+    -webkit-transition: all 0.4s ease-in-out 0s;
+    -o-transition: all 0.4s ease-in-out 0s;
+}
+
+.metro-nav .metro-nav-block a:hover i{
+    transform:rotate(83deg);
+    -moz-transform:rotate(83deg);
+    -webkit-transform:rotate(83deg);
+    -o-transform:rotate(83deg);
+    font-size: 140px;
+    opacity: 0.2;
+}
+
+.metro-nav .metro-nav-block.long a:hover i{
+
+    font-size: 200px;
+}
+.metro-nav .metro-nav-block.long a {
+    height: 96%;
+}
+.metro-nav .metro-nav-block a:hover .info {
+    transform:rotate(360deg);
+    -moz-transform:rotate(360deg);
+    -webkit-transform:rotate(360deg);
+    -o-transform:rotate(360deg);
+    font-size: 40px;
+    opacity: 0.6;
+}
+
+.metro-nav .metro-nav-block:hover {
+    opacity: 0.8;
+}
+
+.metro-nav .metro-nav-block.double a {
+    width: 94%;
+}
+
+.metro-nav .metro-nav-block .info {
+    font-size: 36px;
+    position: absolute;
+    right: 10px;
+    top: 45px;
+}
+
+.metro-nav .metro-nav-block .status, .metro-nav .metro-nav-block .tile-status {
+    background-color: transparent;
+    bottom: -10px;
+    font-size: 14px;
+    left: 10px;
+    min-height: 30px;
+    position: absolute;
+    font-family:Microsoft YaHei
+}
+
+
