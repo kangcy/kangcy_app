@@ -197,13 +197,13 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Audit()
         {
-            if (!CurrentUser.HasPower(""))
-            {
-                return Json(new { result = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
-            }
-            string result = "0";
+            var result = false;
+            var message = string.Empty;
             int status = ZNRequest.GetInt("status");
-            status = status == 1 ? Enum_Status.Approved : Enum_Status.Audit;
+            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("21-7")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("21-8")))
+            {
+                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
+            }
             var ids = ZNRequest.GetString("ids");
             List<UserInfo> list = new List<UserInfo>();
             try
@@ -220,14 +220,14 @@ namespace EGT_OTA.Controllers
                     }
                     list.Add(model);
                 }
-                result = db.UpdateMany<UserInfo>(list).ToString();
+                result = db.UpdateMany<UserInfo>(list) > 0;
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
-                result = ex.Message;
+                message = ex.Message;
             }
-            return Json(new { result = result }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
     }
 }

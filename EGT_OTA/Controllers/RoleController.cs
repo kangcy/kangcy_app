@@ -177,11 +177,12 @@ namespace EGT_OTA.Controllers
         {
             var result = false;
             var message = string.Empty;
-            if (!CurrentUser.HasPower(""))
+            int status = ZNRequest.GetInt("status");
+            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("22-7")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("22-8")))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
-            int status = ZNRequest.GetInt("status") == 1 ? Enum_Status.Approved : Enum_Status.Audit;
+
             var ids = ZNRequest.GetString("ids");
             List<Role> list = new List<Role>();
             try
