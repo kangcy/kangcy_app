@@ -195,6 +195,7 @@
     <Compile Include="Models\App\Fan.cs" />
     <Compile Include="Models\App\Music.cs" />
     <Compile Include="Models\App\Video.cs" />
+    <Compile Include="Models\App\Handle.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\CurrentUser.cs" />
     <Compile Include="Models\Base\Repository.cs" />
@@ -1191,6 +1192,7 @@
     <Content Include="Views\Fan\Index.cshtml" />
     <Content Include="Views\Keep\Index.cshtml" />
     <Content Include="Views\Article\Index.cshtml" />
+    <Content Include="Views\Comment\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
