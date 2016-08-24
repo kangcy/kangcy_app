@@ -59,7 +59,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 string data = DateTime.Now.ToString("yyyy-MM-dd");
-                string virtualPath = "~/Upload/" + folder + data;
+                string virtualPath = "~/Upload/" + folder + "/" + data;
                 string savePath = this.Server.MapPath(virtualPath);
                 if (!Directory.Exists(savePath))
                 {

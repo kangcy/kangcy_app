@@ -8,7 +8,7 @@
     <title>编辑</title>
     <link href="@Url.Content("~/Scripts/Bootstrap/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/Template/Styles/tip.css")" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="@Url.Content("~/Scripts/ztree/zTreeStyle/zTreeStyle.css")" type="text/css">
+    <link href="@Url.Content("~/Scripts/upload/uploadify/uploadify.css")" rel="stylesheet" />
 </head>
 <body>
     <form id="form1">
@@ -30,7 +30,7 @@
                         <strong>链接：</strong>
                     </td>
                     <td>
-                        <input type="file" id="music" name="upload" />
+                        <input type="file" id="music" name="upload" class="fl" />
                         <input id="FileUrl" type="text" class="form-control" maxlength="100" datacol="yes" err="链接" checkexpession="NotNull" value="@Model.FileUrl" />
                     </td>
                 </tr>
@@ -42,12 +42,11 @@
 <script type="text/javascript" src="@Url.Content("~/Admin/js/common.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/learunui-framework.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/validator/learunui-validator.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/ztree/jquery.ztree.core.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/ztree/jquery.ztree.excheck.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/upload/uploadify/jquery.uploadify.min.js")"></script>
 <script type="text/javascript">
     $(function () {
         $("#music").uploadify({
-            swf: "/Script/uploadify/uploadify.swf?var=" + Math.random() * 1000,
+            swf: "/Scripts/upload/uploadify/uploadify.swf?var=" + Math.random() * 1000,
             uploader: "/Upload/UploadFile?folder=Music",
             auto: true,
             multi: false,

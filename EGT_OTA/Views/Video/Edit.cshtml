@@ -8,7 +8,7 @@
     <title>编辑</title>
     <link href="@Url.Content("~/Scripts/Bootstrap/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/Template/Styles/tip.css")" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="@Url.Content("~/Scripts/ztree/zTreeStyle/zTreeStyle.css")" type="text/css">
+        <link href="@Url.Content("~/Scripts/upload/uploadify/uploadify.css")" rel="stylesheet" />
 </head>
 <body>
     <form id="form1">
@@ -42,12 +42,11 @@
 <script type="text/javascript" src="@Url.Content("~/Admin/js/common.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/learunui-framework.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/validator/learunui-validator.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/ztree/jquery.ztree.core.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/ztree/jquery.ztree.excheck.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/upload/uploadify/jquery.uploadify.min.js")"></script>
 <script type="text/javascript">
     $(function () {
         $("#video").uploadify({
-            swf: "/Script/uploadify/uploadify.swf?var=" + Math.random() * 1000,
+            swf: "/Scripts/uploadify/uploadify.swf?var=" + Math.random() * 1000,
             uploader: "/Upload/UploadFile?folder=Video",
             auto: true,
             multi: false,
@@ -65,7 +64,7 @@
                 }
             },
             onQueueComplete: function () {
-                $("#music").uploadify("cancel", "*");
+                $("#video").uploadify("cancel", "*");
             }
         });
     });

@@ -9,7 +9,9 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
     position: relative;
     margin-bottom: 1em;
     display: inline-block;
+    float: left;
 }
+
 .uploadify-button
 {
     background-color: #f87877;
@@ -18,7 +20,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
     background-image: -moz-linear-gradient(bottom, #f87877 0%, #f87877 100%);
     background-image: -webkit-linear-gradient(bottom, #f87877 0%, #f87877 100%);
     background-image: -ms-linear-gradient(bottom, #f87877 0%, #f87877 100%);
-    background-image: -webkit-gradient( 		linear, 		left bottom, 		left top, 		color-stop(0, #f87877), 		color-stop(1, #f87877) 	);
+    background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #f87877), color-stop(1, #f87877) );
     background-position: center top;
     background-repeat: no-repeat; /*-webkit-border-radius: 30px; 	-moz-border-radius: 30px; 	border-radius: 30px; 	border: 2px solid #808080;*/
     color: #FFF;
@@ -26,6 +28,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
     width: 100%;
     text-align: center;
 }
+
 .uploadify:hover .uploadify-button
 {
     background-color: #f87877;
@@ -34,18 +37,21 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
     background-image: -moz-linear-gradient(top, #f87877 0%, #f87877 100%);
     background-image: -webkit-linear-gradient(top, #f87877 0%, #f87877 100%);
     background-image: -ms-linear-gradient(top, #f87877 0%, #f87877 100%);
-    background-image: -webkit-gradient( 		linear, 		left bottom, 		left top, 		color-stop(0, #f87877), 		color-stop(1, #f87877) 	);
+    background-image: -webkit-gradient( linear, left bottom, left top, color-stop(0, #f87877), color-stop(1, #f87877) );
     background-position: center bottom;
 }
+
 .uploadify-button.disabled
 {
     background-color: #D0D0D0;
     color: #808080;
 }
+
 .uploadify-queue
 {
     margin-bottom: 1em;
 }
+
 .uploadify-queue-item
 {
     background-color: #F5F5F5;
@@ -57,10 +63,12 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
     max-width: 350px;
     padding: 10px;
 }
+
 .uploadify-error
 {
     background-color: #FDE5DD !important;
 }
+
 .uploadify-queue-item .cancel a
 {
     background: url('cancel.png') 0 0 no-repeat;
@@ -69,16 +77,19 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
     text-indent: -9999px;
     width: 16px;
 }
+
 .uploadify-queue-item.completed
 {
     background-color: #E5E5E5;
 }
+
 .uploadify-progress
 {
     background-color: #E5E5E5;
     margin-top: 10px;
     width: 100%;
 }
+
 .uploadify-progress-bar
 {
     background-color: #0099FF;
@@ -93,6 +104,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
     overflow: auto;
     margin-bottom: 10px;
 }
+
 #fileQueue2
 {
     width: 400px;
@@ -100,6 +112,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
     overflow: auto;
     margin-bottom: 10px;
 }
+
 #fileQueue3
 {
     width: 400px;
@@ -107,6 +120,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
     overflow: auto;
     margin-bottom: 10px;
 }
+
 #fileQueue4
 {
     width: 400px;
