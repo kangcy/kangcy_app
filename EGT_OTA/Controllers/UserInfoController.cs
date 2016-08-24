@@ -15,7 +15,7 @@ namespace EGT_OTA.Controllers
     /// <summary>
     /// 用户管理
     /// </summary>
-    public class UserController : BaseController
+    public class UserInfoController : BaseController
     {
         public ActionResult Index()
         {

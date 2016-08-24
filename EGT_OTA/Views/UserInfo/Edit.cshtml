@@ -119,7 +119,7 @@
             oData["Sex"] = $("#selSex").val();
             $.ajax({
                 type: "POST",
-                url: "/User/Manage",
+                url: "/UserInfo/Manage",
                 cache: false,
                 dataType: "json",
                 data: $.param(oData),

@@ -150,7 +150,7 @@
     <Compile Include="Controllers\Travel\CityController.cs" />
     <Compile Include="Controllers\Travel\ProvinceController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
-    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UserInfoController.cs" />
     <Compile Include="Enum\EnumAttribute.cs" />
     <Compile Include="Enum\EnumBase.cs" />
     <Compile Include="Enum\Enum_Price.cs" />
@@ -1175,8 +1175,8 @@
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Role\Edit.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
-    <Content Include="Views\User\Edit.cshtml" />
-    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\UserInfo\Edit.cshtml" />
+    <Content Include="Views\UserInfo\Index.cshtml" />
     <Content Include="Views\Country\Edit.cshtml" />
     <Content Include="Views\Country\Index.cshtml" />
     <Content Include="Views\City\Edit.cshtml" />
@@ -1193,6 +1193,7 @@
     <Content Include="Views\Keep\Index.cshtml" />
     <Content Include="Views\Article\Index.cshtml" />
     <Content Include="Views\Comment\Index.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -26,22 +26,21 @@ namespace EGT_OTA.Controllers.App
         {
             var pager = new Pager();
             string Name = ZNRequest.GetString("Name");
-            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Music>();
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<User>();
             if (!string.IsNullOrWhiteSpace(Name))
             {
                 query = query.And("Name").Like("%" + Name + "%");
             }
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
-            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Music>();
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<User>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               Name = l.Name,
-                               FileUrl = l.FileUrl,
-                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
-                               Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
+                               UserName = l.UserName,
+                               Avatar = GetFullUrl(l.Avatar),
+                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")
                            }).ToList();
             var result = new
             {

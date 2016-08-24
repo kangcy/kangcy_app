@@ -71,6 +71,14 @@
         "Location": "/Comment/Index",
         "Button": ",刷新,"
     },
+	{
+        "ModuleId": "36",
+        "ParentId": "3",
+        "FullName": "用户管理",
+        "Icon": "fa-list",
+        "Location": "/User/Index",
+        "Button": ",刷新,"
+    },
     {
         "ModuleId": "2",
         "ParentId": "0",

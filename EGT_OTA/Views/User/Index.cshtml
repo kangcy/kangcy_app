@@ -24,11 +24,7 @@
                             重置</button>
                         <button class="btn btn-primary fr" id="btnSearch">
                             查询</button>
-                        <select id="selRole" class="select form-control fr">
-                            @Html.Raw(ViewBag.Role)
-                        </select>
-                        <input type="text" id="txtRealName" class="text form-control fr" placeholder="请填写真实名称" />
-                        <input type="text" id="txtUserName" class="text form-control fr" placeholder="请填写用户账号" />
+                        <input type="text" id="txtName" class="text form-control fr" placeholder="请填写用户名称" />
                     </div>
                 </div>
             </div>
@@ -46,32 +42,23 @@
 <script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/jqgrid/jqGrid.js")"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        PartialButton("21");
+        PartialButton("36");
         GetGrid();
 
         //重置
         $("#btnReset").click(function () {
-            $("#txtRealName,#txtUserName").val("");
+            $("#txtName").val("");
             var url = "/User/List";
             $("#gridTable").jqGrid('setGridParam', { url: url }).trigger('reloadGrid');
         });
 
         //筛选
         $("#btnSearch").click(function () {
-            var RealName = $.trim($("#txtRealName").val());
-            var UserName = $.trim($("#txtUserName").val());
-            var RoleID = $("#selRole").val();
-
+            var Name = $.trim($("#txtName").val());
             var url = new StringBuilder();
             url.append("/User/List?1=1");
-            if (RealName != "") {
-                url.append("&RealName=" + escape(RealName));
-            }
-            if (UserName != "") {
-                url.append("&UserName=" + escape(UserName));
-            }
-            if (RoleID != 0) {
-                url.append("&RoleID=" + RoleID);
+            if (Name != "") {
+                url.append("&Name=" + escape(Name));
             }
             $("#gridTable").jqGrid('setGridParam', { url: url.toString() }).trigger('reloadGrid');
         });
@@ -84,19 +71,15 @@
             height: $(window).height() - 133,
             autowidth: true,
             colModel: [
-                    { label: '主键', name: 'ID', index: "ID", hidden: true },
-                    { label: '用户账号', name: 'UserName', index: "UserName", width: 100 },
-                    { label: '角色', name: 'RoleID', index: "RoleID", width: 100 },
-                    { label: '状态', name: 'Status', index: 'Status', width: 45, align: 'center' },
-                    { label: '真实姓名', name: 'RealName', index: "RealName", width: 100 },
-                    { label: '性别', name: 'Sex', index: "Sex", width: 60, align: "center" },
-                    { label: '年龄', name: 'Age', index: "Age", width: 60, align: "center" },
-                    { label: '微信', name: 'Weixin', index: "Weixin", width: 100, align: "center" },
-                    { label: 'QQ', name: 'QQ', index: "QQ", width: 100, align: "center" },
-                    { label: '邮箱', name: 'Email', index: "Email", width: 200, align: "center" },
-                    { label: '创建时间', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" },
-                    { label: '上次登陆', name: 'LastLoginDate', index: "LastLoginDate", width: 150, align: "center" },
-                    { label: '登陆次数', name: 'LoginTimes', index: "LoginTimes", width: 100, align: "center" }
+                { label: '主键', name: 'ID', index: "ID", hidden: true },
+                 {
+                     label: '头像', name: 'Cover', index: 'Cover', width: 100, align: 'center',
+                     formatter: function (cellvalue, options, rowObject) {
+                         return "<img src='" + cellvalue + "' style='width:90%;margin:5%;' />";
+                     }
+                 },
+                { label: '用户名', name: 'Title', index: "Title", width: 200 },
+                { label: '创建时间', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" }
             ],
             viewrecords: true,
             pager: 'pager', //分页工具栏 
@@ -104,28 +87,11 @@
             rowList: [10, 20, 30], //可调整每页显示的记录数
             sortname: 'SortCode',
             sortorder: 'asc',
-            multiselect: true, //是否支持多选 
+            multiselect: false, //是否支持多选 
             rownumbers: true,
             shrinkToFit: false,
             gridview: true
         });
-    }
-    //新增
-    function btn_add() {
-        var url = "/User/Edit";
-        openDialog(url, "Form", "新增", 1200, 300, function (iframe) {
-            top.frames[iframe].AcceptClick()
-        });
-    }
-    //编辑
-    function btn_edit() {
-        var KeyValue = GetJqGridRowValue("#gridTable", "ID");
-        if (IsChecked(KeyValue)) {
-            var url = "/User/Edit?id=" + KeyValue;
-            openDialog(url, "Form", "编辑", 1200, 300, function (iframe) {
-                top.frames[iframe].AcceptClick();
-            });
-        }
     }
     //删除
     function btn_delete() {
@@ -133,22 +99,6 @@
         if (IsDelData(KeyValue)) {
             var delparm = 'ids=' + KeyValue;
             delConfig('/User/Delete', delparm, KeyValue.split(",").length);
-        }
-    }
-    //审核
-    function btn_audit() {
-        var KeyValue = GetJqGridRowValue("#gridTable", "ID");
-        if (IsDelData(KeyValue)) {
-            var delparm = 'status=1&ids=' + KeyValue;
-            doConfig('审核', '/User/Audit', delparm, KeyValue.split(",").length);
-        }
-    }
-    //取消审核
-    function btn_noaudit() {
-        var KeyValue = GetJqGridRowValue("#gridTable", "ID");
-        if (IsDelData(KeyValue)) {
-            var delparm = 'status=0&ids=' + KeyValue;
-            doConfig('取消审核', '/User/Audit', delparm, KeyValue.split(",").length);
         }
     }
     //刷新
