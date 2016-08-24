@@ -27,7 +27,7 @@
                     </td>
                 </tr>
                 <tr class="tdbg" align="center">
-                    <td class="head" style="vertical-align: top;">
+                    <td class="head">
                         <strong>父类型：</strong>
                     </td>
                     <td>
@@ -37,12 +37,12 @@
                     </td>
                 </tr>
                 <tr class="tdbg" align="center">
-                    <td class="head" style="vertical-align: top;">
+                    <td class="head">
                         <strong>链接：</strong>
                     </td>
                     <td>
-                        <input type="file" id="music" name="upload" class="fl" />
-                        <input id="Cover" type="text" class="form-control" maxlength="100" datacol="yes" err="链接" checkexpession="NotNull" value="@Model.Cover" />
+                        <input type="file" id="pic" name="upload" class="fl" />
+                        <input id="Cover" type="text" class="form-control" maxlength="100" value="@Model.Cover" />
                     </td>
                 </tr>
             </table>
@@ -57,7 +57,6 @@
 <script type="text/javascript" src="@Url.Content("~/Scripts/ztree/jquery.ztree.excheck.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Scripts/upload/uploadify/jquery.uploadify.min.js")"></script>
 <script type="text/javascript">
-    var parentId = 0, parentIds = "-0-";
     $(function () {
         $("#pic").uploadify({
             swf: "/Scripts/upload/uploadify/uploadify.swf?var=" + Math.random() * 1000,
@@ -94,8 +93,10 @@
             oData["ID"] = "@Model.ID";
             oData["Name"] = $.trim($("#Name").val());
             oData["Cover"] = $.trim($("#Cover").val());
-            oData["ParentID"] = parentId;
-            oData["ParentIDList"] = parentIds;
+
+            var $selParent = $("#selParent").find(":selected");
+            oData["ParentID"] = $selParent.val();
+            oData["ParentIDList"] = $selParent.attr("pid");
             $.ajax({
                 type: "POST",
                 url: "/ArticleType/Manage",

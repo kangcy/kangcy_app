@@ -487,6 +487,7 @@
     <Content Include="DLL\Tools.dll" />
     <Content Include="Global.asax" />
     <Content Include="Config\log4net.config" />
+    <Content Include="Images\default.png" />
     <Content Include="Images\LOGO.png" />
     <Content Include="Images\login-btn.png" />
     <Content Include="Images\LOGO\danmaiLOGO.jpg" />

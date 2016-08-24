@@ -59,6 +59,7 @@ namespace EGT_OTA.Controllers
                            select new
                            {
                                ID = l.ID,
+                               Cover = GetFullUrl(l.Cover),
                                Name = l.Name,
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)

@@ -21,6 +21,7 @@ namespace EGT_OTA.Controllers
         //默认管理员账号
         protected readonly string Admin_Name = System.Web.Configuration.WebConfigurationManager.AppSettings["admin_name"];
         protected readonly string Admin_Password = System.Web.Configuration.WebConfigurationManager.AppSettings["admin_password"];
+        protected readonly string Base_Url = System.Web.Configuration.WebConfigurationManager.AppSettings["base_url"];
 
         /// <summary>
         /// 分页基础类
@@ -301,17 +302,17 @@ namespace EGT_OTA.Controllers
             var list = db.Find<ArticleType>(x => x.Status == Enum_Status.Approved).ToList();
             if (head)
             {
-                sbr.Append("<option value='0'>请选择文章类型</option>");
+                sbr.Append("<option value='0' pid='-0-'>请选择文章类型</option>");
             }
             list.FindAll(x => x.ParentID == 0).ForEach(x =>
             {
-                sbr.AppendFormat("<option value='" + x.ID + "' pid='0' {0}>" + x.Name + "</option>", x.ID == index ? "selected=\"selected\"" : "");
+                sbr.AppendFormat("<option value='" + x.ID + "' pid='-0-' {0}>" + x.Name + "</option>", x.ID == index ? "selected=\"selected\"" : "");
                 BuildChildArticleType(index, x, x.Name, list, sbr);
             });
             return sbr.ToString();
         }
 
-        public void BuildChildArticleType(int index, ArticleType type, string parentName, List<ArticleType> list, StringBuilder sbr)
+        protected void BuildChildArticleType(int index, ArticleType type, string parentName, List<ArticleType> list, StringBuilder sbr)
         {
             List<ArticleType> l = list.FindAll(x => x.ParentID == type.ID);
             foreach (ArticleType x in l)
@@ -319,6 +320,22 @@ namespace EGT_OTA.Controllers
                 sbr.AppendFormat("<option value='" + x.ID + "' pid='" + x.ParentIDList + x.ID + "-" + "' {0}>" + parentName + " - " + x.Name + "</option>", x.ID == index ? "selected=\"selected\"" : "");
                 BuildChildArticleType(index, x, parentName + " - " + x.Name, list, sbr);
             }
+        }
+
+        /// <summary>
+        /// 图片完整路径
+        /// </summary>
+        protected string GetFullUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return Base_Url + "Images/default.png";
+            }
+            if (url.ToLower().StartsWith("http"))
+            {
+                return url;
+            }
+            return Base_Url + url;
         }
     }
 }
