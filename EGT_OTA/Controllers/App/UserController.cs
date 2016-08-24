@@ -14,6 +14,45 @@ namespace EGT_OTA.Controllers.App
     /// </summary>
     public class UserController : BaseController
     {
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        public ActionResult List()
+        {
+            var pager = new Pager();
+            string Name = ZNRequest.GetString("Name");
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Music>();
+            if (!string.IsNullOrWhiteSpace(Name))
+            {
+                query = query.And("Name").Like("%" + Name + "%");
+            }
+            var recordCount = query.GetRecordCount();
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Music>();
+            var newlist = (from l in list
+                           select new
+                           {
+                               ID = l.ID,
+                               Name = l.Name,
+                               FileUrl = l.FileUrl,
+                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                               Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
+                           }).ToList();
+            var result = new
+            {
+                page = pager.Index,
+                records = recordCount,
+                total = totalPage,
+                rows = newlist
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         /// <summary>
         /// 登录
         /// </summary>
