@@ -207,22 +207,22 @@ namespace EGT_OTA.Controllers
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
             var ids = ZNRequest.GetString("ids");
-            List<UserInfo> list = new List<UserInfo>();
             try
             {
-                List<UserInfo> all = db.All<UserInfo>().ToList();
-                var id = ids.Split(',');
-                for (var i = 0; i < id.Length; i++)
+                if (string.IsNullOrWhiteSpace(ids))
                 {
-                    var index = Tools.SafeInt(id[i]);
-                    var model = all.Single<UserInfo>(x => x.ID == index);
-                    if (model != null)
-                    {
-                        model.Status = status;
-                    }
-                    list.Add(model);
+                    message = "未选择任意项";
                 }
-                result = db.UpdateMany<UserInfo>(list) > 0;
+                else
+                {
+                    var array = ids.Split(',').ToArray();
+                    var list = new SubSonic.Query.Select(Repository.GetProvider()).From<UserInfo>().And("ID").In(array).ExecuteTypedList<UserInfo>();
+                    list.ForEach(x =>
+                    {
+                        x.Status = status;
+                    });
+                    result = db.UpdateMany<UserInfo>(list) > 0;
+                }
             }
             catch (Exception ex)
             {

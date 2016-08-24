@@ -79,9 +79,9 @@
                     label: '启用', name: 'Status', index: 'Status', width: 45, align: 'center',
                     formatter: function (cellvalue, options, rowObject) {
                         if (cellvalue == '1')
-                            return "<img src='/Content/Template/Images/checknomark.gif'/>";
-                        else
                             return "<img src='/Content/Template/Images/checkokmark.gif'/>";
+                        else
+                            return "<img src='/Content/Template/Images/checknomark.gif'/>";
                     }
                 },
                 { label: '创建时间', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" }

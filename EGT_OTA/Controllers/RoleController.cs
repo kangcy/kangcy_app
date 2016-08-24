@@ -184,22 +184,22 @@ namespace EGT_OTA.Controllers
             }
 
             var ids = ZNRequest.GetString("ids");
-            List<Role> list = new List<Role>();
             try
             {
-                List<Role> all = db.All<Role>().ToList();
-                var id = ids.Split(',');
-                for (var i = 0; i < id.Length; i++)
+                if (string.IsNullOrWhiteSpace(ids))
                 {
-                    var index = Tools.SafeInt(id[i]);
-                    var model = all.Single<Role>(x => x.ID == index);
-                    if (model != null)
-                    {
-                        model.Status = status;
-                    }
-                    list.Add(model);
+                    message = "未选择任意项";
                 }
-                result = db.UpdateMany<Role>(list) > 0;
+                else
+                {
+                    var array = ids.Split(',').ToArray();
+                    var list = new SubSonic.Query.Select(Repository.GetProvider()).From<Role>().And("ID").In(array).ExecuteTypedList<Role>();
+                    list.ForEach(x =>
+                    {
+                        x.Status = status;
+                    });
+                    result = db.UpdateMany<Role>(list) > 0;
+                }
             }
             catch (Exception ex)
             {
