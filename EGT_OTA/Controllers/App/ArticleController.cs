@@ -20,7 +20,7 @@ namespace EGT_OTA.Controllers.App
         }
 
         /// <summary>
-        /// 文章列表
+        /// 列表
         /// </summary>
         public ActionResult List()
         {
@@ -190,7 +190,7 @@ namespace EGT_OTA.Controllers.App
         }
 
         /// <summary>
-        /// 文章点赞
+        /// 点赞
         /// </summary>
         [AllowAnyone]
         public ActionResult Good()

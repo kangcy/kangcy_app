@@ -343,7 +343,7 @@ namespace EGT_OTA.Controllers
         /// </summary>
         protected User GetUserInfo()
         {
-            var username = ZNRequest.GetString("Name");
+            var username = ZNRequest.GetString("UserName");
             var password = DesEncryptHelper.Encrypt(ZNRequest.GetString("Password"));
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
