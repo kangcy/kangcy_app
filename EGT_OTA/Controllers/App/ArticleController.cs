@@ -9,20 +9,51 @@ using EGT_OTA.Models;
 
 namespace EGT_OTA.Controllers.App
 {
+    /// <summary>
+    /// 文章
+    /// </summary>
     public class ArticleController : BaseController
     {
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         /// <summary>
         /// 文章列表
         /// </summary>
-        public ActionResult ArticleList()
+        public ActionResult List()
         {
-            int currentPage = ZNRequest.GetInt("page", 0);///当前页
-            int pageSize = ZNRequest.GetInt("ps", 15);//每页大小
-
-            var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "Cover", "Views", "Goods", "Comments").From<Article>().Where<Article>(x => x.Status != Enum_Status.DELETE);
-            int recordCount = query.GetRecordCount();
-            var list = query.Paged(currentPage, pageSize).OrderDesc("ID").ExecuteTypedList<Article>();
-            return Json(list, JsonRequestBehavior.AllowGet);
+            var pager = new Pager();
+            string Name = ZNRequest.GetString("Name");
+            var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "Cover", "Views", "Goods", "Comments", "CreateDate", "Status").From<Article>();
+            if (!string.IsNullOrWhiteSpace(Name))
+            {
+                query = query.And("Title").Like("%" + Name + "%");
+            }
+            var recordCount = query.GetRecordCount();
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Article>();
+            var newlist = (from l in list
+                           select new
+                           {
+                               ID = l.ID,
+                               Title = l.Title,
+                               Cover = GetFullUrl(l.Cover),
+                               Views = l.Views,
+                               Goods = l.Goods,
+                               Comments = l.Comments,
+                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                               Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
+                           }).ToList();
+            var result = new
+            {
+                page = pager.Index,
+                records = recordCount,
+                total = totalPage,
+                rows = newlist
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

@@ -24,21 +24,6 @@ namespace EGT_OTA.Controllers
             return View();
         }
 
-        public ActionResult Edit()
-        {
-            var id = ZNRequest.GetInt("id");
-            Fan model = null;
-            if (id > 0)
-            {
-                model = db.Single<Fan>(x => x.ID == id);
-            }
-            if (model == null)
-            {
-                model = new Fan();
-            }
-            return View(model);
-        }
-
         /// <summary>
         /// 列表
         /// </summary>
@@ -65,7 +50,7 @@ namespace EGT_OTA.Controllers
                 }
             }
             var recordCount = query.GetRecordCount();
-            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
             var userArray = list.Select(x => x.CreateUserID).ToList();
             userArray.AddRange(list.Select(x => x.UserID).ToList());
@@ -74,8 +59,8 @@ namespace EGT_OTA.Controllers
                            select new
                            {
                                ID = l.ID,
-                               Name = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).UserName : "未知",
-                               FanName = users.Exists(x => x.ID == l.UserID) ? users.FirstOrDefault(x => x.ID == l.UserID).UserName : "未知",
+                               Name = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).UserName : "",
+                               FanName = users.Exists(x => x.ID == l.UserID) ? users.FirstOrDefault(x => x.ID == l.UserID).UserName : "",
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
                            }).ToList();

@@ -69,7 +69,7 @@ namespace EGT_OTA.Controllers
             }
             var role = db.All<Role>().ToList();
             var recordCount = query.GetRecordCount();
-            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; 
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<UserInfo>();
             var newlist = (from l in list
                            select new
@@ -78,7 +78,7 @@ namespace EGT_OTA.Controllers
                                UserName = l.UserName,
                                RealName = l.RealName,
                                Sex = EnumBase.GetDescription(typeof(Enum_Sex), l.Sex),
-                               RoleID = role.Exists(x => x.ID == l.RoleID) ? role.FirstOrDefault(x => x.ID == l.RoleID).Name : "未知",
+                               RoleID = role.Exists(x => x.ID == l.RoleID) ? role.FirstOrDefault(x => x.ID == l.RoleID).Name : "",
                                Weixin = l.Weixin,
                                Email = l.Email,
                                QQ = l.QQ,
