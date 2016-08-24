@@ -30,11 +30,14 @@ namespace EGT_OTA.Controllers
             if (id > 0)
             {
                 model = db.Single<UserInfo>(x => x.ID == id);
-                model.Password = DesEncryptHelper.Decrypt(model.Password);
             }
             if (model == null)
             {
                 model = new UserInfo();
+            }
+            else
+            {
+                model.Password = DesEncryptHelper.Decrypt(model.Password);
             }
             ViewBag.Role = RoleSelect(false, model.RoleID);
             ViewBag.Sex = SexSelect(false, model.Sex);

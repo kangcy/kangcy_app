@@ -88,13 +88,7 @@
                     { label: '主键', name: 'ID', index: "ID", hidden: true },
                     { label: '用户账号', name: 'UserName', index: "UserName", width: 100 },
                     { label: '角色', name: 'RoleID', index: "RoleID", width: 100 },
-                    {
-                        label: '启用', name: 'Status', index: 'Status', width: 45, align: 'center',
-                        formatter: function (cellvalue, options, rowObject) {
-                            if (cellvalue == '1') return "<img src='/Content/Template/Images/checknomark.gif'/>";
-                            if (cellvalue == '2') return "<img src='/Content/Template/Images/checkokmark.gif'/>";
-                        }
-                    },
+                    { label: '状态', name: 'Status', index: 'Status', width: 45, align: 'center' },
                     { label: '真实姓名', name: 'RealName', index: "RealName", width: 100 },
                     { label: '性别', name: 'Sex', index: "Sex", width: 60, align: "center" },
                     { label: '年龄', name: 'Age', index: "Age", width: 60, align: "center" },

@@ -91,8 +91,8 @@ namespace EGT_OTA.Controllers
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
-            var UserName = ZNRequest.GetString("UserName");
-            if (db.Exists<UserInfo>(x => x.UserName == UserName))
+            var Name = ZNRequest.GetString("Name");
+            if (db.Exists<Role>(x => x.Name == Name))
             {
                 return Json(new { result = "该角色名已被注册" }, JsonRequestBehavior.AllowGet);
             }
@@ -107,7 +107,7 @@ namespace EGT_OTA.Controllers
             {
                 model = new Role();
             }
-            model.Name = ZNRequest.GetString("Name");
+            model.Name = Name;
             model.Auth = ZNRequest.GetString("Auth");
             model.Status = Enum_Status.Audit;
             model.UpdateDate = DateTime.Now;
