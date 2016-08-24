@@ -53,7 +53,7 @@
         "FullName": "关注管理",
         "Icon": "fa-list",
         "Location": "/Fan/Index",
-        "Button": ",刷新,删除,"
+        "Button": ",刷新,"
     },
 	{
         "ModuleId": "34",
@@ -61,7 +61,7 @@
         "FullName": "收藏管理",
         "Icon": "fa-list",
         "Location": "/Keep/Index",
-        "Button": ",刷新,删除,"
+        "Button": ",刷新,"
     },
     {
         "ModuleId": "2",

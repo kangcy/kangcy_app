@@ -71,11 +71,65 @@ namespace EGT_OTA.Controllers.App
         #region  APP请求
 
         /// <summary>
+        /// 编辑
+        /// </summary>
+        public ActionResult Edit()
+        {
+            User user = GetUserInfo();
+            if (user == null)
+            {
+                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var status = false;
+            var result = string.Empty;
+            try
+            {
+                Article model = new Article();
+                model.ID = ZNRequest.GetInt("ID");
+                model.Title = ZNRequest.GetString("Title");
+                model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"));
+                model.Cover = ZNRequest.GetString("Cover");
+                model.TypeID = ZNRequest.GetInt("TypeID", 0);
+                model.Views = 0;
+                model.Goods = 0;
+                model.Comments = 0;
+                model.Status = 0;
+                if (model.ID == 0)
+                {
+                    model.CreateUserID = user.ID;
+                    model.CreateDate = DateTime.Now;
+                    model.CreateIP = Tools.GetClientIP;
+                    status = Tools.SafeInt(db.Add<Article>(model)) > 0;
+                }
+                else
+                {
+                    model.UpdateUserID = user.ID;
+                    model.UpdateDate = DateTime.Now;
+                    model.UpdateIP = Tools.GetClientIP;
+                    status = db.Update<Article>(model) > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                result = ex.Message;
+            }
+            return Json(new { status = status, result = result }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 文章详情
         /// </summary>
         [AllowAnyone]
-        public ActionResult View()
+        public ActionResult Detail()
         {
+            User user = GetUserInfo();
+            if (user == null)
+            {
+                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+            }
+
             var result = false;
             var message = string.Empty;
             try
@@ -110,6 +164,12 @@ namespace EGT_OTA.Controllers.App
         [AllowAnyone]
         public ActionResult Good()
         {
+            User user = GetUserInfo();
+            if (user == null)
+            {
+                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+            }
+
             var result = false;
             var message = string.Empty;
             try

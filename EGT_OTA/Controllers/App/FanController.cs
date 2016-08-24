@@ -89,19 +89,15 @@ namespace EGT_OTA.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        #region  APP请求
+
         /// <summary>
         /// 编辑
         /// </summary>
         [AllowAnyone]
         public ActionResult Manage()
         {
-            var username = ZNRequest.GetString("Name");
-            var password = DesEncryptHelper.Encrypt(ZNRequest.GetString("Password"));
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-            var user = db.Single<User>(x => x.UserName == username && x.Password == password);
+            User user = GetUserInfo();
             if (user == null)
             {
                 return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
@@ -145,14 +141,17 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 删除
         /// </summary>
+        [AllowAnyone]
         public ActionResult Delete()
         {
+            User user = GetUserInfo();
+            if (user == null)
+            {
+                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+            }
+
             var result = false;
             var message = string.Empty;
-            if (!CurrentUser.HasPower("33-4"))
-            {
-                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
-            }
             var id = ZNRequest.GetInt("ids");
             var model = db.Single<Fan>(x => x.ID == id);
             try
@@ -171,43 +170,6 @@ namespace EGT_OTA.Controllers
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
 
-        /// <summary>
-        /// 审核
-        /// </summary>
-        public ActionResult Audit()
-        {
-            var result = false;
-            var message = string.Empty;
-            int status = ZNRequest.GetInt("status");
-            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("11-5")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("11-6")))
-            {
-                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var ids = ZNRequest.GetString("ids");
-            try
-            {
-                if (string.IsNullOrWhiteSpace(ids))
-                {
-                    message = "未选择任意项";
-                }
-                else
-                {
-                    var array = ids.Split(',').ToArray();
-                    var list = new SubSonic.Query.Select(Repository.GetProvider()).From<Fan>().And("ID").In(array).ExecuteTypedList<Fan>();
-                    list.ForEach(x =>
-                    {
-                        x.Status = status;
-                    });
-                    result = db.UpdateMany<Fan>(list) > 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
-            }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
-        }
+        #endregion
     }
 }

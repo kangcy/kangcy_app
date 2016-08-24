@@ -337,5 +337,24 @@ namespace EGT_OTA.Controllers
             }
             return Base_Url + url;
         }
+
+        /// <summary>
+        /// APP访问用户信息
+        /// </summary>
+        protected User GetUserInfo()
+        {
+            var username = ZNRequest.GetString("Name");
+            var password = DesEncryptHelper.Encrypt(ZNRequest.GetString("Password"));
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                return null;
+            }
+            var user = db.Single<User>(x => x.UserName == username && x.Password == password);
+            if (user == null)
+            {
+                return null;
+            }
+            return user;
+        }
     }
 }
