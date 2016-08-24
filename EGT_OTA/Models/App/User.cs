@@ -42,19 +42,19 @@ namespace EGT_OTA.Models
         ///<summary>
         ///登陆密码
         ///</summary>
-        [SubSonicStringLength(20), SubSonicNullString]
+        [SubSonicStringLength(50), SubSonicNullString]
         public string Password { get; set; }
 
         ///<summary>
         ///用户头像
         ///</summary>
-        [SubSonicStringLength(100), SubSonicNullString]
+        [SubSonicStringLength(255), SubSonicNullString]
         public string Avatar { get; set; }
 
         ///<summary>
         ///个性签名
         ///</summary>
-        [SubSonicStringLength(255), SubSonicNullString]
+        [SubSonicStringLength(500), SubSonicNullString]
         public string Signature { get; set; }
 
         /// <summary>

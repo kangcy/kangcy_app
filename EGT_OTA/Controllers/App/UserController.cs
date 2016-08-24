@@ -40,6 +40,9 @@ namespace EGT_OTA.Controllers.App
                                ID = l.ID,
                                UserName = l.UserName,
                                Avatar = GetFullUrl(l.Avatar),
+                               Signature = l.Signature,
+                               LoginTimes = l.LoginTimes,
+                               LastLoginDate = l.LastLoginDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")
                            }).ToList();
             var result = new
