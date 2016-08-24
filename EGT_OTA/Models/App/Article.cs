@@ -19,7 +19,7 @@ using System.Linq;
 using System.Web;
 using SubSonic.SqlGeneration.Schema;
 
-namespace EGT_OTA.Models.App
+namespace EGT_OTA.Models
 {
     /// <summary>
     /// 文章
@@ -55,11 +55,6 @@ namespace EGT_OTA.Models.App
         /// 文章类型
         /// </summary>
         public int TypeID { get; set; }
-
-        /// <summary>
-        /// 文章状态
-        /// </summary>
-        public int Status { get; set; }
 
         /// <summary>
         /// 浏览量

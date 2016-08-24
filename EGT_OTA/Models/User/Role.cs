@@ -24,11 +24,6 @@ namespace EGT_OTA.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// 是否启用
-        /// </summary>
-        public int Status { get; set; }
-
-        /// <summary>
         /// 权限
         /// </summary>
         [SubSonicStringLength(1000), SubSonicNullString]

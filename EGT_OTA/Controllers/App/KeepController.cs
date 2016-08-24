@@ -6,7 +6,6 @@ using System.Web.Mvc;
 using CommonTools;
 using EGT_OTA.Helper;
 using EGT_OTA.Models;
-using EGT_OTA.Models.App;
 
 namespace EGT_OTA.Controllers.App
 {

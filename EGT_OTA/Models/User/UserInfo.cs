@@ -10,7 +10,7 @@ namespace EGT_OTA.Models
     /// 用户信息
     /// </summary>
     [Serializable]
-    public class UserInfo
+    public class UserInfo : BaseModel
     {
         /// <summary>
         /// 用户ID
@@ -84,16 +84,6 @@ namespace EGT_OTA.Models
         /// 登陆次数
         /// </summary>
         public int LoginTimes { get; set; }
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        public DateTime CreateDate { get; set; }
-
-        /// <summary>
-        /// 状态
-        /// </summary>
-        public int Status { get; set; }
 
         [SubSonicIgnore]
         public string Power { get; set; }

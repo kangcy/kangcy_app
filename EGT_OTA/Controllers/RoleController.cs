@@ -37,7 +37,6 @@ namespace EGT_OTA.Controllers
                 model = new Role();
                 model.Auth = "0";
             }
-            ViewBag.Used = UsedSelect(false, model.Status);
             if (string.IsNullOrEmpty(model.Auth))
             {
                 model.Auth = string.Empty;

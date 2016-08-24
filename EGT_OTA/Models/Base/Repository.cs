@@ -7,7 +7,6 @@ using SubSonic.Repository;
 using SubSonic.DataProviders;
 using System.Web;
 using EGT_OTA.Models;
-using EGT_OTA.Models.App;
 
 namespace EGT_OTA.Models
 {
@@ -72,6 +71,8 @@ namespace EGT_OTA.Models
             repo.Single<Article>(x => x.ID == 0);//文章
             repo.Single<ArticleType>(x => x.ID == 0);//文章类型
             repo.Single<Comment>(x => x.ID == 0);//评论
+            repo.Single<Music>(x => x.ID == 0);//音乐
+            repo.Single<Video>(x => x.ID == 0);//视频
 
             #endregion
         }

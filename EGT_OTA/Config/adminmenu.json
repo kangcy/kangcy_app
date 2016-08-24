@@ -2,7 +2,7 @@
     {
         "ModuleId": "1",
         "ParentId": "0",
-        "FullName": "系统管理",
+        "FullName": "资源管理",
         "Icon": "fa-user",
         "Location": "",
         "Button": ""
@@ -10,10 +10,18 @@
     {
         "ModuleId": "11",
         "ParentId": "1",
-        "FullName": "产品管理",
+        "FullName": "音乐管理",
         "Icon": "fa-list",
-        "Location": "/Department/Index",
-        "Button": ",刷新,新增,编辑,删除,"
+        "Location": "/Music/Index",
+        "Button": ",刷新,新增,编辑,删除,启用,取消启用,"
+    },
+	{
+        "ModuleId": "12",
+        "ParentId": "1",
+        "FullName": "视频管理",
+        "Icon": "fa-list",
+        "Location": "/Video/Index",
+        "Button": ",刷新,新增,编辑,删除,启用,取消启用,"
     },
     {
         "ModuleId": "2",

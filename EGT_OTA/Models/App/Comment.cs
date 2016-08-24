@@ -19,7 +19,7 @@ using System.Linq;
 using System.Web;
 using SubSonic.SqlGeneration.Schema;
 
-namespace EGT_OTA.Models.App
+namespace EGT_OTA.Models
 {
     /// <summary>
     /// 文章评论

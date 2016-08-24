@@ -9,38 +9,34 @@ using Newtonsoft.Json;
 using CommonTools;
 using EGT_OTA.Helper;
 using System.Web.Security;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace EGT_OTA.Controllers
 {
     /// <summary>
-    /// 用户管理
+    /// 音乐管理
     /// </summary>
-    public class UserController : BaseController
+    public class MusicController : BaseController
     {
         public ActionResult Index()
         {
-            ViewBag.Role = RoleSelect(true, 0);
             return View();
         }
 
         public ActionResult Edit()
         {
             var id = ZNRequest.GetInt("id");
-            UserInfo model = null;
+            Music model = null;
             if (id > 0)
             {
-                model = db.Single<UserInfo>(x => x.ID == id);
+                model = db.Single<Music>(x => x.ID == id);
             }
             if (model == null)
             {
-                model = new UserInfo();
+                model = new Music();
             }
-            else
-            {
-                model.Password = DesEncryptHelper.Decrypt(model.Password);
-            }
-            ViewBag.Role = RoleSelect(false, model.RoleID);
-            ViewBag.Sex = SexSelect(false, model.Sex);
+            ViewBag.Used = UsedSelect(false, model.Status);
             return View(model);
         }
 
@@ -50,43 +46,23 @@ namespace EGT_OTA.Controllers
         public ActionResult List()
         {
             var pager = new Pager();
-            var RealName = ZNRequest.GetString("RealName");
-            var UserName = ZNRequest.GetString("UserName");
-            var RoleID = ZNRequest.GetInt("RoleID");
-
-            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<UserInfo>();
-            if (RoleID > 0)
+            string Name = ZNRequest.GetString("Name");
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Music>();
+            if (!string.IsNullOrWhiteSpace(Name))
             {
-                query = query.And("RoleID").IsEqualTo(RoleID);
+                query = query.And("Name").Like("%" + Name + "%");
             }
-            if (!string.IsNullOrWhiteSpace(RealName))
-            {
-                query = query.And("RealName").Like("%" + RealName + "%");
-            }
-            if (!string.IsNullOrWhiteSpace(UserName))
-            {
-                query = query.And("UserName").Like("%" + UserName + "%");
-            }
-            var role = db.All<Role>().ToList();
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
-            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<UserInfo>();
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Music>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               UserName = l.UserName,
-                               RealName = l.RealName,
-                               Sex = EnumBase.GetDescription(typeof(Enum_Sex), l.Sex),
-                               RoleID = role.Exists(x => x.ID == l.RoleID) ? role.FirstOrDefault(x => x.ID == l.RoleID).Name : "未知",
-                               Weixin = l.Weixin,
-                               Email = l.Email,
-                               QQ = l.QQ,
-                               Age = l.Age,
+                               Name = l.Name,
+                               FileUrl = l.FileUrl,
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
-                               LastLoginDate = l.LastLoginDate.ToString("yyyy-MM-dd hh:mm:ss"),
-                               LoginTimes = l.LoginTimes,
-                               Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
+                               Status = l.Status
                            }).ToList();
             var result = new
             {
@@ -106,47 +82,49 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             int id = ZNRequest.GetInt("ID");
-            if ((id == 0 && !CurrentUser.HasPower("21-2")) || (id > 0 && !CurrentUser.HasPower("21-3")))
+            if ((id == 0 && !CurrentUser.HasPower("22-2")) || (id > 0 && !CurrentUser.HasPower("22-3")))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
-            var UserName = ZNRequest.GetString("UserName");
-            if (db.Exists<UserInfo>(x => x.UserName == UserName && x.ID != id))
+            var Name = ZNRequest.GetString("Name");
+            if (db.Exists<Music>(x => x.Name == Name))
             {
-                return Json(new { result = "该用户名已被注册" }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = "该名称已被注册" }, JsonRequestBehavior.AllowGet);
             }
-            UserInfo model = null;
+            var FileUrl = ZNRequest.GetString("FileUrl");
+            if (string.IsNullOrWhiteSpace(FileUrl))
+            {
+                return Json(new { result = "请上传音乐文件" }, JsonRequestBehavior.AllowGet);
+            }
+            UserInfo user = CurrentUser.User;
+            Music model = null;
+
             if (id > 0)
             {
-                model = db.Single<UserInfo>(x => x.ID == id);
+                model = db.Single<Music>(x => x.ID == id);
             }
             if (model == null)
             {
-                model = new UserInfo();
+                model = new Music();
             }
-            model.Password = DesEncryptHelper.Encrypt(ZNRequest.GetString("Password")); ;
-            model.UserName = UserName;
-            model.Sex = ZNRequest.GetInt("Sex");
-            model.Age = ZNRequest.GetInt("Age");
-            model.Weixin = ZNRequest.GetString("Weixin");
-            model.QQ = ZNRequest.GetString("QQ");
-            model.Email = ZNRequest.GetString("Email");
-            model.RealName = ZNRequest.GetString("RealName");
-            model.RoleID = ZNRequest.GetInt("RoleID");
+            model.Name = Name;
+            model.FileUrl = FileUrl;
             model.Status = Enum_Status.Audit;
+            model.UpdateDate = DateTime.Now;
+            model.UpdateUserID = user.ID;
+            model.UpdateIP = Tools.GetClientIP;
             try
             {
                 if (model.ID == 0)
                 {
                     model.CreateDate = DateTime.Now;
-                    model.LastLoginDate = DateTime.Now;
-                    model.LastLoginIP = Tools.GetClientIP;
-                    model.LoginTimes = 0;
-                    result = Tools.SafeInt(db.Add<UserInfo>(model)) > 0;
+                    model.CreateUserID = user.ID;
+                    model.CreateIP = Tools.GetClientIP;
+                    result = Tools.SafeInt(db.Add<Music>(model)) > 0;
                 }
                 else
                 {
-                    result = db.Update<UserInfo>(model) > 0;
+                    result = db.Update<Music>(model) > 0;
                 }
             }
             catch (Exception ex)
@@ -164,26 +142,18 @@ namespace EGT_OTA.Controllers
         {
             var result = false;
             var message = string.Empty;
-            if (!CurrentUser.HasPower("21-4"))
+            if (!CurrentUser.HasPower("22-4"))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
-            var ids = ZNRequest.GetString("ids");
-            List<UserInfo> list = new List<UserInfo>();
+            var id = ZNRequest.GetInt("ids");
+            var model = db.Single<Music>(x => x.ID == id);
             try
             {
-                List<UserInfo> all = db.All<UserInfo>().ToList();
-                var id = ids.Split(',');
-                for (var i = 0; i < id.Length; i++)
+                if (model != null)
                 {
-                    var index = Tools.SafeInt(id[i]);
-                    var model = all.Single<UserInfo>(x => x.ID == index);
-                    if (model != null)
-                    {
-                        list.Add(model);
-                    }
+                    result = db.Delete<Music>(id) > 0;
                 }
-                result = db.DeleteMany<UserInfo>(list) > 0;
             }
             catch (Exception ex)
             {
@@ -201,10 +171,11 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             int status = ZNRequest.GetInt("status");
-            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("21-7")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("21-8")))
+            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("22-7")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("22-8")))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
+
             var ids = ZNRequest.GetString("ids");
             try
             {
@@ -215,12 +186,12 @@ namespace EGT_OTA.Controllers
                 else
                 {
                     var array = ids.Split(',').ToArray();
-                    var list = new SubSonic.Query.Select(Repository.GetProvider()).From<UserInfo>().And("ID").In(array).ExecuteTypedList<UserInfo>();
+                    var list = new SubSonic.Query.Select(Repository.GetProvider()).From<Music>().And("ID").In(array).ExecuteTypedList<Music>();
                     list.ForEach(x =>
                     {
                         x.Status = status;
                     });
-                    result = db.UpdateMany<UserInfo>(list) > 0;
+                    result = db.UpdateMany<Music>(list) > 0;
                 }
             }
             catch (Exception ex)

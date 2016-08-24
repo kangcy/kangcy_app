@@ -14,6 +14,11 @@ namespace EGT_OTA.Models
     public class BaseModel
     {
         /// <summary>
+        /// 状态
+        /// </summary>
+        public int Status { get; set; }
+
+        /// <summary>
         /// 创建人ID
         /// </summary>
         [SubSonicNullString]

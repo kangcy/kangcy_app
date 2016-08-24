@@ -135,10 +135,12 @@
   <ItemGroup>
     <Compile Include="ConstKeys\ConstKeys.cs" />
     <Compile Include="Controllers\App\ArticleController.cs" />
+    <Compile Include="Controllers\App\MusicController.cs" />
     <Compile Include="Controllers\App\UserController.cs" />
     <Compile Include="Controllers\App\CommentController.cs" />
     <Compile Include="Controllers\App\ArticleTypeController.cs" />
     <Compile Include="Controllers\App\KeepController.cs" />
+    <Compile Include="Controllers\App\VideoController.cs" />
     <Compile Include="Controllers\AuthorizationAttribute.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -190,6 +192,8 @@
     <Compile Include="Models\App\Comment.cs" />
     <Compile Include="Models\App\Keep.cs" />
     <Compile Include="Models\App\Follow.cs" />
+    <Compile Include="Models\App\Music.cs" />
+    <Compile Include="Models\App\Video.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\CurrentUser.cs" />
     <Compile Include="Models\Base\Repository.cs" />
@@ -1176,6 +1180,10 @@
     <Content Include="Views\City\Index.cshtml" />
     <Content Include="Views\Province\Edit.cshtml" />
     <Content Include="Views\Province\Index.cshtml" />
+    <Content Include="Views\Music\Index.cshtml" />
+    <Content Include="Views\Music\Edit.cshtml" />
+    <Content Include="Views\Video\Edit.cshtml" />
+    <Content Include="Views\Video\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

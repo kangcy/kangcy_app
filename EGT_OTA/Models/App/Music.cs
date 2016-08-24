@@ -22,10 +22,10 @@ using SubSonic.SqlGeneration.Schema;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 收藏
+    /// 音乐
     /// </summary>
     [Serializable]
-    public class Keep : BaseModel
+    public class Music : BaseModel
     {
         /// <summary>
         /// ID
@@ -34,8 +34,13 @@ namespace EGT_OTA.Models
         public int ID { get; set; }
 
         /// <summary>
-        /// 文章ID
+        /// 名称
         /// </summary>
-        public int ArticleID { get; set; }
+        public string Name { get; set; }
+
+        /// <summary>
+        /// 文件地址
+        /// </summary>
+        public string FileUrl { get; set; }
     }
 }
