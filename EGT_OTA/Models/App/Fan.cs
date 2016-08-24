@@ -25,7 +25,7 @@ namespace EGT_OTA.Models
     /// 关注、粉丝
     /// </summary>
     [Serializable]
-    public class Follow : BaseModel
+    public class Fan : BaseModel
     {
         /// <summary>
         /// ID

@@ -153,7 +153,8 @@ namespace EGT_OTA.Controllers
                 {
                     if (!db.Exists<UserInfo>(x => x.RoleID == id))
                     {
-                        result = db.Delete<Role>(id) > 0;
+                        model.Status = Enum_Status.DELETE;
+                        result = db.Update<Role>(model) > 0;
                     }
                     else
                     {

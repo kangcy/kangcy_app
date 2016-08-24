@@ -73,6 +73,7 @@ namespace EGT_OTA.Models
             repo.Single<Comment>(x => x.ID == 0);//评论
             repo.Single<Music>(x => x.ID == 0);//音乐
             repo.Single<Video>(x => x.ID == 0);//视频
+            repo.Single<Fan>(x => x.ID == 0);//视频
 
             #endregion
         }

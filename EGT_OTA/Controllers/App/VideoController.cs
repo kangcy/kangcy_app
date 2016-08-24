@@ -145,13 +145,23 @@ namespace EGT_OTA.Controllers
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
-            var id = ZNRequest.GetInt("ids");
-            var model = db.Single<Video>(x => x.ID == id);
+            var ids = ZNRequest.GetString("ids");
             try
             {
-                if (model != null)
+                if (string.IsNullOrWhiteSpace(ids))
                 {
-                    result = db.Delete<Video>(id) > 0;
+                    message = "未选择任意项";
+                }
+                else
+                {
+                    var status = Enum_Status.DELETE;
+                    var array = ids.Split(',').ToArray();
+                    var list = new SubSonic.Query.Select(Repository.GetProvider()).From<Video>().And("ID").In(array).ExecuteTypedList<Video>();
+                    list.ForEach(x =>
+                    {
+                        x.Status = status;
+                    });
+                    result = db.UpdateMany<Video>(list) > 0;
                 }
             }
             catch (Exception ex)

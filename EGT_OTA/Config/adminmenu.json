@@ -47,6 +47,14 @@
         "Location": "/Article/Index",
         "Button": ",刷新,新增,编辑,删除,审核,取消审核,"
     },
+	{
+        "ModuleId": "33",
+        "ParentId": "3",
+        "FullName": "关注管理",
+        "Icon": "fa-list",
+        "Location": "/Fan/Index",
+        "Button": ",刷新,删除,"
+    },
     {
         "ModuleId": "2",
         "ParentId": "0",

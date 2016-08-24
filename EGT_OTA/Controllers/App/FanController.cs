@@ -15,9 +15,9 @@ using System.Text;
 namespace EGT_OTA.Controllers
 {
     /// <summary>
-    /// 文章类型管理
+    /// 关注、粉丝管理
     /// </summary>
-    public class ArticleTypeController : BaseController
+    public class FanController : BaseController
     {
         public ActionResult Index()
         {
@@ -27,16 +27,15 @@ namespace EGT_OTA.Controllers
         public ActionResult Edit()
         {
             var id = ZNRequest.GetInt("id");
-            ArticleType model = null;
+            Fan model = null;
             if (id > 0)
             {
-                model = db.Single<ArticleType>(x => x.ID == id);
+                model = db.Single<Fan>(x => x.ID == id);
             }
             if (model == null)
             {
-                model = new ArticleType();
+                model = new Fan();
             }
-            ViewBag.Parent = ArticleTypeSelect(true, model.ID);
             return View(model);
         }
 
@@ -46,21 +45,37 @@ namespace EGT_OTA.Controllers
         public ActionResult List()
         {
             var pager = new Pager();
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Fan>();
             string Name = ZNRequest.GetString("Name");
-            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticleType>();
             if (!string.IsNullOrWhiteSpace(Name))
             {
-                query = query.And("Name").Like("%" + Name + "%");
+                User user = db.Single<User>(x => x.UserName == Name);
+                if (user != null)
+                {
+                    query = query.And("CreateUserID").IsEqualTo(user.ID);
+                }
+            }
+            string FanName = ZNRequest.GetString("FanName");
+            if (!string.IsNullOrWhiteSpace(FanName))
+            {
+                User user = db.Single<User>(x => x.UserName == FanName);
+                if (user != null)
+                {
+                    query = query.And("UserID").IsEqualTo(user.ID);
+                }
             }
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
-            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<ArticleType>();
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
+            var array = list.Select(x => x.CreateUserID).ToList();
+            array.AddRange(list.Select(x => x.UserID).ToList());
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<User>().And("ID").In(array.ToArray()).ExecuteTypedList<User>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               Cover = GetFullUrl(l.Cover),
-                               Name = l.Name,
+                               Name = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).UserName : "未知",
+                               FanName = users.Exists(x => x.ID == l.UserID) ? users.FirstOrDefault(x => x.ID == l.UserID).UserName : "未知",
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
                            }).ToList();
@@ -77,40 +92,31 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 编辑
         /// </summary>
+        [AllowAnyone]
         public ActionResult Manage()
         {
+            var username = ZNRequest.GetString("Name");
+            var password = DesEncryptHelper.Encrypt(ZNRequest.GetString("Password"));
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+            }
+            var user = db.Single<User>(x => x.UserName == username && x.Password == password);
+            if (user == null)
+            {
+                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+            }
+
             var result = false;
             var message = string.Empty;
-            int id = ZNRequest.GetInt("ID");
-            if ((id == 0 && !CurrentUser.HasPower("31-2")) || (id > 0 && !CurrentUser.HasPower("31-3")))
-            {
-                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
-            }
-            var Name = ZNRequest.GetString("Name");
-            if (db.Exists<ArticleType>(x => x.Name == Name))
-            {
-                return Json(new { result = "该名称已被注册" }, JsonRequestBehavior.AllowGet);
-            }
-            UserInfo user = CurrentUser.User;
-            ArticleType model = null;
-
-            if (id > 0)
-            {
-                model = db.Single<ArticleType>(x => x.ID == id);
-            }
+            var userID = ZNRequest.GetInt("UserID");
+            Fan model = db.Single<Fan>(x => x.CreateUserID == user.ID && x.UserID == userID);
             if (model == null)
             {
-                model = new ArticleType();
+                model = new Fan();
             }
-            model.Name = Name;
-            model.Cover = ZNRequest.GetString("Cover");
-            model.ParentID = ZNRequest.GetInt("ParentID", 0);
-            model.ParentIDList = ZNRequest.GetString("ParentIDList");
-            if (string.IsNullOrWhiteSpace(model.ParentIDList))
-            {
-                model.ParentIDList = "-0-";
-            }
-            model.Status = Enum_Status.Audit;
+            model.UserID = userID;
+            model.Status = Enum_Status.Approved;
             model.UpdateDate = DateTime.Now;
             model.UpdateUserID = user.ID;
             model.UpdateIP = Tools.GetClientIP;
@@ -121,11 +127,11 @@ namespace EGT_OTA.Controllers
                     model.CreateDate = DateTime.Now;
                     model.CreateUserID = user.ID;
                     model.CreateIP = Tools.GetClientIP;
-                    result = Tools.SafeInt(db.Add<ArticleType>(model)) > 0;
+                    result = Tools.SafeInt(db.Add<Fan>(model)) > 0;
                 }
                 else
                 {
-                    result = db.Update<ArticleType>(model) > 0;
+                    result = db.Update<Fan>(model) > 0;
                 }
             }
             catch (Exception ex)
@@ -143,24 +149,18 @@ namespace EGT_OTA.Controllers
         {
             var result = false;
             var message = string.Empty;
-            if (!CurrentUser.HasPower("31-4"))
+            if (!CurrentUser.HasPower("33-4"))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
             var id = ZNRequest.GetInt("ids");
-            var model = db.Single<ArticleType>(x => x.ID == id);
+            var model = db.Single<Fan>(x => x.ID == id);
             try
             {
                 if (model != null)
                 {
-                    if (!db.Exists<Article>(x => x.TypeID == id))
-                    {
-                        result = db.Delete<ArticleType>(id) > 0;
-                    }
-                    else
-                    {
-                        message = "存在关联文章";
-                    }
+                    model.Status = Enum_Status.DELETE;
+                    result = db.Update<Fan>(model) > 0;
                 }
             }
             catch (Exception ex)
@@ -179,7 +179,7 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             int status = ZNRequest.GetInt("status");
-            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("31-5")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("31-6")))
+            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("11-5")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("11-6")))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
@@ -194,12 +194,12 @@ namespace EGT_OTA.Controllers
                 else
                 {
                     var array = ids.Split(',').ToArray();
-                    var list = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticleType>().And("ID").In(array).ExecuteTypedList<ArticleType>();
+                    var list = new SubSonic.Query.Select(Repository.GetProvider()).From<Fan>().And("ID").In(array).ExecuteTypedList<Fan>();
                     list.ForEach(x =>
                     {
                         x.Status = status;
                     });
-                    result = db.UpdateMany<ArticleType>(list) > 0;
+                    result = db.UpdateMany<Fan>(list) > 0;
                 }
             }
             catch (Exception ex)

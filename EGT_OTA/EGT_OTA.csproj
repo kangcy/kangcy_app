@@ -141,6 +141,7 @@
     <Compile Include="Controllers\App\CommentController.cs" />
     <Compile Include="Controllers\App\KeepController.cs" />
     <Compile Include="Controllers\App\VideoController.cs" />
+    <Compile Include="Controllers\App\FanController.cs" />
     <Compile Include="Controllers\AuthorizationAttribute.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -191,7 +192,7 @@
     <Compile Include="Models\App\ArticleType.cs" />
     <Compile Include="Models\App\Comment.cs" />
     <Compile Include="Models\App\Keep.cs" />
-    <Compile Include="Models\App\Follow.cs" />
+    <Compile Include="Models\App\Fan.cs" />
     <Compile Include="Models\App\Music.cs" />
     <Compile Include="Models\App\Video.cs" />
     <Compile Include="Models\BaseModel.cs" />
@@ -1187,6 +1188,7 @@
     <Content Include="Views\Video\Index.cshtml" />
     <Content Include="Views\ArticleType\Edit.cshtml" />
     <Content Include="Views\ArticleType\Index.cshtml" />
+    <Content Include="Views\Fan\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
