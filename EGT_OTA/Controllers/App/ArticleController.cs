@@ -68,37 +68,76 @@ namespace EGT_OTA.Controllers.App
             return Json(new { status = status, result = result }, JsonRequestBehavior.AllowGet);
         }
 
+        #region  APP请求
+
         /// <summary>
-        /// 文章点赞
+        /// 文章详情
         /// </summary>
-        public ActionResult ArticleLike()
+        [AllowAnyone]
+        public ActionResult View()
         {
-            var status = false;
-            var result = string.Empty;
+            var result = false;
+            var message = string.Empty;
             try
             {
                 var id = ZNRequest.GetInt("id");
                 if (id == 0)
                 {
-                    return Json(new { state = status, result = "参数异常" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = result, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
                 Article model = db.Single<Article>(x => x.ID == id);
                 if (model == null)
                 {
-                    return Json(new { state = status, result = "数据异常" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = result, message = "数据异常" }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    model.Views = model.Views + 1;
-                    status = db.Update<Article>(model) > 0;
+                    model.Views += 1;
+                    result = db.Update<Article>(model) > 0;
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
-                result = ex.Message;
+                message = ex.Message;
             }
-            return Json(new { status = status, result = result }, JsonRequestBehavior.AllowGet);
+            return Json(new { status = result, message = message }, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 文章点赞
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult Good()
+        {
+            var result = false;
+            var message = string.Empty;
+            try
+            {
+                var id = ZNRequest.GetInt("id");
+                if (id == 0)
+                {
+                    return Json(new { result = result, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+                }
+                Article model = db.Single<Article>(x => x.ID == id);
+                if (model == null)
+                {
+                    return Json(new { result = result, message = "数据异常" }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    model.Goods = model.Goods + 1;
+                    result = db.Update<Article>(model) > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                message = ex.Message;
+            }
+            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
     }
 }
