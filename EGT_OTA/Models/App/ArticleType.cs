@@ -44,5 +44,16 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(255), SubSonicNullString]
         public string Cover { get; set; }
+
+        /// <summary>
+        /// 父节点
+        /// </summary>
+        public int ParentID { get; set; }
+
+        /// <summary>
+        /// 父节点ID集合
+        /// </summary>
+        [SubSonicStringLength(50), SubSonicNullString]
+        public string ParentIDList { get; set; }
     }
 }

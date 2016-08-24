@@ -23,6 +23,30 @@
         "Location": "/Video/Index",
         "Button": ",刷新,新增,编辑,删除,审核,取消审核,"
     },
+	{
+        "ModuleId": "3",
+        "ParentId": "0",
+        "FullName": "文章管理",
+        "Icon": "fa-user",
+        "Location": "",
+        "Button": ""
+    },
+    {
+        "ModuleId": "31",
+        "ParentId": "3",
+        "FullName": "类型管理",
+        "Icon": "fa-list",
+        "Location": "/ArticleType/Index",
+        "Button": ",刷新,新增,编辑,删除,审核,取消审核,"
+    },
+	{
+        "ModuleId": "32",
+        "ParentId": "3",
+        "FullName": "文章管理",
+        "Icon": "fa-list",
+        "Location": "/Article/Index",
+        "Button": ",刷新,新增,编辑,删除,审核,取消审核,"
+    },
     {
         "ModuleId": "2",
         "ParentId": "0",

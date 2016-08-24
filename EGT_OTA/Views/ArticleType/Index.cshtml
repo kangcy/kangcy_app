@@ -14,7 +14,7 @@
         <div class="layoutPanel layout-center">
             <div class="btnbartitle">
                 <div>
-                    音乐列表<span id="CenterTitle"></span>
+                    文章类型列表<span id="CenterTitle"></span>
                 </div>
             </div>
             <div class="tools_bar" style="border-top: none; margin-bottom: 0px;">
@@ -48,7 +48,7 @@
         //重置
         $("#btnReset").click(function () {
             $("#txtName").val("");
-            var url = "/Music/List";
+            var url = "/ArticleType/List";
             $("#gridTable").jqGrid('setGridParam', { url: url }).trigger('reloadGrid');
         });
 
@@ -57,7 +57,7 @@
             var Name = $.trim($("#txtName").val());
 
             var url = new StringBuilder();
-            url.append("/Music/List?1=1");
+            url.append("/ArticleType/List?1=1");
             if (Name != "") {
                 url.append("&Name=" + escape(Name));
             }
@@ -67,14 +67,13 @@
     //加载表格
     function GetGrid() {
         $("#gridTable").jqGrid({
-            url: "/Music/List",
+            url: "/ArticleType/List",
             datatype: "json",
             height: $(window).height() - 133,
             autowidth: true,
             colModel: [
                 { label: '主键', name: 'ID', index: "ID", hidden: true },
                 { label: '名称', name: 'Name', index: "Name", width: 200 },
-                { label: '链接', name: 'FileUrl', index: "FileUrl", width: 400 },
                 { label: '状态', name: 'Status', index: 'Status', width: 45, align: 'center' },
                 { label: '创建时间', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" }
             ],
@@ -92,7 +91,7 @@
     }
     //新增
     function btn_add() {
-        var url = "/Music/Edit";
+        var url = "/ArticleType/Edit";
         openDialog(url, "Form", "新增", 800, 600, function (iframe) {
             top.frames[iframe].AcceptClick()
         });
@@ -101,7 +100,7 @@
     function btn_edit() {
         var KeyValue = GetJqGridRowValue("#gridTable", "ID");
         if (IsChecked(KeyValue)) {
-            var url = "/Music/Edit?id=" + KeyValue;
+            var url = "/ArticleType/Edit?id=" + KeyValue;
             openDialog(url, "Form", "编辑", 800, 600, function (iframe) {
                 top.frames[iframe].AcceptClick();
             });
@@ -112,7 +111,7 @@
         var KeyValue = GetJqGridRowValue("#gridTable", "ID");
         if (IsDelData(KeyValue)) {
             var delparm = 'ids=' + KeyValue;
-            delConfig('/Music/Delete', delparm, KeyValue.split(",").length);
+            delConfig('/ArticleType/Delete', delparm, KeyValue.split(",").length);
         }
     }
     //审核
@@ -120,7 +119,7 @@
         var KeyValue = GetJqGridRowValue("#gridTable", "ID");
         if (IsDelData(KeyValue)) {
             var delparm = 'status=1&ids=' + KeyValue;
-            doConfig('审核', '/Music/Audit', delparm, KeyValue.split(",").length);
+            doConfig('审核', '/ArticleType/Audit', delparm, KeyValue.split(",").length);
         }
     }
     //取消审核
@@ -128,7 +127,7 @@
         var KeyValue = GetJqGridRowValue("#gridTable", "ID");
         if (IsDelData(KeyValue)) {
             var delparm = 'status=0&ids=' + KeyValue;
-            doConfig('取消审核', '/Music/Audit', delparm, KeyValue.split(",").length);
+            doConfig('取消审核', '/ArticleType/Audit', delparm, KeyValue.split(",").length);
         }
     }
     //刷新

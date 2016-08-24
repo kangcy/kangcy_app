@@ -36,7 +36,6 @@ namespace EGT_OTA.Controllers
             {
                 model = new Music();
             }
-            ViewBag.Used = UsedSelect(false, model.Status);
             return View(model);
         }
 

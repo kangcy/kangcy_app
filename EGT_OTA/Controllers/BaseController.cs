@@ -289,5 +289,36 @@ namespace EGT_OTA.Controllers
             var provinceId = ZNRequest.GetInt("provinceId", 0);
             return Content(CitySelect(true, 0, countryId, provinceId));
         }
+
+        /// <summary>
+        /// 文章类型下拉
+        /// </summary>
+        /// <param name="head">是否添加默认项</param>
+        /// <param name="index">当前选中项</param>
+        protected string ArticleTypeSelect(bool head, int index)
+        {
+            StringBuilder sbr = new StringBuilder();
+            var list = db.Find<ArticleType>(x => x.Status == Enum_Status.Approved).ToList();
+            if (head)
+            {
+                sbr.Append("<option value='0'>请选择文章类型</option>");
+            }
+            list.FindAll(x => x.ParentID == 0).ForEach(x =>
+            {
+                sbr.AppendFormat("<option value='" + x.ID + "' pid='0' {0}>" + x.Name + "</option>", x.ID == index ? "selected=\"selected\"" : "");
+                BuildChildArticleType(index, x, x.Name, list, sbr);
+            });
+            return sbr.ToString();
+        }
+
+        public void BuildChildArticleType(int index, ArticleType type, string parentName, List<ArticleType> list, StringBuilder sbr)
+        {
+            List<ArticleType> l = list.FindAll(x => x.ParentID == type.ID);
+            foreach (ArticleType x in l)
+            {
+                sbr.AppendFormat("<option value='" + x.ID + "' pid='" + x.ParentIDList + x.ID + "-" + "' {0}>" + parentName + " - " + x.Name + "</option>", x.ID == index ? "selected=\"selected\"" : "");
+                BuildChildArticleType(index, x, parentName + " - " + x.Name, list, sbr);
+            }
+        }
     }
 }

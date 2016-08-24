@@ -1,0 +1,125 @@
+﻿@model EGT_OTA.Models.ArticleType
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>编辑</title>
+    <link href="@Url.Content("~/Scripts/Bootstrap/css/bootstrap.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Template/Styles/tip.css")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Scripts/ztree/zTreeStyle/zTreeStyle.css")" type="text/css">
+    <link href="@Url.Content("~/Scripts/upload/uploadify/uploadify.css")" rel="stylesheet" />
+</head>
+<body>
+    <form id="form1">
+        <div id="message" style="display: none">
+        </div>
+        <div class="main" style="width: 98%; margin: 15px auto">
+            <table id="tbl" class="table table-hover table-bordered">
+                <tr class="tdbg" align="center">
+                    <td class="head">
+                        <strong>名称：</strong>
+                    </td>
+                    <td>
+                        <input type="text" id="Name" class="form-control" maxlength="50"  placeholder="请填写名称"
+                        value="@Model.Name" datacol="yes" err="名称" checkexpession="NotNull" />
+                    </td>
+                </tr>
+                <tr class="tdbg" align="center">
+                    <td class="head" style="vertical-align: top;">
+                        <strong>父类型：</strong>
+                    </td>
+                    <td>
+                        <select id="selParent" class="form-control">
+                            @Html.Raw(ViewBag.Parent)
+                        </select>
+                    </td>
+                </tr>
+                <tr class="tdbg" align="center">
+                    <td class="head" style="vertical-align: top;">
+                        <strong>链接：</strong>
+                    </td>
+                    <td>
+                        <input type="file" id="music" name="upload" class="fl" />
+                        <input id="Cover" type="text" class="form-control" maxlength="100" datacol="yes" err="链接" checkexpession="NotNull" value="@Model.Cover" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</body>
+<script type="text/javascript" src="@Url.Content("~/Admin/js/jquery.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Admin/js/common.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/learunui-framework.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/validator/learunui-validator.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/ztree/jquery.ztree.core.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/ztree/jquery.ztree.excheck.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/upload/uploadify/jquery.uploadify.min.js")"></script>
+<script type="text/javascript">
+    var parentId = 0, parentIds = "-0-";
+    $(function () {
+        $("#pic").uploadify({
+            swf: "/Scripts/upload/uploadify/uploadify.swf?var=" + Math.random() * 1000,
+            uploader: "/Upload/UploadFile?folder=Pic",
+            auto: true,
+            multi: false,
+            removeTimeout: 1,
+            buttonText: "请上传图片",
+            fileSizeLimit: "2MB", //大小限制,如果为整数型则表示以KB为单位的大小,如果是字符串,则可以使用(B, KB, MB, or GB)为单位，比如’2MB’,如果设置为0则表示无限制
+            fileTypeDesc: "选择图片文件", //选择文件对话框底部文件类型显示的文字
+            fileTypeExts: "*.jpg;*.jpeg;*.png;*.gif;*.bmp;", //筛选可选择的文件类型
+            onUploadSuccess: function (file, data, response) {
+                data = JSON.parse(data);
+                if (data.result) {
+                    $("#Cover").val(data.message);
+                } else {
+                    warning(data.message);
+                }
+            },
+            onQueueComplete: function () {
+                $("#pic").uploadify("cancel", "*");
+            }
+        });
+    });
+
+    //保存事件
+    function AcceptClick() {
+        if (!CheckDataValid('#form1')) {
+            return false;
+        }
+        Loading(true, "正在提交数据...");
+        window.setTimeout(function () {
+            var oData = {};
+            oData["ID"] = "@Model.ID";
+            oData["Name"] = $.trim($("#Name").val());
+            oData["Cover"] = $.trim($("#Cover").val());
+            oData["ParentID"] = parentId;
+            oData["ParentIDList"] = parentIds;
+            $.ajax({
+                type: "POST",
+                url: "/ArticleType/Manage",
+                cache: false,
+                dataType: "json",
+                data: $.param(oData),
+                success: function (data) {
+                    var message = "";
+                    var result = 0;
+                    if (data.result) {
+                        message = "成功";
+                        result = 1;
+                    }
+                    else {
+                        message = data.message;
+                    }
+                    tipDialog(message, 3, result);
+                    if (data.result) {
+                        top.frames[tabiframeId()].windowload();
+                        closeDialog();
+                    }
+                }
+            });
+        }, 200);
+    }
+</script>
+</html>

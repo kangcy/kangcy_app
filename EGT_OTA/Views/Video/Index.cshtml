@@ -47,8 +47,7 @@
 
         //重置
         $("#btnReset").click(function () {
-            $("#txtRealName").val("");
-            $("#selRole").val(0);
+            $("#txtName").val("");
             var url = "/Video/List";
             $("#gridTable").jqGrid('setGridParam', { url: url }).trigger('reloadGrid');
         });
@@ -56,7 +55,6 @@
         //筛选
         $("#btnSearch").click(function () {
             var Name = $.trim($("#txtName").val());
-
             var url = new StringBuilder();
             url.append("/Video/List?1=1");
             if (Name != "") {

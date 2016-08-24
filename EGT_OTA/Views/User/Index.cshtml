@@ -52,7 +52,6 @@
         //重置
         $("#btnReset").click(function () {
             $("#txtRealName,#txtUserName").val("");
-            $("#selRole").val(0);
             var url = "/User/List";
             $("#gridTable").jqGrid('setGridParam', { url: url }).trigger('reloadGrid');
         });

@@ -117,7 +117,6 @@
             oData["Email"] = $.trim($("#txtEmail").val());
             oData["RoleID"] = $("#selRole").val();
             oData["Sex"] = $("#selSex").val();
-            oData["Status"] = $("#selStatus").val();
             $.ajax({
                 type: "POST",
                 url: "/User/Manage",
