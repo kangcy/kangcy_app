@@ -55,6 +55,14 @@
         "Location": "/Fan/Index",
         "Button": ",刷新,删除,"
     },
+	{
+        "ModuleId": "34",
+        "ParentId": "3",
+        "FullName": "收藏管理",
+        "Icon": "fa-list",
+        "Location": "/Keep/Index",
+        "Button": ",刷新,删除,"
+    },
     {
         "ModuleId": "2",
         "ParentId": "0",

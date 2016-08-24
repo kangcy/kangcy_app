@@ -49,27 +49,27 @@ namespace EGT_OTA.Controllers
             string Name = ZNRequest.GetString("Name");
             if (!string.IsNullOrWhiteSpace(Name))
             {
-                User user = db.Single<User>(x => x.UserName == Name);
-                if (user != null)
+                var array = db.Find<User>(x => x.UserName == Name).Select(x => x.ID).ToArray();
+                if (array.Length > 0)
                 {
-                    query = query.And("CreateUserID").IsEqualTo(user.ID);
+                    query = query.And("CreateUserID").In(array);
                 }
             }
             string FanName = ZNRequest.GetString("FanName");
             if (!string.IsNullOrWhiteSpace(FanName))
             {
-                User user = db.Single<User>(x => x.UserName == FanName);
-                if (user != null)
+                var array = db.Find<User>(x => x.UserName == FanName).Select(x => x.ID).ToArray();
+                if (array.Length > 0)
                 {
-                    query = query.And("UserID").IsEqualTo(user.ID);
+                    query = query.And("UserID").In(array);
                 }
             }
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
-            var array = list.Select(x => x.CreateUserID).ToList();
-            array.AddRange(list.Select(x => x.UserID).ToList());
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<User>().And("ID").In(array.ToArray()).ExecuteTypedList<User>();
+            var userArray = list.Select(x => x.CreateUserID).ToList();
+            userArray.AddRange(list.Select(x => x.UserID).ToList());
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "UserName").From<User>().And("ID").In(userArray.ToArray()).ExecuteTypedList<User>();
             var newlist = (from l in list
                            select new
                            {
