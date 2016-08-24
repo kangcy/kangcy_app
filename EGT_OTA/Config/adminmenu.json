@@ -63,6 +63,14 @@
         "Location": "/Keep/Index",
         "Button": ",刷新,"
     },
+	{
+        "ModuleId": "35",
+        "ParentId": "3",
+        "FullName": "评论管理",
+        "Icon": "fa-list",
+        "Location": "/Comment/Index",
+        "Button": ",刷新,"
+    },
     {
         "ModuleId": "2",
         "ParentId": "0",

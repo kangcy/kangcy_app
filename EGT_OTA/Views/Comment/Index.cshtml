@@ -14,18 +14,11 @@
         <div class="layoutPanel layout-center">
             <div class="btnbartitle">
                 <div>
-                    文章列表<span id="CenterTitle"></span>
+                    评论列表<span id="CenterTitle"></span>
                 </div>
             </div>
             <div class="tools_bar" style="border-top: none; margin-bottom: 0px;">
                 <div class="PartialButton">
-                    <div class="divSearch">
-                        <button class="btn btn-default fr" id="btnReset">
-                            重置</button>
-                        <button class="btn btn-primary fr" id="btnSearch">
-                            查询</button>
-                        <input type="text" id="txtName" class="text form-control fr" placeholder="请填写文章标题" />
-                    </div>
                 </div>
             </div>
             <table id="gridTable">
@@ -42,13 +35,13 @@
 <script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/jqgrid/jqGrid.js")"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        PartialButton("32");
+        PartialButton("35");
         GetGrid();
 
         //重置
         $("#btnReset").click(function () {
             $("#txtName").val("");
-            var url = "/Article/List";
+            var url = "/Comment/List";
             $("#gridTable").jqGrid('setGridParam', { url: url }).trigger('reloadGrid');
         });
 
@@ -56,7 +49,7 @@
         $("#btnSearch").click(function () {
             var Name = $.trim($("#txtName").val());
             var url = new StringBuilder();
-            url.append("/Article/List?1=1");
+            url.append("/Comment/List?1=1");
             if (Name != "") {
                 url.append("&Name=" + escape(Name));
             }
@@ -66,7 +59,7 @@
     //加载表格
     function GetGrid() {
         $("#gridTable").jqGrid({
-            url: "/Article/List",
+            url: "/Comment/List",
             datatype: "json",
             height: $(window).height() - 133,
             autowidth: true,
@@ -102,7 +95,7 @@
         var KeyValue = GetJqGridRowValue("#gridTable", "ID");
         if (IsDelData(KeyValue)) {
             var delparm = 'ids=' + KeyValue;
-            delConfig('/Article/Delete', delparm, KeyValue.split(",").length);
+            delConfig('/Comment/Delete', delparm, KeyValue.split(",").length);
         }
     }
     //刷新
