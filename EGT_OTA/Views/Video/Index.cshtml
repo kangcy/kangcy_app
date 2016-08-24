@@ -76,15 +76,7 @@
                 { label: '主键', name: 'ID', index: "ID", hidden: true },
                 { label: '名称', name: 'Name', index: "Name", width: 200 },
                 { label: '链接', name: 'FileUrl', index: "FileUrl", width: 400 },
-                {
-                    label: '启用', name: 'Status', index: 'Status', width: 45, align: 'center',
-                    formatter: function (cellvalue, options, rowObject) {
-                        if (cellvalue == '1')
-                            return "<img src='/Content/Template/Images/checkokmark.gif'/>";
-                        else
-                            return "<img src='/Content/Template/Images/checknomark.gif'/>";
-                    }
-                },
+                { label: '状态', name: 'Status', index: 'Status', width: 45, align: 'center' },
                 { label: '创建时间', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" }
             ],
             viewrecords: true,
@@ -124,20 +116,20 @@
             delConfig('/Video/Delete', delparm, KeyValue.split(",").length);
         }
     }
-    //启用
-    function btn_used() {
+    //审核
+    function btn_audit() {
         var KeyValue = GetJqGridRowValue("#gridTable", "ID");
         if (IsDelData(KeyValue)) {
             var delparm = 'status=1&ids=' + KeyValue;
-            doConfig('启用', '/Video/Audit', delparm, KeyValue.split(",").length);
+            doConfig('审核', '/Video/Audit', delparm, KeyValue.split(",").length);
         }
     }
-    //取消启用
-    function btn_noused() {
+    //取消审核
+    function btn_noaudit() {
         var KeyValue = GetJqGridRowValue("#gridTable", "ID");
         if (IsDelData(KeyValue)) {
             var delparm = 'status=0&ids=' + KeyValue;
-            doConfig('取消启用', '/Video/Audit', delparm, KeyValue.split(",").length);
+            doConfig('取消审核', '/Video/Audit', delparm, KeyValue.split(",").length);
         }
     }
     //刷新

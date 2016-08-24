@@ -13,7 +13,7 @@
         "FullName": "音乐管理",
         "Icon": "fa-list",
         "Location": "/Music/Index",
-        "Button": ",刷新,新增,编辑,删除,启用,取消启用,"
+        "Button": ",刷新,新增,编辑,删除,审核,取消审核,"
     },
 	{
         "ModuleId": "12",
@@ -21,7 +21,7 @@
         "FullName": "视频管理",
         "Icon": "fa-list",
         "Location": "/Video/Index",
-        "Button": ",刷新,新增,编辑,删除,启用,取消启用,"
+        "Button": ",刷新,新增,编辑,删除,审核,取消审核,"
     },
     {
         "ModuleId": "2",
@@ -37,7 +37,7 @@
         "FullName": "用户管理",
         "Icon": "fa-list",
         "Location": "/User/Index",
-        "Button": ",刷新,新增,编辑,删除,启用,取消启用,"
+        "Button": ",刷新,新增,编辑,删除,审核,取消审核,"
     },
     {
         "ModuleId": "22",
@@ -45,6 +45,6 @@
         "FullName": "角色管理",
         "Icon": "fa-list",
         "Location": "/Role/Index",
-        "Button": ",刷新,新增,编辑,删除,启用,取消启用,"
+        "Button": ",刷新,新增,编辑,删除,审核,取消审核,"
     }
 ]

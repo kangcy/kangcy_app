@@ -62,7 +62,7 @@ namespace EGT_OTA.Controllers
                                Name = l.Name,
                                FileUrl = l.FileUrl,
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
-                               Status = l.Status
+                               Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
                            }).ToList();
             var result = new
             {
@@ -82,7 +82,7 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             int id = ZNRequest.GetInt("ID");
-            if ((id == 0 && !CurrentUser.HasPower("22-2")) || (id > 0 && !CurrentUser.HasPower("22-3")))
+            if ((id == 0 && !CurrentUser.HasPower("12-2")) || (id > 0 && !CurrentUser.HasPower("12-3")))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
@@ -142,7 +142,7 @@ namespace EGT_OTA.Controllers
         {
             var result = false;
             var message = string.Empty;
-            if (!CurrentUser.HasPower("22-4"))
+            if (!CurrentUser.HasPower("12-4"))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
@@ -171,7 +171,7 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             int status = ZNRequest.GetInt("status");
-            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("22-7")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("22-8")))
+            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("12-5")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("12-6")))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }

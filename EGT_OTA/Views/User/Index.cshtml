@@ -136,20 +136,20 @@
             delConfig('/User/Delete', delparm, KeyValue.split(",").length);
         }
     }
-    //启用
-    function btn_used() {
+    //审核
+    function btn_audit() {
         var KeyValue = GetJqGridRowValue("#gridTable", "ID");
         if (IsDelData(KeyValue)) {
             var delparm = 'status=1&ids=' + KeyValue;
-            doConfig('启用', '/User/Audit', delparm, KeyValue.split(",").length);
+            doConfig('审核', '/User/Audit', delparm, KeyValue.split(",").length);
         }
     }
-    //取消启用
-    function btn_noused() {
+    //取消审核
+    function btn_noaudit() {
         var KeyValue = GetJqGridRowValue("#gridTable", "ID");
         if (IsDelData(KeyValue)) {
             var delparm = 'status=0&ids=' + KeyValue;
-            doConfig('取消启用', '/User/Audit', delparm, KeyValue.split(",").length);
+            doConfig('取消审核', '/User/Audit', delparm, KeyValue.split(",").length);
         }
     }
     //刷新

@@ -42,26 +42,6 @@
     {
         "ButtonId": "5",
         "ParentId": "0",
-        "Code": "lr-used",
-        "FullName": "启用",
-        "Icon": "accept.png",
-        "Category": "1",
-        "JsEvent": "btn_used()",
-        "Split": "0"
-    },
-    {
-        "ButtonId": "6",
-        "ParentId": "0",
-        "Code": "lr-noused",
-        "FullName": "取消启用",
-        "Icon": "accept.png",
-        "Category": "1",
-        "JsEvent": "btn_noused()",
-        "Split": "0"
-    },
-    {
-        "ButtonId": "7",
-        "ParentId": "0",
         "Code": "lr-audit",
         "FullName": "审核",
         "Icon": "accept.png",
@@ -70,7 +50,7 @@
         "Split": "0"
     },
     {
-        "ButtonId": "8",
+        "ButtonId": "6",
         "ParentId": "0",
         "Code": "lr-noaudit",
         "FullName": "取消审核",
@@ -80,7 +60,7 @@
         "Split": "0"
     },
     {
-        "ButtonId": "9",
+        "ButtonId": "100",
         "ParentId": "0",
         "Code": "lr-back",
         "FullName": "返回",
