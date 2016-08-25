@@ -142,6 +142,7 @@
     <Compile Include="Controllers\App\VideoController.cs" />
     <Compile Include="Controllers\App\FanController.cs" />
     <Compile Include="Controllers\App\KeepController.cs" />
+    <Compile Include="Controllers\App\FeedBackController.cs" />
     <Compile Include="Controllers\AuthorizationAttribute.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -196,6 +197,8 @@
     <Compile Include="Models\App\Music.cs" />
     <Compile Include="Models\App\Video.cs" />
     <Compile Include="Models\App\Handle.cs" />
+    <Compile Include="Models\App\Pay.cs" />
+    <Compile Include="Models\App\FeedBack.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\CurrentUser.cs" />
     <Compile Include="Models\Base\Repository.cs" />

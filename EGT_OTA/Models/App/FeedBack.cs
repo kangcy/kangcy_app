@@ -22,10 +22,10 @@ using SubSonic.SqlGeneration.Schema;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 文章类型
+    /// 意见反馈
     /// </summary>
     [Serializable]
-    public class ArticleType : BaseModel
+    public class FeedBack
     {
         /// <summary>
         /// ID
@@ -34,32 +34,25 @@ namespace EGT_OTA.Models
         public int ID { get; set; }
 
         /// <summary>
-        /// 名称
+        /// 内容
         /// </summary>
-        [SubSonicStringLength(100), SubSonicNullString]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// 简介
-        /// </summary>
-        [SubSonicStringLength(255), SubSonicNullString]
+        [SubSonicStringLength(1000), SubSonicNullString]
         public string Summary { get; set; }
 
         /// <summary>
-        /// 封面
+        /// 创建人
         /// </summary>
-        [SubSonicStringLength(255), SubSonicNullString]
-        public string Cover { get; set; }
+        public int CreateUserID { get; set; }
 
         /// <summary>
-        /// 父节点
+        /// 创建时间
         /// </summary>
-        public int ParentID { get; set; }
+        public DateTime CreateDate { get; set; }
 
         /// <summary>
-        /// 父节点ID集合
+        /// 创建IP
         /// </summary>
-        [SubSonicStringLength(50), SubSonicNullString]
-        public string ParentIDList { get; set; }
+        [SubSonicNullString]
+        public string CreateIP { get; set; }
     }
 }

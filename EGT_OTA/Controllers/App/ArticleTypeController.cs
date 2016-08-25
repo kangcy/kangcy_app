@@ -103,6 +103,7 @@ namespace EGT_OTA.Controllers
                 model = new ArticleType();
             }
             model.Name = Name;
+            model.Summary = ZNRequest.GetString("Summary");
             model.Cover = ZNRequest.GetString("Cover");
             model.ParentID = ZNRequest.GetInt("ParentID", 0);
             model.ParentIDList = ZNRequest.GetString("ParentIDList");

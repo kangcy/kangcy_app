@@ -76,6 +76,8 @@ namespace EGT_OTA.Models
             repo.Single<Fan>(x => x.ID == 0);//关注、粉丝
             repo.Single<Keep>(x => x.ID == 0);//收藏
             repo.Single<Handle>(x => x.ID == 0);//操作
+            repo.Single<Pay>(x => x.ID == 0);//打赏
+            repo.Single<FeedBack>(x => x.ID == 0);//意见反馈
 
             #endregion
         }

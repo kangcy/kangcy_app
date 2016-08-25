@@ -52,6 +52,32 @@ namespace EGT_OTA.Models
         public string Avatar { get; set; }
 
         ///<summary>
+        ///用户昵称
+        ///</summary>
+        [SubSonicStringLength(50), SubSonicNullString]
+        public string NickName { get; set; }
+
+        /// <summary>
+        /// 省
+        /// </summary>
+        public int ProvinceID { get; set; }
+
+        /// <summary>
+        /// 市
+        /// </summary>
+        public int CityID { get; set; }
+
+        /// <summary>
+        /// 区
+        /// </summary>
+        public int DistinctID { get; set; }
+
+        /// <summary>
+        /// 地址
+        /// </summary>
+        public string Address { get; set; }
+
+        ///<summary>
         ///个性签名
         ///</summary>
         [SubSonicStringLength(500), SubSonicNullString]
@@ -61,6 +87,11 @@ namespace EGT_OTA.Models
         /// 性别
         /// </summary>
         public int Sex { get; set; }
+
+        /// <summary>
+        /// 生日
+        /// </summary>
+        public DateTime Birthday { get; set; }
 
         ///<summary>
         ///电子邮件
@@ -91,6 +122,21 @@ namespace EGT_OTA.Models
         public string WeiXin { get; set; }
 
         /// <summary>
+        /// 音乐自动播放
+        /// </summary>
+        public int AutoMusic { get; set; }
+
+        /// <summary>
+        /// 分享带昵称
+        /// </summary>
+        public int ShareNick { get; set; }
+
+        /// <summary>
+        /// 文章数
+        /// </summary>
+        public int Articles { get; set; }
+
+        /// <summary>
         /// 收藏数
         /// </summary>
         public int Keeps { get; set; }
@@ -104,6 +150,16 @@ namespace EGT_OTA.Models
         /// 粉丝数
         /// </summary>
         public int Fans { get; set; }
+
+        /// <summary>
+        /// 评论数
+        /// </summary>
+        public int Comments { get; set; }
+
+        /// <summary>
+        /// 点赞数
+        /// </summary>
+        public int Zans { get; set; }
 
         ///<summary>
         ///上次登录IP

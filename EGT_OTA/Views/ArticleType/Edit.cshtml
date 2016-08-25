@@ -22,8 +22,17 @@
                         <strong>名称：</strong>
                     </td>
                     <td>
-                        <input type="text" id="Name" class="form-control" maxlength="50"  placeholder="请填写名称"
+                        <input type="text" id="Name" class="form-control" maxlength="100"  placeholder="请填写名称"
                         value="@Model.Name" datacol="yes" err="名称" checkexpession="NotNull" />
+                    </td>
+                </tr>
+                <tr class="tdbg" align="center">
+                    <td class="head">
+                        <strong>描述：</strong>
+                    </td>
+                    <td>
+                        <input type="text" id="Summary" class="form-control" maxlength="255"  placeholder="请填写描述"
+                        value="@Model.Summary" datacol="yes" err="描述" checkexpession="NotNull" />
                     </td>
                 </tr>
                 <tr class="tdbg" align="center">
@@ -92,6 +101,7 @@
             var oData = {};
             oData["ID"] = "@Model.ID";
             oData["Name"] = $.trim($("#Name").val());
+            oData["Summary"] = $.trim($("#Summary").val());
             oData["Cover"] = $.trim($("#Cover").val());
 
             var $selParent = $("#selParent").find(":selected");

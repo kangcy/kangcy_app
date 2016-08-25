@@ -34,25 +34,31 @@ namespace EGT_OTA.Models
         public int ID { get; set; }
 
         /// <summary>
-        /// 文章标题
+        /// 标题
         /// </summary>
         [SubSonicStringLength(100), SubSonicNullString]
         public string Title { get; set; }
 
         /// <summary>
-        /// 文章详细
+        /// 详细
         /// </summary>
         [SubSonicLongString, SubSonicNullString]
         public string Introduction { get; set; }
 
         /// <summary>
-        /// 文章封面
+        /// 封面
         /// </summary>
         [SubSonicStringLength(255), SubSonicNullString]
         public string Cover { get; set; }
 
         /// <summary>
-        /// 文章类型
+        /// 音乐
+        /// </summary>
+        [SubSonicStringLength(255), SubSonicNullString]
+        public string Music { get; set; }
+
+        /// <summary>
+        /// 类型
         /// </summary>
         public int TypeID { get; set; }
 
