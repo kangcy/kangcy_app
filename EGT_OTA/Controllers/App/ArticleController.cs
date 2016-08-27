@@ -179,6 +179,10 @@ namespace EGT_OTA.Controllers.App
                 {
                     model.Views += 1;
                     result = db.Update<Article>(model) > 0;
+
+                    User createuser = db.Single<User>(x => x.ID == model.CreateUserID);
+                    model.UserName = createuser = null ? "" : createuser.NickName;
+                    return Json(new { result = result, message = model }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -186,7 +190,7 @@ namespace EGT_OTA.Controllers.App
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
                 message = ex.Message;
             }
-            return Json(new { status = result, message = message }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

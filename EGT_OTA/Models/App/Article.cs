@@ -73,8 +73,23 @@ namespace EGT_OTA.Models
         public int Goods { get; set; }
 
         /// <summary>
+        /// 收藏数
+        /// </summary>
+        public int Keeps { get; set; }
+
+        /// <summary>
         /// 评论数
         /// </summary>
         public int Comments { get; set; }
+
+        #region 扩展
+
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        [SubSonicIgnore]
+        public string UserName { get; set; }
+
+        #endregion
     }
 }

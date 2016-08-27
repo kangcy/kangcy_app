@@ -56,15 +56,15 @@ namespace EGT_OTA.Controllers
                 }
             }
             var recordCount = query.GetRecordCount();
-            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "UserName").From<User>().And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName").From<User>().And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
             var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               UserName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).UserName : "",
+                               UserName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).NickName : "",
                                ArticleName = articles.Exists(x => x.ID == l.ArticleID) ? articles.FirstOrDefault(x => x.ID == l.ArticleID).Title : "",
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
@@ -158,6 +158,49 @@ namespace EGT_OTA.Controllers
                 message = ex.Message;
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        public ActionResult All()
+        {
+            var pager = new Pager();
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where<Keep>(x => x.Status == Enum_Status.Approved);
+            var UserID = ZNRequest.GetInt("UserID");
+            if (UserID > 0)
+            {
+                query = query.And("CreateUserID").IsEqualTo(UserID);
+            }
+            var recordCount = query.GetRecordCount();
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
+            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(articles.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var newlist = (from l in list
+                           join a in articles on l.ArticleID equals a.ID
+                           join u in users on a.CreateUserID equals u.ID
+                           select new
+                           {
+                               ID = l.ID,
+                               NickName = u.NickName,
+                               Avatar = u.Avatar,
+                               ArticleID = a.ID,
+                               Title = a.Title,
+                               Cover = a.Cover,
+                               Views = a.Views,
+                               Comments = a.Comments,
+                               Keeps = a.Keeps,
+                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                           }).ToList();
+            var result = new
+            {
+                page = pager.Index,
+                records = recordCount,
+                total = totalPage,
+                rows = newlist
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

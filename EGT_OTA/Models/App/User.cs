@@ -161,6 +161,11 @@ namespace EGT_OTA.Models
         /// </summary>
         public int Zans { get; set; }
 
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int Status { get; set; }
+
         ///<summary>
         ///上次登录IP
         ///</summary>

@@ -62,13 +62,13 @@ namespace EGT_OTA.Controllers
             var fromarray = list.Select(x => x.FromUserID).Distinct().ToList();
             var toarray = list.Select(x => x.ToUserID).Distinct().ToList();
             fromarray.AddRange(toarray);
-            var allsers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "UserName").From<User>().And("ID").In(fromarray.ToArray()).ExecuteTypedList<User>();
+            var allsers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName").From<User>().And("ID").In(fromarray.ToArray()).ExecuteTypedList<User>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               FromUserName = allsers.Exists(x => x.ID == l.FromUserID) ? allsers.FirstOrDefault(x => x.ID == l.FromUserID).UserName : "",
-                               ToUserName = allsers.Exists(x => x.ID == l.ToUserID) ? allsers.FirstOrDefault(x => x.ID == l.ToUserID).UserName : "",
+                               FromUserName = allsers.Exists(x => x.ID == l.FromUserID) ? allsers.FirstOrDefault(x => x.ID == l.FromUserID).NickName : "",
+                               ToUserName = allsers.Exists(x => x.ID == l.ToUserID) ? allsers.FirstOrDefault(x => x.ID == l.ToUserID).NickName : "",
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Money = l.Money,
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
@@ -175,14 +175,14 @@ namespace EGT_OTA.Controllers
             var fromarray = list.Select(x => x.FromUserID).Distinct().ToList();
             var toarray = list.Select(x => x.ToUserID).Distinct().ToList();
             fromarray.AddRange(toarray);
-            var allusers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "UserName", "Avatar").From<User>().And("ID").In(fromarray.ToArray()).ExecuteTypedList<User>();
+            var allusers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().And("ID").In(fromarray.ToArray()).ExecuteTypedList<User>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
                                Avatar = GetFullUrl(allusers.Exists(x => x.ID == l.FromUserID) ? allusers.FirstOrDefault(x => x.ID == l.FromUserID).Avatar : ""),
-                               FromUserName = allusers.Exists(x => x.ID == l.FromUserID) ? allusers.FirstOrDefault(x => x.ID == l.FromUserID).UserName : "",
-                               ToUserName = allusers.Exists(x => x.ID == l.ToUserID) ? allusers.FirstOrDefault(x => x.ID == l.ToUserID).UserName : "",
+                               FromUserName = allusers.Exists(x => x.ID == l.FromUserID) ? allusers.FirstOrDefault(x => x.ID == l.FromUserID).NickName : "",
+                               ToUserName = allusers.Exists(x => x.ID == l.ToUserID) ? allusers.FirstOrDefault(x => x.ID == l.ToUserID).NickName : "",
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
                                Money = l.Money
                            }).ToList();
