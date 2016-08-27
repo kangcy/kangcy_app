@@ -175,14 +175,14 @@ namespace EGT_OTA.Controllers
             var fromarray = list.Select(x => x.FromUserID).Distinct().ToList();
             var toarray = list.Select(x => x.ToUserID).Distinct().ToList();
             fromarray.AddRange(toarray);
-            var allsers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "UserName", "Avatar").From<User>().And("ID").In(fromarray.ToArray()).ExecuteTypedList<User>();
+            var allusers = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "UserName", "Avatar").From<User>().And("ID").In(fromarray.ToArray()).ExecuteTypedList<User>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               Avatar = allsers.Exists(x => x.ID == l.FromUserID) ? allsers.FirstOrDefault(x => x.ID == l.FromUserID).Avatar : "",
-                               FromUserName = allsers.Exists(x => x.ID == l.FromUserID) ? allsers.FirstOrDefault(x => x.ID == l.FromUserID).UserName : "",
-                               ToUserName = allsers.Exists(x => x.ID == l.ToUserID) ? allsers.FirstOrDefault(x => x.ID == l.ToUserID).UserName : "",
+                               Avatar = GetFullUrl(allusers.Exists(x => x.ID == l.FromUserID) ? allusers.FirstOrDefault(x => x.ID == l.FromUserID).Avatar : ""),
+                               FromUserName = allusers.Exists(x => x.ID == l.FromUserID) ? allusers.FirstOrDefault(x => x.ID == l.FromUserID).UserName : "",
+                               ToUserName = allusers.Exists(x => x.ID == l.ToUserID) ? allusers.FirstOrDefault(x => x.ID == l.ToUserID).UserName : "",
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
                                Money = l.Money
                            }).ToList();
