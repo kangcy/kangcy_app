@@ -163,6 +163,7 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 列表
         /// </summary>
+        [AllowAnyone]
         public ActionResult All()
         {
             var pager = new Pager();
@@ -175,23 +176,24 @@ namespace EGT_OTA.Controllers
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
+            var types = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().Where<ArticleType>(x => x.Status == Enum_Status.Approved).ExecuteTypedList<ArticleType>();
             var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
             var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(articles.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
-            var newlist = (from l in list
-                           join a in articles on l.ArticleID equals a.ID
+            var newlist = (from a in articles
                            join u in users on a.CreateUserID equals u.ID
+                           join t in types on a.TypeID equals t.ID
                            select new
                            {
-                               ID = l.ID,
                                NickName = u.NickName,
-                               Avatar = u.Avatar,
+                               Avatar = GetFullUrl(u.Avatar),
                                ArticleID = a.ID,
                                Title = a.Title,
                                Cover = a.Cover,
                                Views = a.Views,
                                Comments = a.Comments,
                                Keeps = a.Keeps,
-                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                               CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
+                               TypeaName = t.Name
                            }).ToList();
             var result = new
             {

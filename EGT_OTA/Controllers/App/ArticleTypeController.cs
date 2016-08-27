@@ -217,6 +217,7 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 列表
         /// </summary>
+        [AllowAnyone]
         public ActionResult All()
         {
             var pager = new Pager();

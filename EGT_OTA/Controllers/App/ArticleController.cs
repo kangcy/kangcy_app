@@ -181,7 +181,7 @@ namespace EGT_OTA.Controllers.App
                     result = db.Update<Article>(model) > 0;
 
                     User createuser = db.Single<User>(x => x.ID == model.CreateUserID);
-                    model.UserName = createuser = null ? "" : createuser.NickName;
+                    model.UserName = createuser == null ? "" : createuser.NickName;
                     return Json(new { result = result, message = model }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -240,6 +240,59 @@ namespace EGT_OTA.Controllers.App
                 message = ex.Message;
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult All()
+        {
+            var pager = new Pager();
+            var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+
+            //创建人
+            var UserID = ZNRequest.GetInt("UserID");
+            if (UserID > 0)
+            {
+                query = query.And("CreateUserID").IsEqualTo(UserID);
+            }
+
+            //文章类型
+            var TypeID = ZNRequest.GetInt("TypeID");
+            if (TypeID > 0)
+            {
+                query = query.And("TypeID").IsEqualTo(TypeID);
+            }
+            var recordCount = query.GetRecordCount();
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Article>();
+            var types = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().Where<ArticleType>(x => x.Status == Enum_Status.Approved).ExecuteTypedList<ArticleType>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var newlist = (from a in list
+                           join u in users on a.CreateUserID equals u.ID
+                           join t in types on a.TypeID equals t.ID
+                           select new
+                           {
+                               NickName = u.NickName,
+                               Avatar = GetFullUrl(u.Avatar),
+                               ArticleID = a.ID,
+                               Title = a.Title,
+                               Cover = a.Cover,
+                               Views = a.Views,
+                               Comments = a.Comments,
+                               Keeps = a.Keeps,
+                               CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
+                               TypeaName = t.Name
+                           }).ToList();
+            var result = new
+            {
+                page = pager.Index,
+                records = recordCount,
+                total = totalPage,
+                rows = newlist
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

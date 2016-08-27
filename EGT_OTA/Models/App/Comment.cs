@@ -25,7 +25,7 @@ namespace EGT_OTA.Models
     /// 文章评论
     /// </summary>
     [Serializable]
-    public class Comment : BaseModel
+    public class Comment
     {
         /// <summary>
         /// ID
@@ -39,9 +39,35 @@ namespace EGT_OTA.Models
         public int ArticleID { get; set; }
 
         /// <summary>
+        /// 作者ID
+        /// </summary>
+        public int ToUserID { get; set; }
+
+        /// <summary>
         /// 评论内容
         /// </summary>
         [SubSonicStringLength(255), SubSonicNullString]
         public string Summary { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int Status { get; set; }
+
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        public int CreateUserID { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// 创建IP
+        /// </summary>
+        [SubSonicNullString]
+        public string CreateIP { get; set; }
     }
 }

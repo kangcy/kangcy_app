@@ -29,14 +29,14 @@ namespace EGT_OTA.Controllers.App
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "UserName").From<User>().And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName").From<User>().And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
             var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
                                ArticleID = l.ArticleID,
-                               UserName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).UserName : "",
+                               NickName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).NickName : "",
                                ArticleName = articles.Exists(x => x.ID == l.ArticleID) ? articles.FirstOrDefault(x => x.ID == l.ArticleID).Title : "",
                                Summary = l.Summary,
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
@@ -90,41 +90,100 @@ namespace EGT_OTA.Controllers.App
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
 
+        #region  APP请求
+
         /// <summary>
         /// 评论编辑
         /// </summary>
+        [AllowAnyone]
         public ActionResult CommentManage()
         {
-            var status = false;
-            var result = string.Empty;
+            User user = GetUserInfo();
+            if (user == null)
+            {
+                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var result = false;
+            var message = string.Empty;
+            var articleID = ZNRequest.GetInt("ArticleID");
+            Article article = db.Single<Article>(x => x.ID == articleID);
+            Comment model = new Comment();
+            model.ArticleID = articleID;
+            model.ToUserID = article.CreateUserID;
+            model.Summary = SqlFilter(ZNRequest.GetString("Summary"));
+            model.Status = Enum_Status.Approved;
             try
             {
-                Comment model = new Comment();
-                model.ID = ZNRequest.GetInt("ID");
-                model.Summary = ZNRequest.GetString("Summary");
-                model.ArticleID = ZNRequest.GetInt("ArticleID", 0);
-                var user = ZNRequest.GetInt("UserID");
-                if (model.ID == 0)
+                model.CreateDate = DateTime.Now;
+                model.CreateUserID = user.ID;
+                model.CreateIP = Tools.GetClientIP;
+                result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
+
+                //修改文章评论数
+                if (result)
                 {
-                    model.CreateUserID = user;
-                    model.CreateDate = DateTime.Now;
-                    model.CreateIP = Tools.GetClientIP;
-                    status = Tools.SafeInt(db.Add<Comment>(model)) > 0;
-                }
-                else
-                {
-                    model.UpdateUserID = user;
-                    model.UpdateDate = DateTime.Now;
-                    model.UpdateIP = Tools.GetClientIP;
-                    status = db.Update<Comment>(model) > 0;
+                    article.Comments = article.Comments + 1;
+                    result = db.Update<Article>(article) > 0;
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
-                result = ex.Message;
+                message = ex.Message;
             }
-            return Json(new { status = status, result = result }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult All()
+        {
+            var pager = new Pager();
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved);
+
+            //创建人
+            var CreateUserID = ZNRequest.GetInt("CreateUserID");
+            if (CreateUserID > 0)
+            {
+                query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+            }
+
+            //文章作者
+            var ToUserID = ZNRequest.GetInt("ToUserID");
+            if (ToUserID > 0)
+            {
+                query = query.And("ToUserID").IsEqualTo(ToUserID);
+            }
+            var recordCount = query.GetRecordCount();
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
+            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var newlist = (from l in list
+                           join a in articles on l.ArticleID equals a.ID
+                           join u in users on l.CreateUserID equals u.ID
+                           select new
+                           {
+                               Summary = l.Summary,
+                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                               NickName = u.NickName,
+                               Avatar = GetFullUrl(u.Avatar),
+                               ArticleID = a.ID,
+                               Title = a.Title
+                           }).ToList();
+            var result = new
+            {
+                page = pager.Index,
+                records = recordCount,
+                total = totalPage,
+                rows = newlist
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
     }
 }
