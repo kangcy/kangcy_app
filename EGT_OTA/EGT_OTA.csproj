@@ -143,6 +143,7 @@
     <Compile Include="Controllers\App\FanController.cs" />
     <Compile Include="Controllers\App\KeepController.cs" />
     <Compile Include="Controllers\App\FeedBackController.cs" />
+    <Compile Include="Controllers\App\PayController.cs" />
     <Compile Include="Controllers\AuthorizationAttribute.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

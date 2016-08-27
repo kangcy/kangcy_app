@@ -104,6 +104,6 @@ F:\网站\Web\APP\kangcy_app\EGT_OTA\bin\System.Web.WebPages.Deployment.dll
 F:\网站\Web\APP\kangcy_app\EGT_OTA\bin\System.Web.WebPages.dll
 F:\网站\Web\APP\kangcy_app\EGT_OTA\bin\System.Web.WebPages.Razor.dll
 F:\网站\Web\APP\kangcy_app\EGT_OTA\bin\Tools.dll
+F:\网站\Web\APP\kangcy_app\EGT_OTA\obj\Debug\EGT_OTA.csprojResolveAssemblyReference.cache
 F:\网站\Web\APP\kangcy_app\EGT_OTA\obj\Debug\EGT_OTA.dll
 F:\网站\Web\APP\kangcy_app\EGT_OTA\obj\Debug\EGT_OTA.pdb
-F:\网站\Web\APP\kangcy_app\EGT_OTA\obj\Debug\EGT_OTA.csprojResolveAssemblyReference.cache

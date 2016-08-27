@@ -49,8 +49,19 @@ namespace EGT_OTA.Models
         public decimal Money { get; set; }
 
         /// <summary>
+        /// 状态
+        /// </summary>
+        public int Status { get; set; }
+
+        /// <summary>
         /// 创建时间
         /// </summary>
         public DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// 创建IP
+        /// </summary>
+        [SubSonicNullString]
+        public string CreateIP { get; set; }
     }
 }

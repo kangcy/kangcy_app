@@ -61,6 +61,7 @@ namespace EGT_OTA.Controllers
                                ID = l.ID,
                                Cover = GetFullUrl(l.Cover),
                                Name = l.Name,
+                               Summary = l.Summary,
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
                            }).ToList();
@@ -210,5 +211,37 @@ namespace EGT_OTA.Controllers
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
+
+        #region  APP请求
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        public ActionResult All()
+        {
+            var pager = new Pager();
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticleType>().Where<ArticleType>(x => x.Status == Enum_Status.Approved);
+            var recordCount = query.GetRecordCount();
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<ArticleType>();
+            var newlist = (from l in list
+                           select new
+                           {
+                               ID = l.ID,
+                               Cover = GetFullUrl(l.Cover),
+                               Name = l.Name,
+                               Summary = l.Summary
+                           }).ToList();
+            var result = new
+            {
+                page = pager.Index,
+                records = recordCount,
+                total = totalPage,
+                rows = newlist
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
     }
 }
