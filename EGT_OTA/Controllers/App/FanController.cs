@@ -155,6 +155,65 @@ namespace EGT_OTA.Controllers
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 列表
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult All()
+        {
+            var pager = new Pager();
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Fan>(x => x.Status == Enum_Status.Approved);
+
+            //关注人
+            var FromUserID = ZNRequest.GetInt("FromUserID");
+            if (FromUserID > 0)
+            {
+                query = query.And("FromUserID").IsEqualTo(FromUserID);
+            }
+
+            //被关注人
+            var ToUserID = ZNRequest.GetInt("ToUserID");
+            if (ToUserID > 0)
+            {
+                query = query.And("ToUserID").IsEqualTo(ToUserID);
+            }
+            var recordCount = query.GetRecordCount();
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
+            var array = new List<int>();
+            var from = list.Select(x => x.FromUserID).ToList();
+            var to = list.Select(x => x.ToUserID).ToList();
+            if (FromUserID > 0)
+            {
+                array = to;
+            }
+            if (ToUserID > 0)
+            {
+                array = from;
+            }
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(array.ToArray()).ExecuteTypedList<User>();
+            var newlist = (from l in list
+                           join u in users on l.CreateUserID equals u.ID
+                           select new
+                           {
+                               Summary = l.Summary,
+                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                               NickName = u.NickName,
+                               Avatar = GetFullUrl(u.Avatar),
+                               ArticleID = a.ID,
+                               Title = a.Title
+                           }).ToList();
+            var result = new
+            {
+                page = pager.Index,
+                records = recordCount,
+                total = totalPage,
+                rows = newlist
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+
         #endregion
     }
 }
