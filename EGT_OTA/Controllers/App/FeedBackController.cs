@@ -93,9 +93,9 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             FeedBack model = new FeedBack();
-            model.Summary = ZNRequest.GetString("UserID");
             try
             {
+                model.Summary = SqlFilter(ZNRequest.GetString("Summary"));
                 model.CreateDate = DateTime.Now;
                 model.CreateUserID = user.ID;
                 model.CreateIP = Tools.GetClientIP;

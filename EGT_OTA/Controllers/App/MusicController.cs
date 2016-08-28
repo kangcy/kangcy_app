@@ -59,7 +59,9 @@ namespace EGT_OTA.Controllers
                            {
                                ID = l.ID,
                                Name = l.Name,
-                               FileUrl = l.FileUrl,
+                               Author = l.Author,
+                               Cover = GetFullUrl(l.Cover),
+                               FileUrl = GetFullUrl(l.FileUrl),
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
                            }).ToList();
@@ -106,6 +108,8 @@ namespace EGT_OTA.Controllers
             {
                 model = new Music();
             }
+            model.Author = ZNRequest.GetString("Author");
+            model.Cover = ZNRequest.GetString("Cover");
             model.Name = Name;
             model.FileUrl = FileUrl;
             model.Status = Enum_Status.Audit;
@@ -210,5 +214,49 @@ namespace EGT_OTA.Controllers
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
+
+        #region  APP请求
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult All()
+        {
+            var pager = new Pager();
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Music>().Where<Music>(x => x.Status == Enum_Status.Approved);
+            string Name = ZNRequest.GetString("Name");
+            if (!string.IsNullOrWhiteSpace(Name))
+            {
+                query = query.And("Name").Like("%" + Name + "%");
+            }
+            string Author = ZNRequest.GetString("Author");
+            if (!string.IsNullOrWhiteSpace(Author))
+            {
+                query = query.And("Author").Like("%" + Author + "%");
+            }
+            var recordCount = query.GetRecordCount();
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Music>();
+            var newlist = (from l in list
+                           select new
+                           {
+                               ID = l.ID,
+                               Name = l.Name,
+                               Author = l.Author,
+                               Cover = GetFullUrl(l.Cover),
+                               FileUrl = GetFullUrl(l.FileUrl)
+                           }).ToList();
+            var result = new
+            {
+                page = pager.Index,
+                records = recordCount,
+                total = totalPage,
+                rows = newlist
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
     }
 }

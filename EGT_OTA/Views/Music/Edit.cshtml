@@ -27,11 +27,29 @@
                 </tr>
                 <tr class="tdbg" align="center">
                     <td class="head">
+                        <strong>作者：</strong>
+                    </td>
+                    <td>
+                        <input type="text" id="Author" class="form-control" maxlength="50"  placeholder="请填写作者"
+                        value="@Model.Author" datacol="yes" err="作者" checkexpession="NotNull" />
+                    </td>
+                </tr>
+                <tr class="tdbg" align="center">
+                    <td class="head">
+                        <strong>封面：</strong>
+                    </td>
+                    <td>
+                        <input type="file" id="pic" name="upload" class="fl" />
+                        <input id="Cover" type="text" class="form-control" maxlength="200" datacol="yes" err="链接" checkexpession="NotNull" value="@Model.Cover" />
+                    </td>
+                </tr>
+                <tr class="tdbg" align="center">
+                    <td class="head">
                         <strong>链接：</strong>
                     </td>
                     <td>
                         <input type="file" id="music" name="upload" class="fl" />
-                        <input id="FileUrl" type="text" class="form-control" maxlength="100" datacol="yes" err="链接" checkexpession="NotNull" value="@Model.FileUrl" />
+                        <input id="FileUrl" type="text" class="form-control" maxlength="200" datacol="yes" err="链接" checkexpession="NotNull" value="@Model.FileUrl" />
                     </td>
                 </tr>
             </table>
@@ -45,6 +63,29 @@
 <script type="text/javascript" src="@Url.Content("~/Scripts/upload/uploadify/jquery.uploadify.min.js")"></script>
 <script type="text/javascript">
     $(function () {
+        $("#pic").uploadify({
+            swf: "/Scripts/upload/uploadify/uploadify.swf?var=" + Math.random() * 1000,
+            uploader: "/Upload/UploadFile?folder=Pic",
+            auto: true,
+            multi: false,
+            removeTimeout: 1,
+            buttonText: "请上传图片",
+            fileSizeLimit: "2MB", //大小限制,如果为整数型则表示以KB为单位的大小,如果是字符串,则可以使用(B, KB, MB, or GB)为单位，比如’2MB’,如果设置为0则表示无限制
+            fileTypeDesc: "选择图片文件", //选择文件对话框底部文件类型显示的文字
+            fileTypeExts: "*.jpg;*.jpeg;*.png;*.gif;*.bmp;", //筛选可选择的文件类型
+            onUploadSuccess: function (file, data, response) {
+                data = JSON.parse(data);
+                if (data.result) {
+                    $("#Cover").val(data.message);
+                } else {
+                    warning(data.message);
+                }
+            },
+            onQueueComplete: function () {
+                $("#pic").uploadify("cancel", "*");
+            }
+        });
+
         $("#music").uploadify({
             swf: "/Scripts/upload/uploadify/uploadify.swf?var=" + Math.random() * 1000,
             uploader: "/Upload/UploadFile?folder=Music",
@@ -79,6 +120,8 @@
             var oData = {};
             oData["ID"] = "@Model.ID";
             oData["Name"] = $.trim($("#Name").val());
+            oData["Author"] = $.trim($("#Author").val());
+            oData["Cover"] = $.trim($("#Cover").val());
             oData["FileUrl"] = $.trim($("#FileUrl").val());
             $.ajax({
                 type: "POST",

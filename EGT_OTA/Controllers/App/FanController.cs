@@ -191,26 +191,51 @@ namespace EGT_OTA.Controllers
             {
                 array = from;
             }
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(array.ToArray()).ExecuteTypedList<User>();
-            var newlist = (from l in list
-                           join u in users on l.CreateUserID equals u.ID
-                           select new
-                           {
-                               Summary = l.Summary,
-                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
-                               NickName = u.NickName,
-                               Avatar = GetFullUrl(u.Avatar),
-                               ArticleID = a.ID,
-                               Title = a.Title
-                           }).ToList();
-            var result = new
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(array.ToArray()).ExecuteTypedList<User>();
+
+            //我关注的列表
+            if (FromUserID > 0)
             {
-                page = pager.Index,
-                records = recordCount,
-                total = totalPage,
-                rows = newlist
-            };
-            return Json(result, JsonRequestBehavior.AllowGet);
+                var newlist = (from l in list
+                               join u in users on l.ToUserID equals u.ID
+                               select new
+                               {
+                                   CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                   NickName = u.NickName,
+                                   Signature = u.Signature,
+                                   Avatar = GetFullUrl(u.Avatar)
+                               }).ToList();
+                var result = new
+                {
+                    page = pager.Index,
+                    records = recordCount,
+                    total = totalPage,
+                    rows = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+
+            //关注我的列表
+            if (ToUserID > 0)
+            {
+                var newlist = (from l in list
+                               join u in users on l.FromUserID equals u.ID
+                               select new
+                               {
+                                   CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                   NickName = u.NickName,
+                                   Signature = u.Signature,
+                                   Avatar = GetFullUrl(u.Avatar)
+                               }).ToList();
+                var result = new
+                {
+                    page = pager.Index,
+                    records = recordCount,
+                    total = totalPage,
+                    rows = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
         }
 
 

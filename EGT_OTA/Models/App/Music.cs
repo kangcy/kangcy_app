@@ -39,6 +39,16 @@ namespace EGT_OTA.Models
         public string Name { get; set; }
 
         /// <summary>
+        /// 作者
+        /// </summary>
+        public string Author { get; set; }
+
+        /// <summary>
+        /// 封面
+        /// </summary>
+        public string Cover { get; set; }
+
+        /// <summary>
         /// 文件地址
         /// </summary>
         public string FileUrl { get; set; }

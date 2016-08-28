@@ -22,10 +22,10 @@ using SubSonic.SqlGeneration.Schema;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 文章评论
+    /// 点赞
     /// </summary>
     [Serializable]
-    public class Comment
+    public class Zan
     {
         /// <summary>
         /// ID
@@ -34,20 +34,14 @@ namespace EGT_OTA.Models
         public int ID { get; set; }
 
         /// <summary>
-        /// 文章ID
+        /// 文章
         /// </summary>
-        public int ArticleID { get; set; }
+        public string ArticleID { get; set; }
 
         /// <summary>
         /// 文章作者
         /// </summary>
         public int ArticleUserID { get; set; }
-
-        /// <summary>
-        /// 评论内容
-        /// </summary>
-        [SubSonicStringLength(255), SubSonicNullString]
-        public string Summary { get; set; }
 
         /// <summary>
         /// 状态
