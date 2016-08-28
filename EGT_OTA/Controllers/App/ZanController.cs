@@ -158,8 +158,8 @@ namespace EGT_OTA.Controllers.App
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
-            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "Cover", "Views", "Goods", "Keeps", "Comments").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
             var newlist = (from l in list
                            join a in articles on l.ArticleID equals a.ID
                            join u in users on l.CreateUserID equals u.ID
@@ -168,8 +168,14 @@ namespace EGT_OTA.Controllers.App
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
                                NickName = u.NickName,
                                Avatar = GetFullUrl(u.Avatar),
+                               Signature = u.Signature,
                                ArticleID = a.ID,
-                               Title = a.Title
+                               Title = a.Title,
+                               Cover = GetFullUrl(a.Cover),
+                               Views = a.Views,
+                               Goods = a.Goods,
+                               Keeps = a.Keeps,
+                               Comments = a.Comments
                            }).ToList();
             var result = new
             {
