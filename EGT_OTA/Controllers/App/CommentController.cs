@@ -110,7 +110,7 @@ namespace EGT_OTA.Controllers.App
             Article article = db.Single<Article>(x => x.ID == articleID);
             Comment model = new Comment();
             model.ArticleID = articleID;
-            model.ToUserID = article.CreateUserID;
+            model.ArticleUserID = article.CreateUserID;
             model.Summary = SqlFilter(ZNRequest.GetString("Summary"));
             model.Status = Enum_Status.Approved;
             try
@@ -144,7 +144,7 @@ namespace EGT_OTA.Controllers.App
             var pager = new Pager();
             var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved);
 
-            //创建人
+            //评论人
             var CreateUserID = ZNRequest.GetInt("CreateUserID");
             if (CreateUserID > 0)
             {
@@ -152,10 +152,10 @@ namespace EGT_OTA.Controllers.App
             }
 
             //文章作者
-            var ToUserID = ZNRequest.GetInt("ToUserID");
-            if (ToUserID > 0)
+            var ArticleUserID = ZNRequest.GetInt("ArticleUserID");
+            if (ArticleUserID > 0)
             {
-                query = query.And("ToUserID").IsEqualTo(ToUserID);
+                query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
             }
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;

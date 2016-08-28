@@ -95,7 +95,7 @@ namespace EGT_OTA.Controllers.App
         /// 点赞编辑
         /// </summary>
         [AllowAnyone]
-        public ActionResult CommentManage()
+        public ActionResult Manage()
         {
             User user = GetUserInfo();
             if (user == null)
@@ -109,8 +109,7 @@ namespace EGT_OTA.Controllers.App
             Article article = db.Single<Article>(x => x.ID == articleID);
             Zan model = new Zan();
             model.ArticleID = articleID;
-            model.ToUserID = article.CreateUserID;
-            model.Summary = SqlFilter(ZNRequest.GetString("Summary"));
+            model.ArticleUserID = article.CreateUserID;
             model.Status = Enum_Status.Approved;
             try
             {
@@ -143,7 +142,7 @@ namespace EGT_OTA.Controllers.App
             var pager = new Pager();
             var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.Status == Enum_Status.Approved);
 
-            //创建人
+            //点赞人
             var CreateUserID = ZNRequest.GetInt("CreateUserID");
             if (CreateUserID > 0)
             {
@@ -151,10 +150,10 @@ namespace EGT_OTA.Controllers.App
             }
 
             //文章作者
-            var ToUserID = ZNRequest.GetInt("ToUserID");
-            if (ToUserID > 0)
+            var ArticleUserID = ZNRequest.GetInt("ArticleUserID");
+            if (ArticleUserID > 0)
             {
-                query = query.And("ToUserID").IsEqualTo(ToUserID);
+                query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
             }
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
@@ -166,7 +165,6 @@ namespace EGT_OTA.Controllers.App
                            join u in users on l.CreateUserID equals u.ID
                            select new
                            {
-                               Summary = l.Summary,
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
                                NickName = u.NickName,
                                Avatar = GetFullUrl(u.Avatar),
