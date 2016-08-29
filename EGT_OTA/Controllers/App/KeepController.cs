@@ -102,7 +102,7 @@ namespace EGT_OTA.Controllers
             {
                 return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
             }
-            Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+            Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Keeps").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
             if (article == null)
             {
                 return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
@@ -134,8 +134,7 @@ namespace EGT_OTA.Controllers
                     //修改文章收藏数
                     if (result)
                     {
-                        article.Keeps = article.Keeps + 1;
-                        db.Update<Article>(article);
+                        new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Keeps").EqualTo(article.Keeps + 1).Where<Article>(x => x.ID == articleID).Execute();
                     }
                 }
                 else
@@ -176,6 +175,16 @@ namespace EGT_OTA.Controllers
                     model.UpdateIP = Tools.GetClientIP;
                     model.Status = Enum_Status.DELETE;
                     result = db.Update<Keep>(model) > 0;
+
+                    //修改文章收藏数
+                    if (result)
+                    {
+                        Article article = new SubSonic.Query.Select(Repository.GetProvider(), "Keeps").From<Article>().Where<Article>(x => x.ID == model.ArticleID).ExecuteSingle<Article>();
+                        if (article != null && article.Keeps > 0)
+                        {
+                            new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Keeps").EqualTo(article.Keeps - 1).Where<Article>(x => x.ID == model.ArticleID).Execute();
+                        }
+                    }
                 }
             }
             catch (Exception ex)
