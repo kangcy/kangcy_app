@@ -79,6 +79,14 @@
         "Location": "/User/Index",
         "Button": ",刷新,"
     },
+	{
+        "ModuleId": "37",
+        "ParentId": "3",
+        "FullName": "点赞管理",
+        "Icon": "fa-list",
+        "Location": "/Zan/Index",
+        "Button": ",刷新,"
+    },
     {
         "ModuleId": "2",
         "ParentId": "0",

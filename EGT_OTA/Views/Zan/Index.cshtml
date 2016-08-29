@@ -14,7 +14,7 @@
         <div class="layoutPanel layout-center">
             <div class="btnbartitle">
                 <div>
-                    视频列表<span id="CenterTitle"></span>
+                    点赞列表<span id="CenterTitle"></span>
                 </div>
             </div>
             <div class="tools_bar" style="border-top: none; margin-bottom: 0px;">
@@ -24,7 +24,7 @@
                             重置</button>
                         <button class="btn btn-primary fr" id="btnSearch">
                             查询</button>
-                        <input type="text" id="txtName" class="text form-control fr" placeholder="请填写视频名称" />
+                        <input type="text" id="txtName" class="text form-control fr" placeholder="请填写点赞人昵称" />
                     </div>
                 </div>
             </div>
@@ -42,13 +42,13 @@
 <script type="text/javascript" src="@Url.Content("~/Content/Template/Scripts/jqgrid/jqGrid.js")"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        PartialButton("12");
+        PartialButton("34");
         GetGrid();
 
         //重置
         $("#btnReset").click(function () {
             $("#txtName").val("");
-            var url = "/Video/List";
+            var url = "/Zan/List";
             $("#gridTable").jqGrid('setGridParam', { url: url }).trigger('reloadGrid');
         });
 
@@ -56,7 +56,7 @@
         $("#btnSearch").click(function () {
             var Name = $.trim($("#txtName").val());
             var url = new StringBuilder();
-            url.append("/Video/List?1=1");
+            url.append("/Zan/List?1=1");
             if (Name != "") {
                 url.append("&Name=" + escape(Name));
             }
@@ -66,24 +66,17 @@
     //加载表格
     function GetGrid() {
         $("#gridTable").jqGrid({
-            url: "/Video/List",
+            url: "/Zan/List",
             datatype: "json",
             height: $(window).height() - 133,
             autowidth: true,
             colModel: [
                 { label: '主键', name: 'ID', index: "ID", hidden: true },
-                {
-                    label: '封面', name: 'Cover', index: 'Cover', width: 100, align: 'center',
-                    formatter: function (cellvalue, options, rowObject) {
-                        return "<img src='" + cellvalue + "' style='width:90%;margin:5%;' />";
-                    }
-                },
-                { label: '名称', name: 'Name', index: "Name", width: 200 },
-                { label: '作者', name: 'Author', index: "Author", width: 200 },
-                { label: '链接', name: 'FileUrl', index: "FileUrl", width: 400 },
+                { label: '收藏人', name: 'NickName', index: "NickName", width: 200 },
+                { label: '文章标题', name: 'Title', index: "Title", width: 400 },
                 { label: '状态', name: 'Status', index: 'Status', width: 45, align: 'center' },
-                { label: '创建人', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" },
-                { label: '创建时间', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" }
+                { label: '创建时间', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" },
+                { label: '修改时间', name: 'UpdateDate', index: "UpdateDate", width: 150, align: "center" }
             ],
             viewrecords: true,
             pager: 'pager', //分页工具栏 
@@ -97,45 +90,12 @@
             gridview: true
         });
     }
-    //新增
-    function btn_add() {
-        var url = "/Video/Edit";
-        openDialog(url, "Form", "新增", 800, 600, function (iframe) {
-            top.frames[iframe].AcceptClick()
-        });
-    }
-    //编辑
-    function btn_edit() {
-        var KeyValue = GetJqGridRowValue("#gridTable", "ID");
-        if (IsChecked(KeyValue)) {
-            var url = "/Video/Edit?id=" + KeyValue;
-            openDialog(url, "Form", "编辑", 800, 600, function (iframe) {
-                top.frames[iframe].AcceptClick();
-            });
-        }
-    }
     //删除
     function btn_delete() {
         var KeyValue = GetJqGridRowValue("#gridTable", "ID");
         if (IsDelData(KeyValue)) {
             var delparm = 'ids=' + KeyValue;
-            delConfig('/Video/Delete', delparm, KeyValue.split(",").length);
-        }
-    }
-    //审核
-    function btn_audit() {
-        var KeyValue = GetJqGridRowValue("#gridTable", "ID");
-        if (IsDelData(KeyValue)) {
-            var delparm = 'status=1&ids=' + KeyValue;
-            doConfig('审核', '/Video/Audit', delparm, KeyValue.split(",").length);
-        }
-    }
-    //取消审核
-    function btn_noaudit() {
-        var KeyValue = GetJqGridRowValue("#gridTable", "ID");
-        if (IsDelData(KeyValue)) {
-            var delparm = 'status=0&ids=' + KeyValue;
-            doConfig('取消审核', '/Video/Audit', delparm, KeyValue.split(",").length);
+            delConfig('/Zan/Delete', delparm, KeyValue.split(",").length);
         }
     }
     //刷新

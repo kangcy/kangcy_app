@@ -41,11 +41,13 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 作者
         /// </summary>
+        [SubSonicNullString]
         public string Author { get; set; }
 
         /// <summary>
         /// 封面
         /// </summary>
+        [SubSonicNullString]
         public string Cover { get; set; }
 
         /// <summary>

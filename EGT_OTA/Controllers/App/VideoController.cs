@@ -52,14 +52,16 @@ namespace EGT_OTA.Controllers
                 query = query.And("Name").Like("%" + Name + "%");
             }
             var recordCount = query.GetRecordCount();
-            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Video>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
                                Name = l.Name,
-                               FileUrl = l.FileUrl,
+                               Author = l.Author,
+                               Cover = GetFullUrl(l.Cover),
+                               FileUrl = GetFullUrl(l.FileUrl),
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
                            }).ToList();
@@ -81,19 +83,26 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             int id = ZNRequest.GetInt("ID");
-            if ((id == 0 && !CurrentUser.HasPower("12-2")) || (id > 0 && !CurrentUser.HasPower("12-3")))
+            if ((id == 0 && !CurrentUser.HasPower("11-2")) || (id > 0 && !CurrentUser.HasPower("11-3")))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
             var Name = ZNRequest.GetString("Name");
-            if (db.Exists<Video>(x => x.Name == Name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                return Json(new { result = "该名称已被注册" }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = "请填写文件名称" }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                if (db.Exists<Video>(x => x.Name == Name))
+                {
+                    return Json(new { result = "该名称已存在" }, JsonRequestBehavior.AllowGet);
+                }
             }
             var FileUrl = ZNRequest.GetString("FileUrl");
             if (string.IsNullOrWhiteSpace(FileUrl))
             {
-                return Json(new { result = "请上传音乐文件" }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = "请上传视频文件" }, JsonRequestBehavior.AllowGet);
             }
             UserInfo user = CurrentUser.User;
             Video model = null;
@@ -106,6 +115,8 @@ namespace EGT_OTA.Controllers
             {
                 model = new Video();
             }
+            model.Author = ZNRequest.GetString("Author");
+            model.Cover = ZNRequest.GetString("Cover");
             model.Name = Name;
             model.FileUrl = FileUrl;
             model.Status = Enum_Status.Audit;
@@ -141,7 +152,7 @@ namespace EGT_OTA.Controllers
         {
             var result = false;
             var message = string.Empty;
-            if (!CurrentUser.HasPower("12-4"))
+            if (!CurrentUser.HasPower("11-4"))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
@@ -180,7 +191,7 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             int status = ZNRequest.GetInt("status");
-            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("12-5")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("12-6")))
+            if ((status == Enum_Status.Approved && !CurrentUser.HasPower("11-5")) || (status == Enum_Status.Audit && !CurrentUser.HasPower("11-6")))
             {
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
@@ -210,5 +221,49 @@ namespace EGT_OTA.Controllers
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
+
+        #region  APP请求
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult All()
+        {
+            var pager = new Pager();
+            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Video>().Where<Video>(x => x.Status == Enum_Status.Approved);
+            string Name = ZNRequest.GetString("Name");
+            if (!string.IsNullOrWhiteSpace(Name))
+            {
+                query = query.And("Name").Like("%" + Name + "%");
+            }
+            string Author = ZNRequest.GetString("Author");
+            if (!string.IsNullOrWhiteSpace(Author))
+            {
+                query = query.And("Author").Like("%" + Author + "%");
+            }
+            var recordCount = query.GetRecordCount();
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Video>();
+            var newlist = (from l in list
+                           select new
+                           {
+                               ID = l.ID,
+                               Name = l.Name,
+                               Author = l.Author,
+                               Cover = GetFullUrl(l.Cover),
+                               FileUrl = GetFullUrl(l.FileUrl)
+                           }).ToList();
+            var result = new
+            {
+                page = pager.Index,
+                records = recordCount,
+                total = totalPage,
+                rows = newlist
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
     }
 }

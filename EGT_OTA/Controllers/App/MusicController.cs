@@ -52,7 +52,7 @@ namespace EGT_OTA.Controllers
                 query = query.And("Name").Like("%" + Name + "%");
             }
             var recordCount = query.GetRecordCount();
-            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Music>();
             var newlist = (from l in list
                            select new
@@ -88,9 +88,16 @@ namespace EGT_OTA.Controllers
                 return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
             }
             var Name = ZNRequest.GetString("Name");
-            if (db.Exists<Music>(x => x.Name == Name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                return Json(new { result = "该名称已被注册" }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = "请填写文件名称" }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                if (db.Exists<Music>(x => x.Name == Name))
+                {
+                    return Json(new { result = "该名称已存在" }, JsonRequestBehavior.AllowGet);
+                }
             }
             var FileUrl = ZNRequest.GetString("FileUrl");
             if (string.IsNullOrWhiteSpace(FileUrl))

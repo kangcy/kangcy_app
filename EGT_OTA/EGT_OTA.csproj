@@ -139,12 +139,12 @@
     <Compile Include="Controllers\App\ArticleTypeController.cs" />
     <Compile Include="Controllers\App\UserController.cs" />
     <Compile Include="Controllers\App\CommentController.cs" />
-    <Compile Include="Controllers\App\VideoController.cs" />
     <Compile Include="Controllers\App\FanController.cs" />
     <Compile Include="Controllers\App\KeepController.cs" />
     <Compile Include="Controllers\App\FeedBackController.cs" />
     <Compile Include="Controllers\App\PayController.cs" />
     <Compile Include="Controllers\App\ZanController.cs" />
+    <Compile Include="Controllers\App\VideoController.cs" />
     <Compile Include="Controllers\AuthorizationAttribute.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -1200,6 +1200,7 @@
     <Content Include="Views\Article\Index.cshtml" />
     <Content Include="Views\Comment\Index.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\Zan\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

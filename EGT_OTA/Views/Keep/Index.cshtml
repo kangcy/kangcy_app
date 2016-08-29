@@ -24,7 +24,7 @@
                             重置</button>
                         <button class="btn btn-primary fr" id="btnSearch">
                             查询</button>
-                        <input type="text" id="txtName" class="text form-control fr" placeholder="请填写收藏人名称" />
+                        <input type="text" id="txtName" class="text form-control fr" placeholder="请填写收藏人昵称" />
                     </div>
                 </div>
             </div>
@@ -72,10 +72,11 @@
             autowidth: true,
             colModel: [
                 { label: '主键', name: 'ID', index: "ID", hidden: true },
-                { label: '收藏人', name: 'UserName', index: "UserName", width: 200 },
-                { label: '文章标题', name: 'ArticleName', index: "ArticleName", width: 400 },
+                { label: '收藏人', name: 'NickName', index: "NickName", width: 200 },
+                { label: '文章标题', name: 'Title', index: "Title", width: 400 },
                 { label: '状态', name: 'Status', index: 'Status', width: 45, align: 'center' },
-                { label: '创建时间', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" }
+                { label: '创建时间', name: 'CreateDate', index: "CreateDate", width: 150, align: "center" },
+                { label: '修改时间', name: 'UpdateDate', index: "UpdateDate", width: 150, align: "center" }
             ],
             viewrecords: true,
             pager: 'pager', //分页工具栏 
