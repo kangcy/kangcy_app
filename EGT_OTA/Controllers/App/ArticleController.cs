@@ -124,11 +124,12 @@ namespace EGT_OTA.Controllers.App
                 model.TypeID = ZNRequest.GetInt("TypeID", 0);
                 model.MusicID = ZNRequest.GetInt("MusicID", 0);
                 model.MusicUrl = ZNRequest.GetString("MusicUrl");
+                model.Status = Enum_Status.Audit;
                 model.Views = 0;
                 model.Goods = 0;
                 model.Keeps = 0;
                 model.Comments = 0;
-                model.Status = 0;
+                model.IsRecommend = 0;
                 if (model.ID == 0)
                 {
                     model.CreateUserID = user.ID;
@@ -258,10 +259,10 @@ namespace EGT_OTA.Controllers.App
             var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
             //创建人
-            var UserID = ZNRequest.GetInt("UserID");
-            if (UserID > 0)
+            var CreateUserID = ZNRequest.GetInt("CreateUserID");
+            if (CreateUserID > 0)
             {
-                query = query.And("CreateUserID").IsEqualTo(UserID);
+                query = query.And("CreateUserID").IsEqualTo(CreateUserID);
             }
 
             //文章类型

@@ -203,10 +203,10 @@ namespace EGT_OTA.Controllers
         {
             var pager = new Pager();
             var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Keep>().Where<Keep>(x => x.Status == Enum_Status.Approved);
-            var UserID = ZNRequest.GetInt("UserID");
-            if (UserID > 0)
+            var CreateUserID = ZNRequest.GetInt("CreateUserID");
+            if (CreateUserID > 0)
             {
-                query = query.And("CreateUserID").IsEqualTo(UserID);
+                query = query.And("CreateUserID").IsEqualTo(CreateUserID);
             }
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;

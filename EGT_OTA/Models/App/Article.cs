@@ -86,6 +86,11 @@ namespace EGT_OTA.Models
         /// </summary>
         public int Comments { get; set; }
 
+        /// <summary>
+        /// 是否推荐
+        /// </summary>
+        public int IsRecommend { get; set; }
+
         #region 扩展
 
         /// <summary>
