@@ -52,15 +52,15 @@ namespace EGT_OTA.Controllers
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
-            var userArray = list.Select(x => x.CreateUserID).ToList();
-            userArray.AddRange(list.Select(x => x.UserID).ToList());
+            var userArray = list.Select(x => x.FromUserID).ToList();
+            userArray.AddRange(list.Select(x => x.ToUserID).ToList());
             var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "UserName").From<User>().And("ID").In(userArray.ToArray()).ExecuteTypedList<User>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               Name = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).UserName : "",
-                               FanName = users.Exists(x => x.ID == l.UserID) ? users.FirstOrDefault(x => x.ID == l.UserID).UserName : "",
+                               Name = users.Exists(x => x.ID == l.FromUserID) ? users.FirstOrDefault(x => x.ID == l.FromUserID).UserName : "",
+                               FanName = users.Exists(x => x.ID == l.ToUserID) ? users.FirstOrDefault(x => x.ID == l.ToUserID).UserName : "",
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
                            }).ToList();
@@ -90,23 +90,20 @@ namespace EGT_OTA.Controllers
 
             var result = false;
             var message = string.Empty;
-            var userID = ZNRequest.GetInt("UserID");
-            Fan model = db.Single<Fan>(x => x.CreateUserID == user.ID && x.UserID == userID);
+            var userID = ZNRequest.GetInt("ToUserID");
+            Fan model = db.Single<Fan>(x => x.FromUserID == user.ID && x.ToUserID == userID);
             if (model == null)
             {
                 model = new Fan();
             }
-            model.UserID = userID;
+            model.ToUserID = userID;
             model.Status = Enum_Status.Approved;
-            model.UpdateDate = DateTime.Now;
-            model.UpdateUserID = user.ID;
-            model.UpdateIP = Tools.GetClientIP;
             try
             {
                 if (model.ID == 0)
                 {
                     model.CreateDate = DateTime.Now;
-                    model.CreateUserID = user.ID;
+                    model.FromUserID = user.ID;
                     model.CreateIP = Tools.GetClientIP;
                     result = Tools.SafeInt(db.Add<Fan>(model)) > 0;
                 }
@@ -236,6 +233,7 @@ namespace EGT_OTA.Controllers
                 };
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
+            return Json(null, JsonRequestBehavior.AllowGet);
         }
 
 

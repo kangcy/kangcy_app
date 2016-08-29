@@ -223,15 +223,6 @@ namespace EGT_OTA.Controllers.App
                 {
                     model.Goods = model.Goods + 1;
                     result = db.Update<Article>(model) > 0;
-
-                    if (result)
-                    {
-                        Handle handle = new Handle();
-                        handle.ArticleID = model.ID;
-                        handle.UserID = user.ID;
-                        handle.CreateDate = DateTime.Now;
-                        db.Add<Handle>(handle);
-                    }
                 }
             }
             catch (Exception ex)

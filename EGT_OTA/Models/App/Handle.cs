@@ -22,30 +22,18 @@ using SubSonic.SqlGeneration.Schema;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 操作
+    /// 操作(点赞、收藏)
     /// </summary>
-    [Serializable]
-    public class Handle
+    public abstract class Handle : BaseModel
     {
         /// <summary>
-        /// ID
-        /// </summary>
-        [SubSonicPrimaryKey]
-        public int ID { get; set; }
-
-        /// <summary>
-        /// 文章ID
+        /// 文章
         /// </summary>
         public int ArticleID { get; set; }
 
         /// <summary>
-        /// 创建人
+        /// 文章作者
         /// </summary>
-        public int UserID { get; set; }
-
-        /// <summary>
-        /// 创建时间
-        /// </summary>
-        public DateTime CreateDate { get; set; }
+        public int ArticleUserID { get; set; }
     }
 }

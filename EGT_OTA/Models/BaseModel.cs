@@ -10,8 +10,7 @@ namespace EGT_OTA.Models
     /// <summary>
     /// 实体类基类
     /// </summary>
-    [Serializable]
-    public class BaseModel
+    public abstract class BaseModel
     {
         /// <summary>
         /// 状态

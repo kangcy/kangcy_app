@@ -22,7 +22,7 @@ using SubSonic.SqlGeneration.Schema;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 关注、粉丝
+    /// 关注
     /// </summary>
     [Serializable]
     public class Fan
@@ -42,6 +42,11 @@ namespace EGT_OTA.Models
         /// 关注人
         /// </summary>
         public int FromUserID { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int Status { get; set; }
 
         /// <summary>
         /// 创建时间

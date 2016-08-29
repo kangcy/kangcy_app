@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EGT_OTA.Models;
+using System.IO;
+using Newtonsoft.Json;
 using CommonTools;
 using EGT_OTA.Helper;
-using EGT_OTA.Models;
+using System.Web.Security;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
-namespace EGT_OTA.Controllers.App
+namespace EGT_OTA.Controllers
 {
     /// <summary>
-    /// 点赞
+    /// 点赞管理
     /// </summary>
     public class ZanController : BaseController
     {
@@ -19,26 +24,51 @@ namespace EGT_OTA.Controllers.App
             return View();
         }
 
+        public ActionResult Edit()
+        {
+            var id = ZNRequest.GetInt("id");
+            Zan model = null;
+            if (id > 0)
+            {
+                model = db.Single<Zan>(x => x.ID == id);
+            }
+            if (model == null)
+            {
+                model = new Zan();
+            }
+            return View(model);
+        }
+
         /// <summary>
-        /// 点赞列表
+        /// 列表
         /// </summary>
         public ActionResult List()
         {
             var pager = new Pager();
             var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>();
+            string Name = ZNRequest.GetString("Name");
+            if (!string.IsNullOrWhiteSpace(Name))
+            {
+                var array = db.Find<User>(x => x.NickName.Contains(Name)).Select(x => x.ID).ToArray();
+                if (array.Length > 0)
+                {
+                    query = query.And("CreateUserID").In(array);
+                }
+            }
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName").From<User>().And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
-            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               ArticleID = l.ArticleID,
                                NickName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).NickName : "",
-                               ArticleName = articles.Exists(x => x.ID == l.ArticleID) ? articles.FirstOrDefault(x => x.ID == l.ArticleID).Title : "",
+                               ArticleID = articles.Exists(x => x.ID == l.ArticleID) ? articles.FirstOrDefault(x => x.ID == l.ArticleID).ID : 0,
+                               Title = articles.Exists(x => x.ID == l.ArticleID) ? articles.FirstOrDefault(x => x.ID == l.ArticleID).Title : "",
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                               UpdateDate = l.UpdateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
                            }).ToList();
             var result = new
@@ -51,48 +81,10 @@ namespace EGT_OTA.Controllers.App
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        /// <summary>
-        /// 删除
-        /// </summary>
-        public ActionResult Delete()
-        {
-            var result = false;
-            var message = string.Empty;
-            if (!CurrentUser.HasPower("35-4"))
-            {
-                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
-            }
-            var ids = ZNRequest.GetString("ids");
-            try
-            {
-                if (string.IsNullOrWhiteSpace(ids))
-                {
-                    message = "未选择任意项";
-                }
-                else
-                {
-                    var status = Enum_Status.DELETE;
-                    var array = ids.Split(',').ToArray();
-                    var list = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().And("ID").In(array).ExecuteTypedList<Zan>();
-                    list.ForEach(x =>
-                    {
-                        x.Status = status;
-                    });
-                    result = db.UpdateMany<Zan>(list) > 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
-            }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
-        }
-
         #region  APP请求
 
         /// <summary>
-        /// 点赞编辑
+        /// 编辑
         /// </summary>
         [AllowAnyone]
         public ActionResult Manage()
@@ -106,23 +98,84 @@ namespace EGT_OTA.Controllers.App
             var result = false;
             var message = string.Empty;
             var articleID = ZNRequest.GetInt("ArticleID");
-            Article article = db.Single<Article>(x => x.ID == articleID);
-            Zan model = new Zan();
+            if (articleID == 0)
+            {
+                return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
+            }
+            Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+            if (article == null)
+            {
+                return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
+            }
+            Zan model = db.Single<Zan>(x => x.CreateUserID == user.ID && x.ArticleID == articleID);
+            if (model == null)
+            {
+                model = new Zan();
+            }
+            else
+            {
+                return Json(new { result = false, message = "已点赞" }, JsonRequestBehavior.AllowGet);
+            }
             model.ArticleID = articleID;
             model.ArticleUserID = article.CreateUserID;
             model.Status = Enum_Status.Approved;
+            model.UpdateUserID = user.ID;
+            model.UpdateDate = DateTime.Now;
+            model.UpdateIP = Tools.GetClientIP;
             try
             {
-                model.CreateDate = DateTime.Now;
-                model.CreateUserID = user.ID;
-                model.CreateIP = Tools.GetClientIP;
-                result = Tools.SafeInt(db.Add<Zan>(model)) > 0;
-
-                //修改文章点赞数
-                if (result)
+                if (model.ID == 0)
                 {
-                    article.Comments = article.Comments + 1;
-                    result = db.Update<Article>(article) > 0;
+                    model.CreateDate = DateTime.Now;
+                    model.CreateUserID = user.ID;
+                    model.CreateIP = Tools.GetClientIP;
+                    result = Tools.SafeInt(db.Add<Zan>(model)) > 0;
+
+                    //修改文章点赞数
+                    if (result)
+                    {
+                        article.Goods = article.Goods + 1;
+                        db.Update<Article>(article);
+                    }
+                }
+                else
+                {
+                    result = db.Update<Zan>(model) > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                message = ex.Message;
+            }
+            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult Delete()
+        {
+            User user = GetUserInfo();
+            if (user == null)
+            {
+                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var result = false;
+            var message = string.Empty;
+            var id = ZNRequest.GetInt("ids");
+            var model = db.Single<Zan>(x => x.ID == id);
+            try
+            {
+                if (model != null)
+                {
+                    model.UpdateUserID = user.ID;
+                    model.UpdateDate = DateTime.Now;
+                    model.UpdateIP = Tools.GetClientIP;
+                    model.Status = Enum_Status.DELETE;
+                    result = db.Update<Zan>(model) > 0;
                 }
             }
             catch (Exception ex)
@@ -141,41 +194,35 @@ namespace EGT_OTA.Controllers.App
         {
             var pager = new Pager();
             var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.Status == Enum_Status.Approved);
-
-            //点赞人
-            var CreateUserID = ZNRequest.GetInt("CreateUserID");
-            if (CreateUserID > 0)
+            var UserID = ZNRequest.GetInt("UserID");
+            if (UserID > 0)
             {
-                query = query.And("CreateUserID").IsEqualTo(CreateUserID);
-            }
-
-            //文章作者
-            var ArticleUserID = ZNRequest.GetInt("ArticleUserID");
-            if (ArticleUserID > 0)
-            {
-                query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
+                query = query.And("CreateUserID").IsEqualTo(UserID);
             }
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
-            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "Cover", "Views", "Goods", "Keeps", "Comments").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
-            var newlist = (from l in list
-                           join a in articles on l.ArticleID equals a.ID
-                           join u in users on l.CreateUserID equals u.ID
+            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Goods", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
+            var articletypes = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().ExecuteTypedList<ArticleType>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(articles.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var newlist = (from a in articles
+                           join u in users on a.CreateUserID equals u.ID
+                           join t in articletypes on a.TypeID equals t.ID
                            select new
                            {
-                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                               UserID = u.ID,
                                NickName = u.NickName,
-                               Avatar = GetFullUrl(u.Avatar),
                                Signature = u.Signature,
+                               Avatar = GetFullUrl(u.Avatar),
                                ArticleID = a.ID,
                                Title = a.Title,
                                Cover = GetFullUrl(a.Cover),
                                Views = a.Views,
                                Goods = a.Goods,
+                               Comments = a.Comments,
                                Keeps = a.Keeps,
-                               Comments = a.Comments
+                               CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
+                               TypeaName = t.Name
                            }).ToList();
             var result = new
             {

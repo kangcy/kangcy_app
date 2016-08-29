@@ -49,7 +49,7 @@ namespace EGT_OTA.Controllers
             string Name = ZNRequest.GetString("Name");
             if (!string.IsNullOrWhiteSpace(Name))
             {
-                var array = db.Find<User>(x => x.UserName == Name).Select(x => x.ID).ToArray();
+                var array = db.Find<User>(x => x.NickName.Contains(Name)).Select(x => x.ID).ToArray();
                 if (array.Length > 0)
                 {
                     query = query.And("CreateUserID").In(array);
@@ -58,15 +58,17 @@ namespace EGT_OTA.Controllers
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName").From<User>().And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
-            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               UserName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).NickName : "",
-                               ArticleName = articles.Exists(x => x.ID == l.ArticleID) ? articles.FirstOrDefault(x => x.ID == l.ArticleID).Title : "",
+                               NickName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).NickName : "",
+                               ArticleID = articles.Exists(x => x.ID == l.ArticleID) ? articles.FirstOrDefault(x => x.ID == l.ArticleID).ID : 0,
+                               Title = articles.Exists(x => x.ID == l.ArticleID) ? articles.FirstOrDefault(x => x.ID == l.ArticleID).Title : "",
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
+                               UpdateDate = l.UpdateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
                            }).ToList();
             var result = new
@@ -96,15 +98,29 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             var articleID = ZNRequest.GetInt("ArticleID");
+            if (articleID == 0)
+            {
+                return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
+            }
+            Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+            if (article == null)
+            {
+                return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
+            }
             Keep model = db.Single<Keep>(x => x.CreateUserID == user.ID && x.ArticleID == articleID);
             if (model == null)
             {
                 model = new Keep();
             }
+            else
+            {
+                return Json(new { result = false, message = "已收藏" }, JsonRequestBehavior.AllowGet);
+            }
             model.ArticleID = articleID;
+            model.ArticleUserID = article.CreateUserID;
             model.Status = Enum_Status.Approved;
-            model.UpdateDate = DateTime.Now;
             model.UpdateUserID = user.ID;
+            model.UpdateDate = DateTime.Now;
             model.UpdateIP = Tools.GetClientIP;
             try
             {
@@ -114,6 +130,13 @@ namespace EGT_OTA.Controllers
                     model.CreateUserID = user.ID;
                     model.CreateIP = Tools.GetClientIP;
                     result = Tools.SafeInt(db.Add<Keep>(model)) > 0;
+
+                    //修改文章收藏数
+                    if (result)
+                    {
+                        article.Keeps = article.Keeps + 1;
+                        db.Update<Article>(article);
+                    }
                 }
                 else
                 {
@@ -148,6 +171,9 @@ namespace EGT_OTA.Controllers
             {
                 if (model != null)
                 {
+                    model.UpdateUserID = user.ID;
+                    model.UpdateDate = DateTime.Now;
+                    model.UpdateIP = Tools.GetClientIP;
                     model.Status = Enum_Status.DELETE;
                     result = db.Update<Keep>(model) > 0;
                 }
@@ -176,20 +202,23 @@ namespace EGT_OTA.Controllers
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
-            var types = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().Where<ArticleType>(x => x.Status == Enum_Status.Approved).ExecuteTypedList<ArticleType>();
-            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(articles.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Goods", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
+            var articletypes = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().ExecuteTypedList<ArticleType>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(articles.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
             var newlist = (from a in articles
                            join u in users on a.CreateUserID equals u.ID
-                           join t in types on a.TypeID equals t.ID
+                           join t in articletypes on a.TypeID equals t.ID
                            select new
                            {
+                               UserID = u.ID,
                                NickName = u.NickName,
+                               Signature = u.Signature,
                                Avatar = GetFullUrl(u.Avatar),
                                ArticleID = a.ID,
                                Title = a.Title,
-                               Cover = a.Cover,
+                               Cover = GetFullUrl(a.Cover),
                                Views = a.Views,
+                               Goods = a.Goods,
                                Comments = a.Comments,
                                Keeps = a.Keeps,
                                CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),

@@ -25,17 +25,12 @@ namespace EGT_OTA.Models
     /// 收藏
     /// </summary>
     [Serializable]
-    public class Keep : BaseModel
+    public class Keep : Handle
     {
         /// <summary>
         /// ID
         /// </summary>
         [SubSonicPrimaryKey]
         public int ID { get; set; }
-
-        /// <summary>
-        /// 文章ID
-        /// </summary>
-        public int ArticleID { get; set; }
     }
 }
