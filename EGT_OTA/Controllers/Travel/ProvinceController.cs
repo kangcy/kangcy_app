@@ -56,7 +56,7 @@ namespace EGT_OTA.Controllers
             }
             int recordCount = all.Count;
             var list = all;
-            int totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; // 计算总页数 
+            int totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
 
             StringWriter sw = new StringWriter();
             JsonWriter writer = new JsonTextWriter(sw);

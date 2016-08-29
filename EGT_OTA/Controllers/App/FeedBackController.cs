@@ -24,21 +24,6 @@ namespace EGT_OTA.Controllers
             return View();
         }
 
-        public ActionResult Edit()
-        {
-            var id = ZNRequest.GetInt("id");
-            FeedBack model = null;
-            if (id > 0)
-            {
-                model = db.Single<FeedBack>(x => x.ID == id);
-            }
-            if (model == null)
-            {
-                model = new FeedBack();
-            }
-            return View(model);
-        }
-
         /// <summary>
         /// 列表
         /// </summary>
@@ -49,21 +34,23 @@ namespace EGT_OTA.Controllers
             string Name = ZNRequest.GetString("Name");
             if (!string.IsNullOrWhiteSpace(Name))
             {
-                var array = db.Find<User>(x => x.UserName == Name).Select(x => x.ID).ToArray();
+                var array = db.Find<User>(x => x.NickName.Contains(Name)).Select(x => x.ID).ToArray();
                 if (array.Length > 0)
                 {
                     query = query.And("CreateUserID").In(array);
                 }
             }
             var recordCount = query.GetRecordCount();
-            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1; //计算总页数
+            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<FeedBack>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "UserName").From<User>().And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName").From<User>().And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               UserName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).UserName : "",
+                               NickName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).NickName : "",
+                               Summary = l.Summary,
+                               Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status),
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")
                            }).ToList();
             var result = new
@@ -74,6 +61,39 @@ namespace EGT_OTA.Controllers
                 rows = newlist
             };
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        public ActionResult Delete()
+        {
+            var result = false;
+            var message = string.Empty;
+            if (!CurrentUser.HasPower("38-4"))
+            {
+                return Json(new { result = result, message = "您不是管理员或者没有管理的权限" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var id = ZNRequest.GetInt("ids");
+            try
+            {
+                if (id > 0)
+                {
+                    FeedBack model = db.Single<FeedBack>(x => x.ID == id);
+                    if (model != null)
+                    {
+                        model.Status = Enum_Status.DELETE;
+                        result = db.Update<FeedBack>(model) > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                message = ex.Message;
+            }
+            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         #region  APP请求
@@ -92,44 +112,19 @@ namespace EGT_OTA.Controllers
 
             var result = false;
             var message = string.Empty;
+            var summary = SqlFilter(ZNRequest.GetString("Summary"));
+            if (string.IsNullOrWhiteSpace(summary))
+            {
+                return Json(new { result = false, message = "请填写意见反馈" }, JsonRequestBehavior.AllowGet);
+            }
             FeedBack model = new FeedBack();
             try
             {
-                model.Summary = SqlFilter(ZNRequest.GetString("Summary"));
+                model.Summary = summary;
                 model.CreateDate = DateTime.Now;
                 model.CreateUserID = user.ID;
                 model.CreateIP = Tools.GetClientIP;
                 result = Tools.SafeInt(db.Add<FeedBack>(model)) > 0;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
-            }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
-        /// 删除
-        /// </summary>
-        [AllowAnyone]
-        public ActionResult Delete()
-        {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
-            var id = ZNRequest.GetInt("ids");
-            try
-            {
-                if (id > 0)
-                {
-                    result = db.Delete<FeedBack>(id) > 0;
-                }
             }
             catch (Exception ex)
             {

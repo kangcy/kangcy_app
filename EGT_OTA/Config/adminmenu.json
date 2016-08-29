@@ -87,6 +87,14 @@
         "Location": "/Zan/Index",
         "Button": ",刷新,"
     },
+	{
+        "ModuleId": "38",
+        "ParentId": "3",
+        "FullName": "反馈管理",
+        "Icon": "fa-list",
+        "Location": "/FeedBack/Index",
+        "Button": ",刷新,"
+    },
     {
         "ModuleId": "2",
         "ParentId": "0",
