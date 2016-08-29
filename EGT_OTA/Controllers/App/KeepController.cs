@@ -107,7 +107,7 @@ namespace EGT_OTA.Controllers
             {
                 return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
             }
-            Keep model = db.Single<Keep>(x => x.CreateUserID == user.ID && x.ArticleID == articleID);
+            Keep model = db.Single<Keep>(x => x.CreateUserID == user.ID && x.ArticleID == articleID && x.Status == Enum_Status.Approved);
             if (model == null)
             {
                 model = new Keep();
@@ -204,7 +204,7 @@ namespace EGT_OTA.Controllers
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
             var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Goods", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
             var articletypes = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().ExecuteTypedList<ArticleType>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(articles.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(articles.Select(x => x.CreateUserID).Distinct().ToArray()).ExecuteTypedList<User>();
             var newlist = (from a in articles
                            join u in users on a.CreateUserID equals u.ID
                            join t in articletypes on a.TypeID equals t.ID

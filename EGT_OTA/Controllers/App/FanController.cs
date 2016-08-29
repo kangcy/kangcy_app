@@ -34,7 +34,7 @@ namespace EGT_OTA.Controllers
             string Name = ZNRequest.GetString("Name");
             if (!string.IsNullOrWhiteSpace(Name))
             {
-                var array = db.Find<User>(x => x.UserName == Name).Select(x => x.ID).ToArray();
+                var array = db.Find<User>(x => x.NickName.Contains(Name)).Select(x => x.ID).ToArray();
                 if (array.Length > 0)
                 {
                     query = query.And("CreateUserID").In(array);
@@ -54,13 +54,13 @@ namespace EGT_OTA.Controllers
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
             var userArray = list.Select(x => x.FromUserID).ToList();
             userArray.AddRange(list.Select(x => x.ToUserID).ToList());
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "UserName").From<User>().And("ID").In(userArray.ToArray()).ExecuteTypedList<User>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName").From<User>().And("ID").In(userArray.ToArray()).ExecuteTypedList<User>();
             var newlist = (from l in list
                            select new
                            {
                                ID = l.ID,
-                               Name = users.Exists(x => x.ID == l.FromUserID) ? users.FirstOrDefault(x => x.ID == l.FromUserID).UserName : "",
-                               FanName = users.Exists(x => x.ID == l.ToUserID) ? users.FirstOrDefault(x => x.ID == l.ToUserID).UserName : "",
+                               Name = users.Exists(x => x.ID == l.FromUserID) ? users.FirstOrDefault(x => x.ID == l.FromUserID).NickName : "",
+                               FanName = users.Exists(x => x.ID == l.ToUserID) ? users.FirstOrDefault(x => x.ID == l.ToUserID).NickName : "",
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
                            }).ToList();
@@ -91,10 +91,18 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             var userID = ZNRequest.GetInt("ToUserID");
+            if (userID == 0)
+            {
+                return Json(new { result = false, message = "信息异常,请刷新重试" }, JsonRequestBehavior.AllowGet);
+            }
             Fan model = db.Single<Fan>(x => x.FromUserID == user.ID && x.ToUserID == userID);
             if (model == null)
             {
                 model = new Fan();
+            }
+            else
+            {
+                return Json(new { result = false, message = "已关注" }, JsonRequestBehavior.AllowGet);
             }
             model.ToUserID = userID;
             model.Status = Enum_Status.Approved;
@@ -102,8 +110,8 @@ namespace EGT_OTA.Controllers
             {
                 if (model.ID == 0)
                 {
-                    model.CreateDate = DateTime.Now;
                     model.FromUserID = user.ID;
+                    model.CreateDate = DateTime.Now;
                     model.CreateIP = Tools.GetClientIP;
                     result = Tools.SafeInt(db.Add<Fan>(model)) > 0;
                 }
@@ -178,15 +186,13 @@ namespace EGT_OTA.Controllers
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
             var array = new List<int>();
-            var from = list.Select(x => x.FromUserID).ToList();
-            var to = list.Select(x => x.ToUserID).ToList();
             if (FromUserID > 0)
             {
-                array = to;
+                array = list.Select(x => x.ToUserID).Distinct().ToList();
             }
             if (ToUserID > 0)
             {
-                array = from;
+                array = list.Select(x => x.FromUserID).Distinct().ToList();
             }
             var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(array.ToArray()).ExecuteTypedList<User>();
 
