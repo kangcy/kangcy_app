@@ -118,12 +118,15 @@ namespace EGT_OTA.Controllers.App
             {
                 Article model = new Article();
                 model.ID = ZNRequest.GetInt("ID");
-                model.Title = ZNRequest.GetString("Title");
+                model.Title = SqlFilter(ZNRequest.GetString("Title"));
                 model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"));
                 model.Cover = ZNRequest.GetString("Cover");
                 model.TypeID = ZNRequest.GetInt("TypeID", 0);
+                model.MusicID = ZNRequest.GetInt("MusicID", 0);
+                model.MusicUrl = ZNRequest.GetString("MusicUrl");
                 model.Views = 0;
                 model.Goods = 0;
+                model.Keeps = 0;
                 model.Comments = 0;
                 model.Status = 0;
                 if (model.ID == 0)
@@ -163,13 +166,13 @@ namespace EGT_OTA.Controllers.App
 
             var result = false;
             var message = string.Empty;
+            var id = ZNRequest.GetInt("ID");
+            if (id == 0)
+            {
+                return Json(new { result = result, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+            }
             try
             {
-                var id = ZNRequest.GetInt("id");
-                if (id == 0)
-                {
-                    return Json(new { result = result, message = "参数异常" }, JsonRequestBehavior.AllowGet);
-                }
                 Article model = db.Single<Article>(x => x.ID == id);
                 if (model == null)
                 {
@@ -177,11 +180,24 @@ namespace EGT_OTA.Controllers.App
                 }
                 else
                 {
-                    model.Views += 1;
-                    result = db.Update<Article>(model) > 0;
+                    new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Views").EqualTo(model.Views + 1).Where<Article>(x => x.ID == model.ID).Execute();
 
-                    User createuser = db.Single<User>(x => x.ID == model.CreateUserID);
-                    model.UserName = createuser == null ? "" : createuser.NickName;
+                    //创建人
+                    User createUser = db.Single<User>(x => x.ID == model.CreateUserID);
+                    model.UserName = createUser == null ? "" : createUser.NickName;
+
+                    //类型
+                    ArticleType articleType = db.Single<ArticleType>(x => x.ID == model.TypeID);
+                    model.TypeName = articleType == null ? "" : articleType.Name;
+
+                    //音乐
+                    if (model.MusicID > 0)
+                    {
+                        Music music = db.Single<Music>(x => x.ID == model.MusicID);
+                        model.MusicUrl = music == null ? "" : music.FileUrl;
+                    }
+
+                    model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                     return Json(new { result = result, message = model }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -209,20 +225,19 @@ namespace EGT_OTA.Controllers.App
             var message = string.Empty;
             try
             {
-                var id = ZNRequest.GetInt("id");
+                var id = ZNRequest.GetInt("ID");
                 if (id == 0)
                 {
                     return Json(new { result = result, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
-                Article model = db.Single<Article>(x => x.ID == id);
+                Article model = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Goods").From<Article>().Where<Article>(x => x.ID == id).ExecuteSingle<Article>();
                 if (model == null)
                 {
                     return Json(new { result = result, message = "数据异常" }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    model.Goods = model.Goods + 1;
-                    result = db.Update<Article>(model) > 0;
+                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Goods").EqualTo(model.Goods + 1).Where<Article>(x => x.ID == model.ID).Execute() > 0;
                 }
             }
             catch (Exception ex)
@@ -258,23 +273,24 @@ namespace EGT_OTA.Controllers.App
             var recordCount = query.GetRecordCount();
             var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
             var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Article>();
-            var types = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().Where<ArticleType>(x => x.Status == Enum_Status.Approved).ExecuteTypedList<ArticleType>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+            var articletypes = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().ExecuteTypedList<ArticleType>();
+            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
             var newlist = (from a in list
                            join u in users on a.CreateUserID equals u.ID
-                           join t in types on a.TypeID equals t.ID
+                           join t in articletypes on a.TypeID equals t.ID
                            select new
                            {
                                NickName = u.NickName,
                                Avatar = GetFullUrl(u.Avatar),
                                ArticleID = a.ID,
                                Title = a.Title,
-                               Cover = a.Cover,
+                               Cover = GetFullUrl(a.Cover),
                                Views = a.Views,
+                               Goods = a.Goods,
                                Comments = a.Comments,
                                Keeps = a.Keeps,
                                CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
-                               TypeaName = t.Name
+                               TypeName = t.Name
                            }).ToList();
             var result = new
             {

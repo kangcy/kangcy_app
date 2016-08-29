@@ -37,7 +37,7 @@ namespace EGT_OTA.Controllers.App
                                ID = l.ID,
                                ArticleID = l.ArticleID,
                                NickName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).NickName : "",
-                               ArticleName = articles.Exists(x => x.ID == l.ArticleID) ? articles.FirstOrDefault(x => x.ID == l.ArticleID).Title : "",
+                               Title = articles.Exists(x => x.ID == l.ArticleID) ? articles.FirstOrDefault(x => x.ID == l.ArticleID).Title : "",
                                Summary = l.Summary,
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss"),
                                Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status)
@@ -96,7 +96,7 @@ namespace EGT_OTA.Controllers.App
         /// 评论编辑
         /// </summary>
         [AllowAnyone]
-        public ActionResult CommentManage()
+        public ActionResult Manage()
         {
             User user = GetUserInfo();
             if (user == null)
@@ -106,12 +106,17 @@ namespace EGT_OTA.Controllers.App
 
             var result = false;
             var message = string.Empty;
+            var summary = SqlFilter(ZNRequest.GetString("Summary"));
+            if (string.IsNullOrWhiteSpace(summary))
+            {
+                return Json(new { result = false, message = "请填写评论内容" }, JsonRequestBehavior.AllowGet);
+            }
             var articleID = ZNRequest.GetInt("ArticleID");
-            Article article = db.Single<Article>(x => x.ID == articleID);
+            Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Comments").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
             Comment model = new Comment();
             model.ArticleID = articleID;
             model.ArticleUserID = article.CreateUserID;
-            model.Summary = SqlFilter(ZNRequest.GetString("Summary"));
+            model.Summary = summary;
             model.Status = Enum_Status.Approved;
             try
             {

@@ -54,8 +54,12 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 音乐
         /// </summary>
-        [SubSonicStringLength(255), SubSonicNullString]
-        public string Music { get; set; }
+        public int MusicID { get; set; }
+
+        /// <summary>
+        /// 音乐外链
+        /// </summary>
+        public string MusicUrl { get; set; }
 
         /// <summary>
         /// 类型
@@ -89,6 +93,18 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public string UserName { get; set; }
+
+        /// <summary>
+        /// 文章类型
+        /// </summary>
+        [SubSonicIgnore]
+        public string TypeName { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        [SubSonicIgnore]
+        public string CreateDateText { get; set; }
 
         #endregion
     }
