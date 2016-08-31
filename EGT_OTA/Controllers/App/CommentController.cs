@@ -146,47 +146,56 @@ namespace EGT_OTA.Controllers.App
         [AllowAnyone]
         public ActionResult All()
         {
-            var pager = new Pager();
-            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved);
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved);
 
-            //评论人
-            var CreateUserID = ZNRequest.GetInt("CreateUserID");
-            if (CreateUserID > 0)
-            {
-                query = query.And("CreateUserID").IsEqualTo(CreateUserID);
-            }
+                //评论人
+                var CreateUserID = ZNRequest.GetInt("CreateUserID");
+                if (CreateUserID > 0)
+                {
+                    query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                }
 
-            //文章作者
-            var ArticleUserID = ZNRequest.GetInt("ArticleUserID");
-            if (ArticleUserID > 0)
-            {
-                query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
+                //文章作者
+                var ArticleUserID = ZNRequest.GetInt("ArticleUserID");
+                if (ArticleUserID > 0)
+                {
+                    query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
+                }
+                var recordCount = query.GetRecordCount();
+                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
+                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
+                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+                var newlist = (from l in list
+                               join a in articles on l.ArticleID equals a.ID
+                               join u in users on l.CreateUserID equals u.ID
+                               select new
+                               {
+                                   Summary = l.Summary,
+                                   CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                   NickName = u.NickName,
+                                   Avatar = GetFullUrl(u.Avatar),
+                                   ArticleID = a.ID,
+                                   Title = a.Title
+                               }).ToList();
+                var result = new
+                {
+                    page = pager.Index,
+                    records = recordCount,
+                    total = totalPage,
+                    rows = newlist
+                };
+                return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")");
             }
-            var recordCount = query.GetRecordCount();
-            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
-            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
-            var newlist = (from l in list
-                           join a in articles on l.ArticleID equals a.ID
-                           join u in users on l.CreateUserID equals u.ID
-                           select new
-                           {
-                               Summary = l.Summary,
-                               CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
-                               NickName = u.NickName,
-                               Avatar = GetFullUrl(u.Avatar),
-                               ArticleID = a.ID,
-                               Title = a.Title
-                           }).ToList();
-            var result = new
+            catch (Exception ex)
             {
-                page = pager.Index,
-                records = recordCount,
-                total = totalPage,
-                rows = newlist
-            };
-            return Json(result, JsonRequestBehavior.AllowGet);
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Content(callback + "()");
+            }
         }
 
         #endregion

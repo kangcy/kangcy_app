@@ -111,6 +111,18 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public string CreateDateText { get; set; }
 
+        /// <summary>
+        /// 音乐是否自动播放
+        /// </summary>
+        [SubSonicIgnore]
+        public int AutoMusic { get; set; }
+
+        /// <summary>
+        /// 分享带昵称
+        /// </summary>
+        [SubSonicIgnore]
+        public int ShareNick { get; set; }
+
         #endregion
     }
 }

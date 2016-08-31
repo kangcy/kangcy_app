@@ -100,7 +100,7 @@ namespace EGT_OTA.Models
         public string Email { get; set; }
 
         /// <summary>
-        /// 邮箱认证
+        /// 是否邮箱认证
         /// </summary>
         public int IsEmail { get; set; }
 
@@ -111,7 +111,7 @@ namespace EGT_OTA.Models
         public string Phone { get; set; }
 
         /// <summary>
-        /// 号码认证
+        /// 是否号码认证
         /// </summary>
         public int IsPhone { get; set; }
 
@@ -120,6 +120,11 @@ namespace EGT_OTA.Models
         ///</summary>
         [SubSonicStringLength(50), SubSonicNullString]
         public string WeiXin { get; set; }
+
+        /// <summary>
+        /// 是否绑定微信
+        /// </summary>
+        public int IsWeixin { get; set; }
 
         /// <summary>
         /// 音乐自动播放

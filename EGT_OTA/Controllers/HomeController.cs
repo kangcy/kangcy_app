@@ -38,6 +38,7 @@ namespace EGT_OTA.Controllers
         [AllowAnyone]
         public ActionResult Login()
         {
+            ViewBag.Password = DesEncryptHelper.Encrypt("123456");
             return View();
         }
 

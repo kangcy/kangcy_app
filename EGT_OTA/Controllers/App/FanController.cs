@@ -166,82 +166,92 @@ namespace EGT_OTA.Controllers
         [AllowAnyone]
         public ActionResult All()
         {
-            var pager = new Pager();
-            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Fan>(x => x.Status == Enum_Status.Approved);
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Fan>().Where<Fan>(x => x.Status == Enum_Status.Approved);
 
-            //关注人
-            var FromUserID = ZNRequest.GetInt("FromUserID");
-            if (FromUserID > 0)
-            {
-                query = query.And("FromUserID").IsEqualTo(FromUserID);
-            }
-
-            //被关注人
-            var ToUserID = ZNRequest.GetInt("ToUserID");
-            if (ToUserID > 0)
-            {
-                query = query.And("ToUserID").IsEqualTo(ToUserID);
-            }
-            var recordCount = query.GetRecordCount();
-            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
-            var array = new List<int>();
-            if (FromUserID > 0)
-            {
-                array = list.Select(x => x.ToUserID).Distinct().ToList();
-            }
-            if (ToUserID > 0)
-            {
-                array = list.Select(x => x.FromUserID).Distinct().ToList();
-            }
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(array.ToArray()).ExecuteTypedList<User>();
-
-            //我关注的列表
-            if (FromUserID > 0)
-            {
-                var newlist = (from l in list
-                               join u in users on l.ToUserID equals u.ID
-                               select new
-                               {
-                                   CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
-                                   NickName = u.NickName,
-                                   Signature = u.Signature,
-                                   Avatar = GetFullUrl(u.Avatar)
-                               }).ToList();
-                var result = new
+                //关注人
+                var FromUserID = ZNRequest.GetInt("FromUserID");
+                if (FromUserID > 0)
                 {
-                    page = pager.Index,
-                    records = recordCount,
-                    total = totalPage,
-                    rows = newlist
-                };
-                return Json(result, JsonRequestBehavior.AllowGet);
-            }
+                    query = query.And("FromUserID").IsEqualTo(FromUserID);
+                }
 
-            //关注我的列表
-            if (ToUserID > 0)
-            {
-                var newlist = (from l in list
-                               join u in users on l.FromUserID equals u.ID
-                               select new
-                               {
-                                   CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
-                                   NickName = u.NickName,
-                                   Signature = u.Signature,
-                                   Avatar = GetFullUrl(u.Avatar)
-                               }).ToList();
-                var result = new
+                //被关注人
+                var ToUserID = ZNRequest.GetInt("ToUserID");
+                if (ToUserID > 0)
                 {
-                    page = pager.Index,
-                    records = recordCount,
-                    total = totalPage,
-                    rows = newlist
-                };
-                return Json(result, JsonRequestBehavior.AllowGet);
+                    query = query.And("ToUserID").IsEqualTo(ToUserID);
+                }
+                var recordCount = query.GetRecordCount();
+                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
+                var array = new List<int>();
+                if (FromUserID > 0)
+                {
+                    array = list.Select(x => x.ToUserID).Distinct().ToList();
+                }
+                if (ToUserID > 0)
+                {
+                    array = list.Select(x => x.FromUserID).Distinct().ToList();
+                }
+                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where<User>(x => x.Status == Enum_Status.Approved).And("ID").In(array.ToArray()).ExecuteTypedList<User>();
+
+                //我关注的列表
+                if (FromUserID > 0)
+                {
+                    var newlist = (from l in list
+                                   join u in users on l.ToUserID equals u.ID
+                                   select new
+                                   {
+                                       CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                       NickName = u.NickName,
+                                       Signature = u.Signature,
+                                       Avatar = GetFullUrl(u.Avatar)
+                                   }).ToList();
+                    var result = new
+                    {
+                        currpage = pager.Index,
+                        records = recordCount,
+                        totalpage = totalPage,
+                        list = newlist
+                    };
+                    var message = callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")";
+                    return Content(message);
+                }
+
+                //关注我的列表
+                if (ToUserID > 0)
+                {
+                    var newlist = (from l in list
+                                   join u in users on l.FromUserID equals u.ID
+                                   select new
+                                   {
+                                       CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                       NickName = u.NickName,
+                                       Signature = u.Signature,
+                                       Avatar = GetFullUrl(u.Avatar)
+                                   }).ToList();
+                    var result = new
+                    {
+                        currpage = pager.Index,
+                        records = recordCount,
+                        totalpage = totalPage,
+                        list = newlist
+                    };
+                    var message = callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")";
+                    return Content(message);
+                }
+                return Content(callback + "()");
             }
-            return Json(null, JsonRequestBehavior.AllowGet);
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Content(callback + "()");
+            }
         }
-
 
         #endregion
     }

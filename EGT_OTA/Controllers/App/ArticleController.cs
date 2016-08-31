@@ -198,6 +198,10 @@ namespace EGT_OTA.Controllers.App
                         model.MusicUrl = music == null ? "" : music.FileUrl;
                     }
 
+                    //设置
+                    model.AutoMusic = user.AutoMusic;
+                    model.ShareNick = user.ShareNick;
+
                     model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                     return Json(new { result = result, message = model }, JsonRequestBehavior.AllowGet);
                 }
