@@ -184,10 +184,10 @@ namespace EGT_OTA.Controllers.App
                                }).ToList();
                 var result = new
                 {
-                    page = pager.Index,
+                    currpage = pager.Index,
                     records = recordCount,
-                    total = totalPage,
-                    rows = newlist
+                    totalpage = totalPage,
+                    list = newlist
                 };
                 return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")");
             }
