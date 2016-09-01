@@ -59,6 +59,7 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 音乐外链
         /// </summary>
+        [SubSonicStringLength(255), SubSonicNullString]
         public string MusicUrl { get; set; }
 
         /// <summary>

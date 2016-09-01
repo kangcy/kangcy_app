@@ -220,27 +220,32 @@ namespace EGT_OTA.Controllers
         [AllowAnyone]
         public ActionResult All()
         {
-            var pager = new Pager();
-            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticleType>().Where<ArticleType>(x => x.Status == Enum_Status.Approved);
-            var recordCount = query.GetRecordCount();
-            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<ArticleType>();
-            var newlist = (from l in list
-                           select new
-                           {
-                               ID = l.ID,
-                               Cover = GetFullUrl(l.Cover),
-                               Name = l.Name,
-                               Summary = l.Summary
-                           }).ToList();
-            var result = new
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
             {
-                page = pager.Index,
-                records = recordCount,
-                total = totalPage,
-                rows = newlist
-            };
-            return Json(result, JsonRequestBehavior.AllowGet);
+                var list = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticleType>().Where<ArticleType>(x => x.Status == Enum_Status.Approved).OrderDesc("ID").ExecuteTypedList<ArticleType>();
+                var newlist = (from l in list
+                               select new
+                               {
+                                   ID = l.ID,
+                                   Cover = GetFullUrl(l.Cover),
+                                   Name = l.Name,
+                                   Summary = l.Summary
+                               }).ToList();
+                var result = new
+                {
+                    currpage = 1,
+                    records = list.Count(),
+                    totalpage = 1,
+                    list = newlist
+                };
+                return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")");
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Content(callback + "()");
+            }
         }
 
         #endregion

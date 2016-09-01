@@ -175,6 +175,7 @@ namespace EGT_OTA.Controllers.App
                                join u in users on l.CreateUserID equals u.ID
                                select new
                                {
+                                   ID = l.ID,
                                    Summary = l.Summary,
                                    CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
                                    NickName = u.NickName,
