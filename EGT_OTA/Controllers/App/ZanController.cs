@@ -201,46 +201,60 @@ namespace EGT_OTA.Controllers
         [AllowAnyone]
         public ActionResult All()
         {
-            var pager = new Pager();
-            var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.Status == Enum_Status.Approved);
-            var CreateUserID = ZNRequest.GetInt("CreateUserID");
-            if (CreateUserID > 0)
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
             {
-                query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.Status == Enum_Status.Approved);
+                var CreateUserID = ZNRequest.GetInt("CreateUserID");
+                if (CreateUserID > 0)
+                {
+                    query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                }
+                var ArticleUserID = ZNRequest.GetInt("ArticleUserID");
+                if (ArticleUserID > 0)
+                {
+                    query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
+                }
+                var recordCount = query.GetRecordCount();
+                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
+                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Goods", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
+                var articletypes = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().ExecuteTypedList<ArticleType>();
+                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(articles.Select(x => x.CreateUserID).Distinct().ToArray()).ExecuteTypedList<User>();
+                var newlist = (from a in articles
+                               join u in users on a.CreateUserID equals u.ID
+                               join t in articletypes on a.TypeID equals t.ID
+                               select new
+                               {
+                                   UserID = u.ID,
+                                   NickName = u.NickName,
+                                   Signature = u.Signature,
+                                   Avatar = GetFullUrl(u.Avatar),
+                                   ArticleID = a.ID,
+                                   Title = a.Title,
+                                   Cover = GetFullUrl(a.Cover),
+                                   Views = a.Views,
+                                   Goods = a.Goods,
+                                   Comments = a.Comments,
+                                   Keeps = a.Keeps,
+                                   CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
+                                   TypeaName = t.Name
+                               }).ToList();
+                var result = new
+                {
+                    currpage = pager.Index,
+                    records = recordCount,
+                    totalpage = totalPage,
+                    list = newlist
+                };
+                return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")");
             }
-            var recordCount = query.GetRecordCount();
-            var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-            var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
-            var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Goods", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
-            var articletypes = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().ExecuteTypedList<ArticleType>();
-            var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(articles.Select(x => x.CreateUserID).Distinct().ToArray()).ExecuteTypedList<User>();
-            var newlist = (from a in articles
-                           join u in users on a.CreateUserID equals u.ID
-                           join t in articletypes on a.TypeID equals t.ID
-                           select new
-                           {
-                               UserID = u.ID,
-                               NickName = u.NickName,
-                               Signature = u.Signature,
-                               Avatar = GetFullUrl(u.Avatar),
-                               ArticleID = a.ID,
-                               Title = a.Title,
-                               Cover = GetFullUrl(a.Cover),
-                               Views = a.Views,
-                               Goods = a.Goods,
-                               Comments = a.Comments,
-                               Keeps = a.Keeps,
-                               CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
-                               TypeaName = t.Name
-                           }).ToList();
-            var result = new
+            catch (Exception ex)
             {
-                page = pager.Index,
-                records = recordCount,
-                total = totalPage,
-                rows = newlist
-            };
-            return Json(result, JsonRequestBehavior.AllowGet);
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Content(callback + "()");
+            }
         }
 
         #endregion

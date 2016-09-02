@@ -78,6 +78,7 @@ namespace EGT_OTA.Models
             repo.Single<Zan>(x => x.ID == 0);//点赞
             repo.Single<Pay>(x => x.ID == 0);//打赏
             repo.Single<FeedBack>(x => x.ID == 0);//意见反馈
+            repo.Single<Help>(x => x.ID == 0);//意见反馈
 
             #endregion
         }

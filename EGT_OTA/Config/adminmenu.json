@@ -95,6 +95,14 @@
         "Location": "/FeedBack/Index",
         "Button": ",刷新,"
     },
+	{
+        "ModuleId": "39",
+        "ParentId": "3",
+        "FullName": "帮助管理",
+        "Icon": "fa-list",
+        "Location": "/Help/Index",
+        "Button": ",刷新,新增,编辑,删除,审核,取消审核,"
+    },
     {
         "ModuleId": "2",
         "ParentId": "0",
