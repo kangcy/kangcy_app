@@ -238,12 +238,7 @@ namespace EGT_OTA.Controllers
                 string Name = ZNRequest.GetString("Name");
                 if (!string.IsNullOrWhiteSpace(Name))
                 {
-                    query = query.And("Name").Like("%" + Name + "%");
-                }
-                string Author = ZNRequest.GetString("Author");
-                if (!string.IsNullOrWhiteSpace(Author))
-                {
-                    query = query.And("Author").Like("%" + Author + "%");
+                    query = query.And("Name").Like("%" + Name + "%").Or("Author").Like("%" + Name + "%");
                 }
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
