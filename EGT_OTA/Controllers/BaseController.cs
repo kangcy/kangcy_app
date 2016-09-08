@@ -349,12 +349,7 @@ namespace EGT_OTA.Controllers
             {
                 return null;
             }
-            var user = db.Single<User>(x => x.UserName == username && x.Password == password);
-            if (user == null)
-            {
-                return null;
-            }
-            return user;
+            return db.Single<User>(x => x.UserName == username && x.Password == password);
         }
     }
 }

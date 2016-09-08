@@ -96,36 +96,42 @@ namespace EGT_OTA.Controllers
         /// 编辑
         /// </summary>
         [AllowAnyone]
-        public ActionResult Manage()
+        public ActionResult Edit()
         {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
+            var result = true;
             var message = string.Empty;
-            var summary = SqlFilter(ZNRequest.GetString("Summary"));
-            if (string.IsNullOrWhiteSpace(summary))
-            {
-                return Json(new { result = false, message = "请填写意见反馈" }, JsonRequestBehavior.AllowGet);
-            }
-            FeedBack model = new FeedBack();
+            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
-                model.Summary = summary;
-                model.CreateDate = DateTime.Now;
-                model.CreateUserID = user.ID;
-                model.CreateIP = Tools.GetClientIP;
-                result = Tools.SafeInt(db.Add<FeedBack>(model)) > 0;
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    result = false;
+                    message = "用户信息验证失败";
+                }
+                var summary = SqlFilter(ZNRequest.GetString("Summary"));
+                if (string.IsNullOrWhiteSpace(summary))
+                {
+                    result = false;
+                    message = "请填写反馈信息";
+                }
+                if (result)
+                {
+                    FeedBack model = new FeedBack();
+                    model.Summary = summary;
+                    model.CreateDate = DateTime.Now;
+                    model.CreateUserID = user.ID;
+                    model.CreateIP = Tools.GetClientIP;
+                    result = Tools.SafeInt(db.Add<FeedBack>(model)) > 0;
+                }
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
+                LogHelper.ErrorLoger.Error(ex.Message);
+                result = false;
+                message = "添加失败";
             }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+            return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = result, message = message }) + ")");
         }
 
         #endregion
