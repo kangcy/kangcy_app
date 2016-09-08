@@ -50,7 +50,6 @@ namespace EGT_OTA.Controllers
                                ID = l.ID,
                                NickName = users.Exists(x => x.ID == l.CreateUserID) ? users.FirstOrDefault(x => x.ID == l.CreateUserID).NickName : "",
                                Summary = l.Summary,
-                               Status = EnumBase.GetDescription(typeof(Enum_Status), l.Status),
                                CreateDate = l.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")
                            }).ToList();
             var result = new
@@ -80,12 +79,7 @@ namespace EGT_OTA.Controllers
             {
                 if (id > 0)
                 {
-                    FeedBack model = db.Single<FeedBack>(x => x.ID == id);
-                    if (model != null)
-                    {
-                        model.Status = Enum_Status.DELETE;
-                        result = db.Update<FeedBack>(model) > 0;
-                    }
+                    result = db.Delete<FeedBack>(id) > 0;
                 }
             }
             catch (Exception ex)

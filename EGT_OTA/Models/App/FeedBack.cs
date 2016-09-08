@@ -40,11 +40,6 @@ namespace EGT_OTA.Models
         public string Summary { get; set; }
 
         /// <summary>
-        /// 状态
-        /// </summary>
-        public int Status { get; set; }
-
-        /// <summary>
         /// 创建人
         /// </summary>
         public int CreateUserID { get; set; }
