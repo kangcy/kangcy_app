@@ -98,40 +98,35 @@ namespace EGT_OTA.Controllers
         [AllowAnyone]
         public ActionResult Edit()
         {
-            var result = true;
-            var message = string.Empty;
             var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    result = false;
-                    message = "用户信息验证失败";
+                    return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
                 }
                 var summary = SqlFilter(ZNRequest.GetString("Summary"));
                 if (string.IsNullOrWhiteSpace(summary))
                 {
-                    result = false;
-                    message = "请填写反馈信息";
+                    return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "请填写反馈信息" }) + ")");
                 }
+                FeedBack model = new FeedBack();
+                model.Summary = summary;
+                model.CreateDate = DateTime.Now;
+                model.CreateUserID = user.ID;
+                model.CreateIP = Tools.GetClientIP;
+                var result = Tools.SafeInt(db.Add<FeedBack>(model)) > 0;
                 if (result)
                 {
-                    FeedBack model = new FeedBack();
-                    model.Summary = summary;
-                    model.CreateDate = DateTime.Now;
-                    model.CreateUserID = user.ID;
-                    model.CreateIP = Tools.GetClientIP;
-                    result = Tools.SafeInt(db.Add<FeedBack>(model)) > 0;
+                    return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
-                result = false;
-                message = "添加失败";
             }
-            return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = result, message = message }) + ")");
+            return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
 
         #endregion

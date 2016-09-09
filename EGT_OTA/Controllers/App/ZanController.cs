@@ -5,12 +5,11 @@ using System.Web;
 using System.Web.Mvc;
 using EGT_OTA.Models;
 using System.IO;
-using Newtonsoft.Json;
 using CommonTools;
 using EGT_OTA.Helper;
 using System.Web.Security;
-using Newtonsoft.Json.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace EGT_OTA.Controllers
 {
@@ -87,67 +86,64 @@ namespace EGT_OTA.Controllers
         /// 编辑
         /// </summary>
         [AllowAnyone]
-        public ActionResult Manage()
+        public ActionResult Edit()
         {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
-            var articleID = ZNRequest.GetInt("ArticleID");
-            if (articleID == 0)
-            {
-                return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
-            }
-            Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Goods").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
-            if (article == null)
-            {
-                return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
-            }
-            Zan model = db.Single<Zan>(x => x.CreateUserID == user.ID && x.ArticleID == articleID && x.Status == Enum_Status.Approved);
-            if (model == null)
-            {
-                model = new Zan();
-            }
-            else
-            {
-                return Json(new { result = false, message = "已点赞" }, JsonRequestBehavior.AllowGet);
-            }
-            model.ArticleID = articleID;
-            model.ArticleUserID = article.CreateUserID;
-            model.Status = Enum_Status.Approved;
-            model.UpdateUserID = user.ID;
-            model.UpdateDate = DateTime.Now;
-            model.UpdateIP = Tools.GetClientIP;
+            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
-                if (model.ID == 0)
+                User user = GetUserInfo();
+                if (user == null)
                 {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                var articleID = ZNRequest.GetInt("ArticleID");
+                if (articleID == 0)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "文章信息异常" }) + ")");
+                }
+                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Goods").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+                if (article == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "文章信息异常" }) + ")");
+                }
+                Zan model = db.Single<Zan>(x => x.CreateUserID == user.ID && x.ArticleID == articleID && x.Status == Enum_Status.Approved);
+                if (model == null)
+                {
+                    model = new Zan();
                     model.CreateDate = DateTime.Now;
                     model.CreateUserID = user.ID;
                     model.CreateIP = Tools.GetClientIP;
+                }
+                model.ArticleID = articleID;
+                model.ArticleUserID = article.CreateUserID;
+                model.Status = Enum_Status.Approved;
+                model.UpdateUserID = user.ID;
+                model.UpdateDate = DateTime.Now;
+                model.UpdateIP = Tools.GetClientIP;
+                var result = false;
+                if (model.ID == 0)
+                {
                     result = Tools.SafeInt(db.Add<Zan>(model)) > 0;
-
-                    //修改文章点赞数
-                    if (result)
-                    {
-                        new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Goods").EqualTo(article.Goods + 1).Where<Article>(x => x.ID == articleID).Execute();
-                    }
                 }
                 else
                 {
                     result = db.Update<Zan>(model) > 0;
                 }
+                //修改点赞数
+                if (result)
+                {
+                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Goods").EqualTo(article.Goods + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
+                    if (result)
+                    {
+                        return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                    }
+                }
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
+                LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
 
         /// <summary>
@@ -248,7 +244,7 @@ namespace EGT_OTA.Controllers
                     totalpage = totalPage,
                     list = newlist
                 };
-                return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")");
+                return Content(callback + "(" + JsonConvert.SerializeObject(result) + ")");
             }
             catch (Exception ex)
             {

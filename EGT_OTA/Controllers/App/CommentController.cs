@@ -96,48 +96,56 @@ namespace EGT_OTA.Controllers.App
         /// 评论编辑
         /// </summary>
         [AllowAnyone]
-        public ActionResult Manage()
+        public ActionResult Edit()
         {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
-            var summary = SqlFilter(ZNRequest.GetString("Summary"));
-            if (string.IsNullOrWhiteSpace(summary))
-            {
-                return Json(new { result = false, message = "请填写评论内容" }, JsonRequestBehavior.AllowGet);
-            }
-            var articleID = ZNRequest.GetInt("ArticleID");
-            Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Comments").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
-            Comment model = new Comment();
-            model.ArticleID = articleID;
-            model.ArticleUserID = article.CreateUserID;
-            model.Summary = summary;
-            model.Status = Enum_Status.Approved;
+            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
-                model.CreateDate = DateTime.Now;
-                model.CreateUserID = user.ID;
-                model.CreateIP = Tools.GetClientIP;
-                result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
-
-                //修改文章评论数
-                if (result)
+                User user = GetUserInfo();
+                if (user == null)
                 {
-                    article.Comments = article.Comments + 1;
-                    result = db.Update<Article>(article) > 0;
+                    return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                var articleID = ZNRequest.GetInt("ArticleID");
+                if (articleID == 0)
+                {
+                    return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "文章信息异常" }) + ")");
+                }
+                var summary = SqlFilter(ZNRequest.GetString("Summary"));
+                if (string.IsNullOrWhiteSpace(summary))
+                {
+                    return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "请填写评论内容" }) + ")");
+                }
+                Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Comments").From<Article>().Where<Article>(x => x.ID == articleID).ExecuteSingle<Article>();
+                if (article == null)
+                {
+                    return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "文章信息异常" }) + ")");
+                }
+                else
+                {
+                    Comment model = new Comment();
+                    model.ArticleID = articleID;
+                    model.ArticleUserID = article.CreateUserID;
+                    model.Summary = summary;
+                    model.Status = Enum_Status.Approved;
+                    var result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
+
+                    //修改评论数
+                    if (result)
+                    {
+                        result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Comments").EqualTo(article.Comments + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
+                        if (result)
+                        {
+                            return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
+                LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+            return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
 
         /// <summary>
