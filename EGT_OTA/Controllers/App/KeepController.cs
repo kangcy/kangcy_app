@@ -138,43 +138,40 @@ namespace EGT_OTA.Controllers
         [AllowAnyone]
         public ActionResult Delete()
         {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
-            var id = ZNRequest.GetInt("ids");
-            var model = db.Single<Keep>(x => x.ID == id);
+            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                var id = ZNRequest.GetInt("ID");
+                var model = db.Single<Keep>(x => x.ID == id);
                 if (model != null)
                 {
-                    model.UpdateUserID = user.ID;
-                    model.UpdateDate = DateTime.Now;
-                    model.UpdateIP = Tools.GetClientIP;
-                    model.Status = Enum_Status.DELETE;
-                    result = db.Update<Keep>(model) > 0;
+                    var result = db.Delete<Keep>(id) > 0;
 
                     //修改文章收藏数
                     if (result)
                     {
-                        Article article = new SubSonic.Query.Select(Repository.GetProvider(), "Keeps").From<Article>().Where<Article>(x => x.ID == model.ArticleID).ExecuteSingle<Article>();
+                        Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Keeps").From<Article>().Where<Article>(x => x.ID == model.ArticleID).ExecuteSingle<Article>();
                         if (article != null && article.Keeps > 0)
                         {
                             new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Keeps").EqualTo(article.Keeps - 1).Where<Article>(x => x.ID == model.ArticleID).Execute();
+                        }
+                        if (result)
+                        {
+                            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
+                LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
 
         /// <summary>

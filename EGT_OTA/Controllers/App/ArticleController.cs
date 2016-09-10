@@ -104,6 +104,38 @@ namespace EGT_OTA.Controllers.App
         #region  APP请求
 
         /// <summary>
+        /// 删除
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult Delete()
+        {
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                var id = ZNRequest.GetInt("ID");
+                var model = db.Single<Keep>(x => x.ID == id);
+                if (model != null)
+                {
+                    var result = db.Delete<Keep>(id) > 0;
+                    if (result)
+                    {
+                        return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+        }
+
+        /// <summary>
         /// 编辑
         /// </summary>
         [AllowAnyone]
