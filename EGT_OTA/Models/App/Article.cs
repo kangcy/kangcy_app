@@ -92,6 +92,11 @@ namespace EGT_OTA.Models
         /// </summary>
         public int IsRecommend { get; set; }
 
+        /// <summary>
+        /// 文章权限
+        /// </summary>
+        public int ArticlePower { get; set; }
+
         #region 扩展
 
         /// <summary>

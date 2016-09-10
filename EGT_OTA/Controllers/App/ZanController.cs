@@ -23,21 +23,6 @@ namespace EGT_OTA.Controllers
             return View();
         }
 
-        public ActionResult Edit()
-        {
-            var id = ZNRequest.GetInt("id");
-            Zan model = null;
-            if (id > 0)
-            {
-                model = db.Single<Zan>(x => x.ID == id);
-            }
-            if (model == null)
-            {
-                model = new Zan();
-            }
-            return View(model);
-        }
-
         /// <summary>
         /// 列表
         /// </summary>

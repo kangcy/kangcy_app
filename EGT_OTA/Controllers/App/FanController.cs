@@ -80,52 +80,50 @@ namespace EGT_OTA.Controllers
         /// 编辑
         /// </summary>
         [AllowAnyone]
-        public ActionResult Manage()
+        public ActionResult Edit()
         {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
-            var userID = ZNRequest.GetInt("ToUserID");
-            if (userID == 0)
-            {
-                return Json(new { result = false, message = "信息异常,请刷新重试" }, JsonRequestBehavior.AllowGet);
-            }
-            Fan model = db.Single<Fan>(x => x.FromUserID == user.ID && x.ToUserID == userID);
-            if (model == null)
-            {
-                model = new Fan();
-            }
-            else
-            {
-                return Json(new { result = false, message = "已关注" }, JsonRequestBehavior.AllowGet);
-            }
-            model.ToUserID = userID;
-            model.Status = Enum_Status.Approved;
+            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                var userID = ZNRequest.GetInt("ToUserID");
+                if (userID == 0)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "信息异常,请刷新重试" }) + ")");
+                }
+                Fan model = db.Single<Fan>(x => x.FromUserID == user.ID && x.ToUserID == userID);
+                if (model == null)
+                {
+                    model = new Fan();
+                    model.FromUserID = user.ID;
+                    model.ToUserID = userID;
+                    model.Status = Enum_Status.Approved;
+                }
+                model.CreateDate = DateTime.Now;
+                model.CreateIP = Tools.GetClientIP;
+                var result = false;
                 if (model.ID == 0)
                 {
-                    model.FromUserID = user.ID;
-                    model.CreateDate = DateTime.Now;
-                    model.CreateIP = Tools.GetClientIP;
                     result = Tools.SafeInt(db.Add<Fan>(model)) > 0;
                 }
                 else
                 {
                     result = db.Update<Fan>(model) > 0;
                 }
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                }
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
+                LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
 
         /// <summary>

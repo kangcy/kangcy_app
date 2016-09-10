@@ -24,21 +24,6 @@ namespace EGT_OTA.Controllers
             return View();
         }
 
-        public ActionResult Edit()
-        {
-            var id = ZNRequest.GetInt("id");
-            Keep model = null;
-            if (id > 0)
-            {
-                model = db.Single<Keep>(x => x.ID == id);
-            }
-            if (model == null)
-            {
-                model = new Keep();
-            }
-            return View(model);
-        }
-
         /// <summary>
         /// 列表
         /// </summary>
