@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using CommonTools;
 using EGT_OTA.Helper;
 using EGT_OTA.Models;
+using Newtonsoft.Json;
 
 namespace EGT_OTA.Controllers.App
 {
@@ -154,7 +155,7 @@ namespace EGT_OTA.Controllers.App
         /// 修改头像
         /// </summary>
         [AllowAnyone]
-        public ActionResult ChangeAvatar()
+        public ActionResult EditAvatar()
         {
             User user = GetUserInfo();
             if (user == null)
@@ -186,70 +187,104 @@ namespace EGT_OTA.Controllers.App
         /// 修改签名
         /// </summary>
         [AllowAnyone]
-        public ActionResult ChangeSignature()
+        public ActionResult EditNickName()
         {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
+            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
-                var signature = ZNRequest.GetString("Signature").Trim();
-                if (string.IsNullOrEmpty(signature))
+                User user = GetUserInfo();
+                if (user == null)
                 {
-                    return Json(new { result = result, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
                 }
-                user.Signature = signature;
-                result = db.Update<User>(user) > 0;
+                var NickName = SqlFilter(ZNRequest.GetString("NickName").Trim());
+                if (string.IsNullOrEmpty(NickName))
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "请填写昵称信息" }) + ")");
+                }
+                user.NickName = NickName;
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                }
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
+                LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+        }
+
+        /// <summary>
+        /// 修改签名
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult EditSignature()
+        {
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                var Signature = SqlFilter(ZNRequest.GetString("Signature").Trim());
+                if (string.IsNullOrEmpty(Signature))
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "请填写签名信息" }) + ")");
+                }
+                user.Signature = Signature;
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
 
         /// <summary>
         /// 修改密码
         /// </summary>
         [AllowAnyone]
-        public ActionResult ChangePassword()
+        public ActionResult EditPassword()
         {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
+            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
-                var newpassword = ZNRequest.GetString("newpassword").Trim();
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                var newpassword = ZNRequest.GetString("NewPassword").Trim();
                 if (string.IsNullOrEmpty(newpassword))
                 {
-                    return Json(new { result = result, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "参数异常" }) + ")");
                 }
                 newpassword = DesEncryptHelper.Encrypt(newpassword);
                 if (user.Password == newpassword)
                 {
-                    return Json(new { result = result, message = "新密码与原密码相同" }, JsonRequestBehavior.AllowGet);
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "新密码与原密码相同" }) + ")");
                 }
                 user.Password = newpassword;
-                result = db.Update<User>(user) > 0;
-
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                }
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
+                LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
 
         /// <summary>
