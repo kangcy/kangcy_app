@@ -97,13 +97,19 @@ namespace EGT_OTA.Models
         /// </summary>
         public int ArticlePower { get; set; }
 
+        /// <summary>
+        /// 文章权限密码
+        /// </summary>
+        [SubSonicStringLength(50), SubSonicNullString]
+        public int ArticlePowerPwd { get; set; }
+
         #region 扩展
 
         /// <summary>
         /// 创建人
         /// </summary>
         [SubSonicIgnore]
-        public string UserName { get; set; }
+        public string NickName { get; set; }
 
         /// <summary>
         /// 文章类型

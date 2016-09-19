@@ -68,14 +68,16 @@ namespace EGT_OTA.Models
         public int CityID { get; set; }
 
         /// <summary>
-        /// 区
+        /// 省
         /// </summary>
-        public int DistinctID { get; set; }
+        [SubSonicStringLength(50), SubSonicNullString]
+        public string ProvinceName { get; set; }
 
         /// <summary>
-        /// 地址
+        /// 市
         /// </summary>
-        public string Address { get; set; }
+        [SubSonicStringLength(50), SubSonicNullString]
+        public string CityName { get; set; }
 
         ///<summary>
         ///个性签名

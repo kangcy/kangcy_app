@@ -154,7 +154,7 @@ namespace EGT_OTA.Controllers.App
                 Article model = new Article();
                 model.ID = ZNRequest.GetInt("ID");
                 model.Title = SqlFilter(ZNRequest.GetString("Title"));
-                model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"));
+                model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"), false);
                 model.Cover = ZNRequest.GetString("Cover");
                 model.TypeID = ZNRequest.GetInt("TypeID", 0);
                 model.ArticlePower = ZNRequest.GetInt("ArticlePower", 0);
@@ -222,7 +222,7 @@ namespace EGT_OTA.Controllers.App
 
                 //创建人
                 User createUser = db.Single<User>(x => x.ID == model.CreateUserID);
-                model.UserName = createUser == null ? "" : createUser.NickName;
+                model.NickName = createUser == null ? "" : createUser.NickName;
 
                 //类型
                 ArticleType articleType = db.Single<ArticleType>(x => x.ID == model.TypeID);
@@ -253,7 +253,7 @@ namespace EGT_OTA.Controllers.App
         /// 编辑权限
         /// </summary>
         [AllowAnyone]
-        public ActionResult EditPower()
+        public ActionResult EditArticlePower()
         {
             var callback = ZNRequest.GetString("jsoncallback");
             try
@@ -263,7 +263,7 @@ namespace EGT_OTA.Controllers.App
                 {
                     return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
                 }
-                var id = ZNRequest.GetInt("ID");
+                var id = ZNRequest.GetInt("ArticleID");
                 if (id == 0)
                 {
                     return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "参数异常" }) + ")");
@@ -286,7 +286,7 @@ namespace EGT_OTA.Controllers.App
         /// 编辑分类
         /// </summary>
         [AllowAnyone]
-        public ActionResult EditType()
+        public ActionResult EditArticleType()
         {
             var callback = ZNRequest.GetString("jsoncallback");
             try
@@ -296,12 +296,12 @@ namespace EGT_OTA.Controllers.App
                 {
                     return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
                 }
-                var id = ZNRequest.GetInt("ID");
+                var id = ZNRequest.GetInt("ArticleID");
                 if (id == 0)
                 {
                     return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "参数异常" }) + ")");
                 }
-                var TypeID = ZNRequest.GetInt("TypeID");
+                var TypeID = ZNRequest.GetInt("ArticleType");
                 var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("TypeID").EqualTo(TypeID).Where<Article>(x => x.ID == id).Execute() > 0;
                 if (result)
                 {

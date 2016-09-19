@@ -128,15 +128,19 @@ namespace EGT_OTA.Controllers.App
                     model.ArticleUserID = article.CreateUserID;
                     model.Summary = summary;
                     model.Status = Enum_Status.Approved;
+                    model.CreateDate = DateTime.Now;
+                    model.CreateUserID = user.ID;
+                    model.CreateIP = Tools.GetClientIP;
                     var result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
 
                     //修改评论数
                     if (result)
                     {
-                        result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Comments").EqualTo(article.Comments + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
+                        var comments = article.Comments + 1;
+                        result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Comments").EqualTo(comments).Where<Article>(x => x.ID == articleID).Execute() > 0;
                         if (result)
                         {
-                            return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                            return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = true, message = comments }) + ")");
                         }
                     }
                 }

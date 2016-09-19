@@ -64,13 +64,18 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 防注入
         /// </summary>
-        protected string SqlFilter(string inputString)
+        protected string SqlFilter(string inputString, bool nohtml = true)
         {
             string SqlStr = @"and|or|exec|execute|insert|select|delete|update|alter|create|drop|count|\*|chr|char|asc|mid|substring|master|truncate|declare|xp_cmdshell|restore|backup|net +user|net +localgroup +administrators";
             try
             {
                 if (!string.IsNullOrEmpty(inputString))
                 {
+                    inputString = UrlDecode(inputString);
+                    if (nohtml)
+                    {
+                        inputString = Tools.NoHTML(inputString);
+                    }
                     inputString = Regex.Replace(inputString, @"\b(" + SqlStr + @")\b", string.Empty, RegexOptions.IgnoreCase).Replace("&nbsp;", "");
                 }
             }

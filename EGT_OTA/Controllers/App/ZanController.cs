@@ -99,6 +99,10 @@ namespace EGT_OTA.Controllers
                     model.CreateUserID = user.ID;
                     model.CreateIP = Tools.GetClientIP;
                 }
+                else
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "已赞" }) + ")");
+                }
                 model.ArticleID = articleID;
                 model.ArticleUserID = article.CreateUserID;
                 model.Status = Enum_Status.Approved;
@@ -117,10 +121,11 @@ namespace EGT_OTA.Controllers
                 //修改点赞数
                 if (result)
                 {
-                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Goods").EqualTo(article.Goods + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
+                    var goods = article.Goods + 1;
+                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Goods").EqualTo(goods).Where<Article>(x => x.ID == articleID).Execute() > 0;
                     if (result)
                     {
-                        return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                        return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = goods }) + ")");
                     }
                 }
             }

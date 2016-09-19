@@ -184,7 +184,95 @@ namespace EGT_OTA.Controllers.App
         }
 
         /// <summary>
-        /// 修改签名
+        /// 修改地址
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult EditAddress()
+        {
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                user.ProvinceID = ZNRequest.GetInt("ProvinceID");
+                user.CityID = ZNRequest.GetInt("CityID");
+                user.ProvinceName = ZNRequest.GetString("ProvinceName");
+                user.CityName = ZNRequest.GetString("CityName");
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+        }
+
+
+        /// <summary>
+        /// 修改性别
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult EditSex()
+        {
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                user.Sex = ZNRequest.GetInt("Sex");
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+        }
+
+        /// <summary>
+        /// 修改生日
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult EditBirthday()
+        {
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                user.Birthday = ZNRequest.GetDateTime("Birthday");
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+        }
+
+        /// <summary>
+        /// 修改昵称
         /// </summary>
         [AllowAnyone]
         public ActionResult EditNickName()
