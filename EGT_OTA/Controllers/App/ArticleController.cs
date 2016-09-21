@@ -256,7 +256,7 @@ namespace EGT_OTA.Controllers.App
                 model.ShareNick = user.ShareNick;
 
                 //文章部分
-                model.ArticlePart = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleID == id).ExecuteTypedList<ArticlePart>();
+                model.ArticlePart = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleID == id).OrderAsc("ID").ExecuteTypedList<ArticlePart>();
 
                 model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                 return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = model }) + ")");
