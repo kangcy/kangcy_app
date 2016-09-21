@@ -39,6 +39,11 @@ namespace EGT_OTA.Models
         public int ArticleID { get; set; }
 
         /// <summary>
+        /// 类型（1：图片,2：文字,3：视频）
+        /// </summary>
+        public int Types { get; set; }
+
+        /// <summary>
         /// 详细
         /// </summary>
         [SubSonicStringLength(1000), SubSonicNullString]

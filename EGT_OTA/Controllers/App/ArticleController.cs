@@ -140,16 +140,14 @@ namespace EGT_OTA.Controllers.App
         [AllowAnyone]
         public ActionResult Edit()
         {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var status = false;
-            var result = string.Empty;
+            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
                 Article model = new Article();
                 model.ID = ZNRequest.GetInt("ID");
                 model.Title = SqlFilter(ZNRequest.GetString("Title"));
@@ -164,27 +162,47 @@ namespace EGT_OTA.Controllers.App
                 model.Keeps = 0;
                 model.Comments = 0;
                 model.IsRecommend = 0;
+                var result = false;
                 if (model.ID == 0)
                 {
                     model.CreateUserID = user.ID;
                     model.CreateDate = DateTime.Now;
                     model.CreateIP = Tools.GetClientIP;
-                    status = Tools.SafeInt(db.Add<Article>(model)) > 0;
+                    model.ID = Tools.SafeInt(db.Add<Article>(model));
+                    result = model.ID > 0;
+
+                    //初始化文章段落
+                    ArticlePart part = new ArticlePart();
+                    if (result)
+                    {
+                        part.ArticleID = model.ID;
+                        part.Types = 1;
+                        part.Introduction = "../images/60x60.gif";
+                        part.ID = Tools.SafeInt(db.Add<ArticlePart>(part));
+                        result = part.ID > 0;
+                    }
+                    if (result)
+                    {
+                        return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = part }) + ")");
+                    }
                 }
                 else
                 {
                     model.UpdateUserID = user.ID;
                     model.UpdateDate = DateTime.Now;
                     model.UpdateIP = Tools.GetClientIP;
-                    status = db.Update<Article>(model) > 0;
+                    result = db.Update<Article>(model) > 0;
+                }
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                result = ex.Message;
+                LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Json(new { status = status, result = result }, JsonRequestBehavior.AllowGet);
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
 
         /// <summary>
