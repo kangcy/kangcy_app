@@ -146,6 +146,7 @@
     <Compile Include="Controllers\App\ZanController.cs" />
     <Compile Include="Controllers\App\VideoController.cs" />
     <Compile Include="Controllers\App\HelpController.cs" />
+    <Compile Include="Controllers\App\ArticlePartController.cs" />
     <Compile Include="Controllers\AuthorizationAttribute.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -205,6 +206,7 @@
     <Compile Include="Models\App\FeedBack.cs" />
     <Compile Include="Models\App\Zan.cs" />
     <Compile Include="Models\App\Help.cs" />
+    <Compile Include="Models\App\ArticlePart.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\CurrentUser.cs" />
     <Compile Include="Models\Base\Repository.cs" />

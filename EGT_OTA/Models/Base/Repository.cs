@@ -69,6 +69,7 @@ namespace EGT_OTA.Models
 
             repo.Single<User>(x => x.ID == 0);//用户
             repo.Single<Article>(x => x.ID == 0);//文章
+            repo.Single<ArticlePart>(x => x.ID == 0);//文章部分
             repo.Single<ArticleType>(x => x.ID == 0);//文章类型
             repo.Single<Comment>(x => x.ID == 0);//评论
             repo.Single<Music>(x => x.ID == 0);//音乐

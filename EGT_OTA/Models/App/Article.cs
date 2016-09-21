@@ -40,12 +40,6 @@ namespace EGT_OTA.Models
         public string Title { get; set; }
 
         /// <summary>
-        /// 详细
-        /// </summary>
-        [SubSonicLongString, SubSonicNullString]
-        public string Introduction { get; set; }
-
-        /// <summary>
         /// 封面
         /// </summary>
         [SubSonicStringLength(255), SubSonicNullString]
@@ -134,6 +128,12 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public int ShareNick { get; set; }
+
+        /// <summary>
+        /// 文章部分
+        /// </summary>
+        [SubSonicIgnore]
+        public List<ArticlePart> ArticlePart { get; set; }
 
         #endregion
     }

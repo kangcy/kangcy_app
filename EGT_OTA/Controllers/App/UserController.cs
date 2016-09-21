@@ -62,21 +62,20 @@ namespace EGT_OTA.Controllers.App
         [AllowAnyone]
         public ActionResult Login()
         {
-            var status = false;
-            var result = string.Empty;
+            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 var username = ZNRequest.GetString("UserName").Trim();
                 var password = ZNRequest.GetString("Password").Trim();
                 if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 {
-                    return Json(new { status = status, result = "用户名和密码不能为空" }, JsonRequestBehavior.AllowGet);
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户名和密码不能为空" }) + ")");
                 }
                 password = DesEncryptHelper.Encrypt(password);
                 User user = db.Single<User>(x => x.UserName == username && x.Password == password);
                 if (user == null)
                 {
-                    return Json(new { result = "用户名或密码错误" }, JsonRequestBehavior.AllowGet);
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户名或密码错误" }) + ")");
                 }
                 else
                 {
@@ -86,16 +85,18 @@ namespace EGT_OTA.Controllers.App
                     user.LoginTimes += 1;
                     user.LastLoginDate = DateTime.Now;
                     user.LastLoginIP = Tools.GetClientIP;
-                    db.Update<User>(user);
-                    status = true;
+                    var result = db.Update<User>(user) > 0;
+                    if (result)
+                    {
+                        return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                    }
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
-                result = ex.Message;
             }
-            return Json(new { status = status, result = result }, JsonRequestBehavior.AllowGet);
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
 
         /// <summary>
@@ -157,30 +158,31 @@ namespace EGT_OTA.Controllers.App
         [AllowAnyone]
         public ActionResult EditAvatar()
         {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
+            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
                 var avatar = ZNRequest.GetString("Avatar").Trim();
                 if (string.IsNullOrEmpty(avatar))
                 {
-                    return Json(new { result = result, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "请上传头像" }) + ")");
                 }
                 user.Avatar = avatar;
-                result = db.Update<User>(user) > 0;
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                }
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
+                LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
 
         /// <summary>

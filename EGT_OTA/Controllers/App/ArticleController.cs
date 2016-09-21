@@ -70,7 +70,6 @@ namespace EGT_OTA.Controllers.App
                 Article model = new Article();
                 model.ID = ZNRequest.GetInt("ID");
                 model.Title = ZNRequest.GetString("Title");
-                model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"));
                 model.Cover = ZNRequest.GetString("Cover");
                 model.TypeID = ZNRequest.GetInt("TypeID", 0);
                 model.Views = 0;
@@ -154,7 +153,6 @@ namespace EGT_OTA.Controllers.App
                 Article model = new Article();
                 model.ID = ZNRequest.GetInt("ID");
                 model.Title = SqlFilter(ZNRequest.GetString("Title"));
-                model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"), false);
                 model.Cover = ZNRequest.GetString("Cover");
                 model.TypeID = ZNRequest.GetInt("TypeID", 0);
                 model.ArticlePower = ZNRequest.GetInt("ArticlePower", 0);
@@ -238,6 +236,9 @@ namespace EGT_OTA.Controllers.App
                 //设置
                 model.AutoMusic = user.AutoMusic;
                 model.ShareNick = user.ShareNick;
+
+                //文章部分
+                model.ArticlePart = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleID == id).ExecuteTypedList<ArticlePart>();
 
                 model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                 return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = model }) + ")");
