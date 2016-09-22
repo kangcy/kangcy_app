@@ -150,21 +150,32 @@ namespace EGT_OTA.Controllers.App
                 }
                 Article model = new Article();
                 model.ID = ZNRequest.GetInt("ID");
+                if (model.ID > 0)
+                {
+                    model = db.Single<Article>(x => x.ID == model.ID);
+                    if (model == null)
+                    {
+                        model = new Article();
+                    }
+                }
                 model.Title = SqlFilter(ZNRequest.GetString("Title"));
                 model.Cover = ZNRequest.GetString("Cover");
-                model.TypeID = ZNRequest.GetInt("TypeID", 0);
-                model.ArticlePower = ZNRequest.GetInt("ArticlePower", 0);
                 model.MusicID = ZNRequest.GetInt("MusicID", 0);
                 model.MusicUrl = ZNRequest.GetString("MusicUrl");
-                model.Status = Enum_Status.Audit;
-                model.Views = 0;
-                model.Goods = 0;
-                model.Keeps = 0;
-                model.Comments = 0;
-                model.IsRecommend = 0;
+                model.UpdateUserID = user.ID;
+                model.UpdateDate = DateTime.Now;
+                model.UpdateIP = Tools.GetClientIP;
                 var result = false;
                 if (model.ID == 0)
                 {
+                    model.Status = Enum_Status.Audit;
+                    model.Views = 0;
+                    model.Goods = 0;
+                    model.Keeps = 0;
+                    model.Comments = 0;
+                    model.IsRecommend = 0;
+                    model.TypeID = 0;
+                    model.ArticlePower = Enum_ArticlePower.Myself;
                     model.CreateUserID = user.ID;
                     model.CreateDate = DateTime.Now;
                     model.CreateIP = Tools.GetClientIP;
@@ -188,9 +199,7 @@ namespace EGT_OTA.Controllers.App
                 }
                 else
                 {
-                    model.UpdateUserID = user.ID;
-                    model.UpdateDate = DateTime.Now;
-                    model.UpdateIP = Tools.GetClientIP;
+                    model.Status = Enum_Status.Approved;
                     result = db.Update<Article>(model) > 0;
                 }
                 if (result)
@@ -260,6 +269,73 @@ namespace EGT_OTA.Controllers.App
 
                 model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                 return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = model }) + ")");
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+        }
+
+        /// <summary>
+        /// 编辑封面
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult EditArticleCover()
+        {
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                var id = ZNRequest.GetInt("ArticleID");
+                if (id == 0)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "文章信息异常" }) + ")");
+                }
+                var Cover = ZNRequest.GetString("Cover");
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Cover").EqualTo(Cover).Where<Article>(x => x.ID == id).Execute() > 0;
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+        }
+
+        /// <summary>
+        /// 编辑音乐
+        /// </summary>
+        [AllowAnyone]
+        public ActionResult EditArticleMusic()
+        {
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                }
+                var id = ZNRequest.GetInt("ArticleID");
+                if (id == 0)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "文章信息异常" }) + ")");
+                }
+                var MusicID = ZNRequest.GetInt("MusicID");
+                var MusicUrl = ZNRequest.GetString("MusicUrl");
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("MusicID").EqualTo(MusicID).Set("MusicUrl").EqualTo(MusicUrl).Where<Article>(x => x.ID == id).Execute() > 0;
+                if (result)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                }
             }
             catch (Exception ex)
             {

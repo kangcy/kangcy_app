@@ -88,7 +88,9 @@ namespace EGT_OTA.Controllers.App
                     var result = db.Update<User>(user) > 0;
                     if (result)
                     {
-                        return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                        user.Address = user.ProvinceName + " " + user.CityName;
+                        user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
+                        return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = user }) + ")");
                     }
                 }
             }
@@ -121,6 +123,7 @@ namespace EGT_OTA.Controllers.App
                 }
                 User user = new User();
                 user.UserName = username;
+                user.NickName = SqlFilter(ZNRequest.GetString("NickName"));
                 user.Password = DesEncryptHelper.Encrypt(password);
                 user.Sex = ZNRequest.GetInt("sex", Enum_Sex.Boy);
                 user.Email = string.Empty;

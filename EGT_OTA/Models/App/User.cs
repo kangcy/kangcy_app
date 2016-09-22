@@ -193,5 +193,21 @@ namespace EGT_OTA.Models
         /// 创建时间
         /// </summary>
         public DateTime CreateDate { get; set; }
+
+        #region  扩展字段
+
+        /// <summary>
+        /// 地址
+        /// </summary>
+        [SubSonicIgnore]
+        public string Address { get; set; }
+
+        /// <summary>
+        /// 生日
+        /// </summary>
+        [SubSonicIgnore]
+        public string BirthdayText { get; set; }
+
+        #endregion
     }
 }
