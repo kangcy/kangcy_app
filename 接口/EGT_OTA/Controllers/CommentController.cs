@@ -110,6 +110,7 @@ namespace EGT_OTA.Controllers
                                    ID = l.ID,
                                    Summary = l.Summary,
                                    CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                   UserID = u.ID,
                                    NickName = u.NickName,
                                    Avatar = GetFullUrl(u.Avatar),
                                    ArticleID = a.ID,
