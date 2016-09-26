@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using System.IO;
 using CommonTools;
 using EGT_OTA.Helper;
+using System.Drawing;
+using Newtonsoft.Json;
 
 namespace EGT_OTA.Controllers
 {
@@ -79,6 +81,40 @@ namespace EGT_OTA.Controllers
                 message = ex.Message;
             }
             return Json(new { result = true, message = url }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Upload()
+        {
+            var error = string.Empty;
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                string data = DateTime.Now.ToString("yyyy-MM-dd");
+                string virtualPath = "~/Upload/images/" + data;
+                string savePath = this.Server.MapPath(virtualPath);
+                if (!Directory.Exists(savePath))
+                {
+                    Directory.CreateDirectory(savePath);
+                }
+                string stream = ZNRequest.GetString("str");
+                string filename = Guid.NewGuid().ToString("N") + ".jpg";
+
+                savePath = savePath + "\\" + filename;
+
+                Byte[] streamByte = Convert.FromBase64String(stream);
+                System.IO.MemoryStream ms = new System.IO.MemoryStream(streamByte);
+                Image image = Image.FromStream(ms, true);
+                image.Save(savePath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                image.Dispose();
+
+                return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = Url.Content(virtualPath + "/" + filename) }) + ")");
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                LogHelper.ErrorLoger.Error(ex.Message, ex);
+            }
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = error }) + ")");
         }
     }
 }

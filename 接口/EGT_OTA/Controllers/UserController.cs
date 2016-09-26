@@ -48,6 +48,25 @@ namespace EGT_OTA.Controllers
                     {
                         user.Address = user.ProvinceName + " " + user.CityName;
                         user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
+
+                        //关注
+                        user.Follows = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.FromUserID == user.ID).GetRecordCount();
+
+                        //粉丝
+                        user.Fans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.ToUserID == user.ID).GetRecordCount();
+
+                        //我的
+                        user.Articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Article>().Where<Article>(x => x.CreateUserID == user.ID).GetRecordCount();
+
+                        //收藏
+                        user.Keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == user.ID).GetRecordCount();
+
+                        //评论
+                        user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserID == user.ID).GetRecordCount();
+
+                        //点赞
+                        user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == user.ID).GetRecordCount();
+
                         return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = user }) + ")");
                     }
                 }
@@ -466,6 +485,49 @@ namespace EGT_OTA.Controllers
                 message = ex.Message;
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 用户详情
+        /// </summary>
+        public ActionResult Detail()
+        {
+            var callback = ZNRequest.GetString("jsoncallback");
+            try
+            {
+                var id = ZNRequest.GetInt("ID");
+                if (id == 0)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "参数信息异常" }) + ")");
+                }
+                User user = db.Single<User>(x => x.ID == id);
+                if (user == null)
+                {
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用戶信息异常" }) + ")");
+                }
+                else
+                {
+                    //关注
+                    user.Follows = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.FromUserID == id).GetRecordCount();
+                    //粉丝
+                    user.Fans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.ToUserID == id).GetRecordCount();
+                    ////我的
+                    //user.Articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Article>().Where<Article>(x => x.CreateUserID == id).GetRecordCount();
+                    ////收藏
+                    //user.Keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == id).GetRecordCount();
+                    ////评论
+                    //user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserID == id).GetRecordCount();
+                    ////点赞
+                    //user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == id).GetRecordCount();
+
+                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = user }) + ")");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message, ex);
+            }
+            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
         }
     }
 }

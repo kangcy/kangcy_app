@@ -345,6 +345,10 @@ namespace EGT_OTA.Controllers
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Article>();
                 var articletypes = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().ExecuteTypedList<ArticleType>();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+
+                var array = list.Select(x => x.ID).ToArray();
+                var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where("ArticleID").In(array).OrderAsc("ID").ExecuteTypedList<ArticlePart>();
+
                 var newlist = (from a in list
                                join u in users on a.CreateUserID equals u.ID
                                join t in articletypes on a.TypeID equals t.ID
@@ -361,7 +365,8 @@ namespace EGT_OTA.Controllers
                                    Keeps = a.Keeps,
                                    UserID = a.CreateUserID,
                                    CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
-                                   TypeName = t.Name
+                                   TypeName = t.Name,
+                                   ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).ToList()
                                }).ToList();
                 var result = new
                 {

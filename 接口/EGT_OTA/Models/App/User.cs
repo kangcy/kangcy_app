@@ -139,36 +139,6 @@ namespace EGT_OTA.Models
         public int ShareNick { get; set; }
 
         /// <summary>
-        /// 文章数
-        /// </summary>
-        public int Articles { get; set; }
-
-        /// <summary>
-        /// 收藏数
-        /// </summary>
-        public int Keeps { get; set; }
-
-        /// <summary>
-        /// 关注数
-        /// </summary>
-        public int Follows { get; set; }
-
-        /// <summary>
-        /// 粉丝数
-        /// </summary>
-        public int Fans { get; set; }
-
-        /// <summary>
-        /// 评论数
-        /// </summary>
-        public int Comments { get; set; }
-
-        /// <summary>
-        /// 点赞数
-        /// </summary>
-        public int Zans { get; set; }
-
-        /// <summary>
         /// 状态
         /// </summary>
         public int Status { get; set; }
@@ -207,6 +177,42 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public string BirthdayText { get; set; }
+
+        /// <summary>
+        /// 关注
+        /// </summary>
+        [SubSonicIgnore]
+        public int Follows { get; set; }
+
+        /// <summary>
+        /// 粉丝
+        /// </summary>
+        [SubSonicIgnore]
+        public int Fans { get; set; }
+
+        /// <summary>
+        /// 文章数
+        /// </summary>
+        [SubSonicIgnore]
+        public int Articles { get; set; }
+
+        /// <summary>
+        /// 收藏数
+        /// </summary>
+        [SubSonicIgnore]
+        public int Keeps { get; set; }
+
+        /// <summary>
+        /// 评论数
+        /// </summary>
+        [SubSonicIgnore]
+        public int Comments { get; set; }
+
+        /// <summary>
+        /// 点赞数
+        /// </summary>
+        [SubSonicIgnore]
+        public int Zans { get; set; }
 
         #endregion
     }
