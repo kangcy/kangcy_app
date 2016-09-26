@@ -114,10 +114,12 @@ namespace EGT_OTA.Controllers
                                select new
                                {
                                    ID = l.ID,
+                                   FromUserID = l.FromUserID,
                                    FromUserAvatar = GetFullUrl(allusers.Exists(x => x.ID == l.FromUserID) ? allusers.FirstOrDefault(x => x.ID == l.FromUserID).Avatar : ""),
                                    FromUserName = allusers.Exists(x => x.ID == l.FromUserID) ? allusers.FirstOrDefault(x => x.ID == l.FromUserID).NickName : "",
                                    ToUserAvatar = GetFullUrl(allusers.Exists(x => x.ID == l.ToUserID) ? allusers.FirstOrDefault(x => x.ID == l.ToUserID).Avatar : ""),
                                    ToUserName = allusers.Exists(x => x.ID == l.ToUserID) ? allusers.FirstOrDefault(x => x.ID == l.ToUserID).NickName : "",
+                                   ToUserID = l.ToUserID,
                                    CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
                                    Money = l.Money
                                }).ToList();
