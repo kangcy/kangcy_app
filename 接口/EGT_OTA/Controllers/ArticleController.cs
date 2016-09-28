@@ -177,7 +177,7 @@ namespace EGT_OTA.Controllers
                 //文章部分
                 model.ArticlePart = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleID == id).OrderAsc("ID").ExecuteTypedList<ArticlePart>();
 
-                model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd");
                 return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = model }) + ")");
             }
             catch (Exception ex)
@@ -347,7 +347,11 @@ namespace EGT_OTA.Controllers
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
 
                 var array = list.Select(x => x.ID).ToArray();
-                var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where("ArticleID").In(array).OrderAsc("ID").ExecuteTypedList<ArticlePart>();
+                var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == 1).And("ArticleID").In(array).OrderAsc("ID").ExecuteTypedList<ArticlePart>();
+                if (parts.Count > 3)
+                {
+                    parts = parts.Take(3).ToList();
+                }
 
                 var newlist = (from a in list
                                join u in users on a.CreateUserID equals u.ID

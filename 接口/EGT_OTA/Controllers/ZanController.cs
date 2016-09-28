@@ -158,8 +158,12 @@ namespace EGT_OTA.Controllers
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(articles.Select(x => x.CreateUserID).Distinct().ToArray()).ExecuteTypedList<User>();
 
                 var array = list.Select(x => x.ArticleID).ToArray();
-                var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where("ArticleID").In(array).OrderAsc("ID").ExecuteTypedList<ArticlePart>();
-                
+                var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == 1).And("ArticleID").In(array).OrderAsc("ID").ExecuteTypedList<ArticlePart>();
+                if (parts.Count > 3)
+                {
+                    parts = parts.Take(3).ToList();
+                }
+
                 var newlist = (from a in articles
                                join u in users on a.CreateUserID equals u.ID
                                join t in articletypes on a.TypeID equals t.ID
