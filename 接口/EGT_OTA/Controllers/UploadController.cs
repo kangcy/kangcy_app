@@ -86,17 +86,19 @@ namespace EGT_OTA.Controllers
         public ActionResult Upload()
         {
             var error = string.Empty;
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 string data = DateTime.Now.ToString("yyyy-MM-dd");
-                string virtualPath = "~/Upload/images/" + data;
-                string savePath = this.Server.MapPath(virtualPath);
+                string virtualPath = "Upload/images/" + data;
+                string savePath = this.Server.MapPath("~/" + virtualPath);
                 if (!Directory.Exists(savePath))
                 {
                     Directory.CreateDirectory(savePath);
                 }
                 string stream = ZNRequest.GetString("str");
+
+                stream = stream.IndexOf("data:image/jpeg;base64,") > -1 ? stream.Replace("data:image/jpeg;base64,", "") : stream;
+
                 string filename = Guid.NewGuid().ToString("N") + ".jpg";
 
                 savePath = savePath + "\\" + filename;
@@ -107,14 +109,22 @@ namespace EGT_OTA.Controllers
                 image.Save(savePath, System.Drawing.Imaging.ImageFormat.Jpeg);
                 image.Dispose();
 
-                return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = Url.Content(virtualPath + "/" + filename) }) + ")");
+                return Json(new
+                {
+                    result = true,
+                    message = (virtualPath + "/" + filename)
+                }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 error = ex.Message;
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
             }
-            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = error }) + ")");
+            return Json(new
+            {
+                result = false,
+                message = error
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }
