@@ -24,7 +24,6 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult All()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 var pager = new Pager();
@@ -53,13 +52,12 @@ namespace EGT_OTA.Controllers
                     totalpage = totalPage,
                     list = newlist
                 };
-                var message = callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")";
-                return Content(message);
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
-                return Content(callback + "()");
+                return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
     }

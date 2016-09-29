@@ -20,13 +20,12 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Delete()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var id = ZNRequest.GetInt("ID");
                 var model = db.Single<Keep>(x => x.ID == id);
@@ -35,7 +34,7 @@ namespace EGT_OTA.Controllers
                     var result = db.Delete<Keep>(id) > 0;
                     if (result)
                     {
-                        return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                        return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                     }
                 }
             }
@@ -43,7 +42,7 @@ namespace EGT_OTA.Controllers
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -51,7 +50,6 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Edit()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 User user = GetUserInfo();
@@ -105,7 +103,7 @@ namespace EGT_OTA.Controllers
                     }
                     if (result)
                     {
-                        return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = part }) + ")");
+                        return Json(new { result = false, message = part }, JsonRequestBehavior.AllowGet);
                     }
                 }
                 else
@@ -115,14 +113,14 @@ namespace EGT_OTA.Controllers
                 }
                 if (result)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -130,23 +128,22 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Detail()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var id = ZNRequest.GetInt("ID");
                 if (id == 0)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "参数异常" }) + ")");
+                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
                 Article model = db.Single<Article>(x => x.ID == id);
                 if (model == null)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "文章信息异常" }) + ")");
+                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
 
                 string password = ZNRequest.GetString("ArticlePassword");
@@ -178,13 +175,14 @@ namespace EGT_OTA.Controllers
                 model.ArticlePart = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleID == id).OrderAsc("ID").ExecuteTypedList<ArticlePart>();
 
                 model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd");
-                return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = model }) + ")");
+
+                return Json(new { result = true, message = model }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -192,31 +190,30 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult EditArticleCover()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var id = ZNRequest.GetInt("ArticleID");
                 if (id == 0)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "文章信息异常" }) + ")");
+                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
                 var Cover = ZNRequest.GetString("Cover");
                 var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Cover").EqualTo(Cover).Where<Article>(x => x.ID == id).Execute() > 0;
                 if (result)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -224,32 +221,31 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult EditArticleMusic()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var id = ZNRequest.GetInt("ArticleID");
                 if (id == 0)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "文章信息异常" }) + ")");
+                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
                 var MusicID = ZNRequest.GetInt("MusicID");
                 var MusicUrl = ZNRequest.GetString("MusicUrl");
                 var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("MusicID").EqualTo(MusicID).Set("MusicUrl").EqualTo(MusicUrl).Where<Article>(x => x.ID == id).Execute() > 0;
                 if (result)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -257,31 +253,30 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult EditArticlePower()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var id = ZNRequest.GetInt("ArticleID");
                 if (id == 0)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "参数异常" }) + ")");
+                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
                 var ArticlePower = ZNRequest.GetInt("ArticlePower");
                 var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("ArticlePower").EqualTo(ArticlePower).Where<Article>(x => x.ID == id).Execute() > 0;
                 if (result)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -289,31 +284,30 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult EditArticleType()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var id = ZNRequest.GetInt("ArticleID");
                 if (id == 0)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "参数异常" }) + ")");
+                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
                 var TypeID = ZNRequest.GetInt("ArticleType");
                 var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("TypeID").EqualTo(TypeID).Where<Article>(x => x.ID == id).Execute() > 0;
                 if (result)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -321,7 +315,6 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult All()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 var pager = new Pager();
@@ -379,12 +372,12 @@ namespace EGT_OTA.Controllers
                     totalpage = totalPage,
                     list = newlist
                 };
-                return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")");
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
-                return Content(callback + "()");
+                return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
     }

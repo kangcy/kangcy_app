@@ -24,7 +24,6 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult All()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 var list = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticleType>().Where<ArticleType>(x => x.Status == Enum_Status.Approved).OrderDesc("ID").ExecuteTypedList<ArticleType>();
@@ -43,12 +42,12 @@ namespace EGT_OTA.Controllers
                     totalpage = 1,
                     list = newlist
                 };
-                return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")");
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
-                return Content(callback + "()");
+                return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
     }

@@ -24,18 +24,17 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Edit()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var userID = ZNRequest.GetInt("ToUserID");
                 if (userID == 0)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "信息异常,请刷新重试" }) + ")");
+                    return Json(new { result = false, message = "信息异常,请刷新重试" }, JsonRequestBehavior.AllowGet);
                 }
                 Fan model = db.Single<Fan>(x => x.FromUserID == user.ID && x.ToUserID == userID);
                 if (model == null)
@@ -58,14 +57,14 @@ namespace EGT_OTA.Controllers
                 }
                 if (result)
                 {
-                    return Content(callback + "(" + JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Content(callback + "(" + JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -104,7 +103,6 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult All()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 var pager = new Pager();
@@ -156,8 +154,7 @@ namespace EGT_OTA.Controllers
                         totalpage = totalPage,
                         list = newlist
                     };
-                    var message = callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")";
-                    return Content(message);
+                    return Json(result, JsonRequestBehavior.AllowGet);
                 }
 
                 //关注我的列表
@@ -179,15 +176,14 @@ namespace EGT_OTA.Controllers
                         totalpage = totalPage,
                         list = newlist
                     };
-                    var message = callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(result) + ")";
-                    return Content(message);
+                    return Json(result, JsonRequestBehavior.AllowGet);
                 }
-                return Content(callback + "()");
+                return Json(null, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
-                return Content(callback + "()");
+                return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
     }

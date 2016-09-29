@@ -24,18 +24,17 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Edit()
         {
-            var callback = ZNRequest.GetString("jsoncallback");
             try
             {
                 User user = GetUserInfo();
                 if (user == null)
                 {
-                    return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "用户信息验证失败" }) + ")");
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var summary = SqlFilter(ZNRequest.GetString("Summary"));
                 if (string.IsNullOrWhiteSpace(summary))
                 {
-                    return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "请填写反馈信息" }) + ")");
+                    return Json(new { result = false, message = "请填写反馈信息" }, JsonRequestBehavior.AllowGet);
                 }
                 FeedBack model = new FeedBack();
                 model.Summary = summary;
@@ -45,14 +44,14 @@ namespace EGT_OTA.Controllers
                 var result = Tools.SafeInt(db.Add<FeedBack>(model)) > 0;
                 if (result)
                 {
-                    return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = true, message = "成功" }) + ")");
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
-            return Content(callback + "(" + Newtonsoft.Json.JsonConvert.SerializeObject(new { result = false, message = "失败" }) + ")");
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
     }
 }
