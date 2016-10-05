@@ -103,7 +103,7 @@ namespace EGT_OTA.Controllers
                     }
                     if (result)
                     {
-                        return Json(new { result = false, message = part }, JsonRequestBehavior.AllowGet);
+                        return Json(new { result = true, message = part }, JsonRequestBehavior.AllowGet);
                     }
                 }
                 else
