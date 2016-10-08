@@ -118,7 +118,8 @@ namespace EGT_OTA.Controllers
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {
-                    user.Number = string.Format("{0:00000000}", user.ID);
+                    user.Number = user.ID.ToString();
+                    db.Update<User>(user);
 
                     string info = "\r\n" + username + "于" + DateTime.Now.ToString() + "登录APP\r\n" + "登录IP为:" + Tools.GetClientIP;
                     LogHelper.UserLoger.Info(info);
