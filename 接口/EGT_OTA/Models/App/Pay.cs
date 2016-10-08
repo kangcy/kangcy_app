@@ -34,6 +34,11 @@ namespace EGT_OTA.Models
         public int ID { get; set; }
 
         /// <summary>
+        /// 文章ID
+        /// </summary>
+        public int ArticleID { get; set; }
+
+        /// <summary>
         /// 打赏人
         /// </summary>
         public int FromUserID { get; set; }

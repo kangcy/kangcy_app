@@ -33,6 +33,12 @@ namespace EGT_OTA.Models
         [SubSonicPrimaryKey]
         public int ID { get; set; }
 
+        /// <summary>
+        /// 轻墨号
+        /// </summary>
+        [SubSonicStringLength(20), SubSonicNullString]
+        public string Number { get; set; }
+
         ///<summary>
         ///登陆账号
         ///</summary>
@@ -213,6 +219,12 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public int Zans { get; set; }
+
+        /// <summary>
+        /// 打赏数
+        /// </summary>
+        [SubSonicIgnore]
+        public int Pays { get; set; }
 
         #endregion
     }

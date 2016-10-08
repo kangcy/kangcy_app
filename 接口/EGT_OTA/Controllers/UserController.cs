@@ -100,7 +100,7 @@ namespace EGT_OTA.Controllers
                 user.UserName = username;
                 user.NickName = SqlFilter(ZNRequest.GetString("NickName"));
                 user.Password = DesEncryptHelper.Encrypt(password);
-                user.Sex = ZNRequest.GetInt("sex", Enum_Sex.Boy);
+                user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
                 user.Email = string.Empty;
                 user.Signature = string.Empty;
                 user.Avatar = string.Empty;
@@ -115,9 +115,11 @@ namespace EGT_OTA.Controllers
                 user.Keeps = 0;
                 user.Follows = 0;
                 user.Fans = 0;
-                status = Tools.SafeInt(db.Add<User>(user), 0) > 0 ? true : false;
-                if (status)
+                user.ID = Tools.SafeInt(db.Add<User>(user), 0);
+                if (user.ID > 0)
                 {
+                    user.Number = string.Format("{0:00000000}", user.ID);
+
                     string info = "\r\n" + username + "于" + DateTime.Now.ToString() + "登录APP\r\n" + "登录IP为:" + Tools.GetClientIP;
                     LogHelper.UserLoger.Info(info);
                 }

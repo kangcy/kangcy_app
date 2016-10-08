@@ -178,6 +178,7 @@ namespace EGT_OTA.Controllers
                                    Goods = a.Goods,
                                    Comments = a.Comments,
                                    Keeps = a.Keeps,
+                                   Pays = a.Pays,
                                    CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
                                    TypeaName = t.Name,
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).ToList()

@@ -82,6 +82,7 @@ namespace EGT_OTA.Controllers
                     model.Goods = 0;
                     model.Keeps = 0;
                     model.Comments = 0;
+                    model.Pays = 0;
                     model.IsRecommend = 0;
                     model.TypeID = 0;
                     model.ArticlePower = Enum_ArticlePower.Myself;
@@ -97,7 +98,7 @@ namespace EGT_OTA.Controllers
                     {
                         part.ArticleID = model.ID;
                         part.Types = 1;
-                        part.Introduction = "../images/60x60.gif";
+                        part.Introduction = model.Cover;
                         part.ID = Tools.SafeInt(db.Add<ArticlePart>(part));
                         result = part.ID > 0;
                     }
@@ -317,11 +318,25 @@ namespace EGT_OTA.Controllers
         {
             try
             {
+                //创建人
+                var CreateUserID = 0;
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
-                //创建人
-                var CreateUserID = ZNRequest.GetInt("CreateUserID");
+                //昵称、轻墨号
+                var NickName = ZNRequest.GetString("NickName");
+                if (!string.IsNullOrEmpty(NickName))
+                {
+                    var user = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<User>().Where<User>(x => x.NickName == NickName || x.Number == NickName).ExecuteSingle<User>();
+                    if (user != null)
+                    {
+                        CreateUserID = user.ID;
+                    }
+                }
+                else
+                {
+                    CreateUserID = ZNRequest.GetInt("CreateUserID");
+                }
                 if (CreateUserID > 0)
                 {
                     query = query.And("CreateUserID").IsEqualTo(CreateUserID);
@@ -360,6 +375,7 @@ namespace EGT_OTA.Controllers
                                    Goods = a.Goods,
                                    Comments = a.Comments,
                                    Keeps = a.Keeps,
+                                   Pays = a.Pays,
                                    UserID = a.CreateUserID,
                                    CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
                                    TypeName = t.Name,

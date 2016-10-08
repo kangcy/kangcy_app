@@ -59,19 +59,19 @@ namespace EGT_OTA.Controllers
                 if (model.ID == 0)
                 {
                     result = Tools.SafeInt(db.Add<Keep>(model)) > 0;
+                    //修改收藏数
+                    if (result)
+                    {
+                        result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Keeps").EqualTo(article.Keeps + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
+                        if (result)
+                        {
+                            return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
                 }
                 else
                 {
                     result = db.Update<Keep>(model) > 0;
-                }
-                //修改收藏数
-                if (result)
-                {
-                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Keeps").EqualTo(article.Keeps + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
-                    if (result)
-                    {
-                        return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
-                    }
                 }
             }
             catch (Exception ex)
@@ -165,6 +165,7 @@ namespace EGT_OTA.Controllers
                                    Goods = a.Goods,
                                    Comments = a.Comments,
                                    Keeps = a.Keeps,
+                                   Pays = a.Pays,
                                    CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
                                    TypeaName = t.Name,
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).ToList()

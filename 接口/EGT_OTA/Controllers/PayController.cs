@@ -22,7 +22,7 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 编辑
         /// </summary>
-        public ActionResult Manage()
+        public ActionResult Edit()
         {
             User user = GetUserInfo();
             if (user == null)
@@ -33,6 +33,7 @@ namespace EGT_OTA.Controllers
             var result = false;
             var message = string.Empty;
             Pay model = new Pay();
+            model.ArticleID = ZNRequest.GetInt("ArticleID");
             model.FromUserID = user.ID;
             model.Status = Enum_Status.Approved;
             model.ToUserID = ZNRequest.GetInt("ToUserID");
@@ -42,6 +43,16 @@ namespace EGT_OTA.Controllers
                 model.CreateDate = DateTime.Now;
                 model.CreateIP = Tools.GetClientIP;
                 result = Tools.SafeInt(db.Add<Pay>(model)) > 0;
+                //修改打赏数
+                if (result)
+                {
+                    Article article = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "CreateUserID", "Pays").From<Article>().Where<Article>(x => x.ID == model.ArticleID).ExecuteSingle<Article>();
+                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Pays").EqualTo(article.Pays + 1).Where<Article>(x => x.ID == model.ArticleID).Execute() > 0;
+                    if (result)
+                    {
+                        return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                    }
+                }
             }
             catch (Exception ex)
             {

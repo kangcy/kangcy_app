@@ -82,6 +82,11 @@ namespace EGT_OTA.Models
         public int Comments { get; set; }
 
         /// <summary>
+        /// 打赏数
+        /// </summary>
+        public int Pays { get; set; }
+
+        /// <summary>
         /// 是否推荐
         /// </summary>
         public int IsRecommend { get; set; }
