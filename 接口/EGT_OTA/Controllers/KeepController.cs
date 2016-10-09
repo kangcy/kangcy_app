@@ -151,7 +151,6 @@ namespace EGT_OTA.Controllers
 
                 var newlist = (from a in articles
                                join u in users on a.CreateUserID equals u.ID
-                               join t in articletypes on a.TypeID equals t.ID
                                select new
                                {
                                    UserID = u.ID,
@@ -167,7 +166,7 @@ namespace EGT_OTA.Controllers
                                    Keeps = a.Keeps,
                                    Pays = a.Pays,
                                    CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
-                                   TypeaName = t.Name,
+                                   TypeName = articletypes.Exists(x => x.ID == a.TypeID) ? articletypes.FirstOrDefault(x => x.ID == a.TypeID).Name : "",
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).ToList()
                                }).ToList();
                 var result = new

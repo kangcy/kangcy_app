@@ -501,19 +501,26 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
-                    //关注
-                    user.Follows = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.FromUserID == id).GetRecordCount();
-                    //粉丝
-                    user.Fans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.ToUserID == id).GetRecordCount();
-                    ////我的
-                    //user.Articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Article>().Where<Article>(x => x.CreateUserID == id).GetRecordCount();
-                    ////收藏
-                    //user.Keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == id).GetRecordCount();
-                    ////评论
-                    //user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserID == id).GetRecordCount();
-                    ////点赞
-                    //user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == id).GetRecordCount();
+                    user.Address = user.ProvinceName + " " + user.CityName;
+                    user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
 
+                    //关注
+                    user.Follows = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.FromUserID == user.ID).GetRecordCount();
+
+                    //粉丝
+                    user.Fans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.ToUserID == user.ID).GetRecordCount();
+
+                    //我的
+                    user.Articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Article>().Where<Article>(x => x.CreateUserID == user.ID).GetRecordCount();
+
+                    //收藏
+                    user.Keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == user.ID).GetRecordCount();
+
+                    //评论
+                    user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserID == user.ID).GetRecordCount();
+
+                    //点赞
+                    user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == user.ID).GetRecordCount();
                     return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }
             }
