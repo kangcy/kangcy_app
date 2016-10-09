@@ -321,7 +321,7 @@ namespace EGT_OTA.Controllers
                 //创建人
                 var CreateUserID = 0;
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.ID > 0);
 
                 //昵称、轻墨号
                 var NickName = ZNRequest.GetString("NickName");
@@ -340,6 +340,12 @@ namespace EGT_OTA.Controllers
                 if (CreateUserID > 0)
                 {
                     query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                }
+
+                var CurrUserID = ZNRequest.GetInt("CurrUserID", 0);
+                if (CreateUserID != CurrUserID || CreateUserID == 0)
+                {
+                    query = query.And("Status").IsEqualTo(Enum_Status.Approved);
                 }
 
                 //文章类型
