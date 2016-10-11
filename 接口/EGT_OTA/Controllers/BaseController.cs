@@ -103,5 +103,39 @@ namespace EGT_OTA.Controllers
             }
             return db.Single<User>(x => x.UserName == username && x.Password == password);
         }
+
+        /// <summary>
+        /// 格式化时间显示
+        /// </summary>
+        protected string FormatTime(DateTime date)
+        {
+            var totalSeconds = Convert.ToInt32((DateTime.Now - date).TotalSeconds);
+            var hour = (totalSeconds / 3600);
+            var year = 24 * 365;
+            if (hour > year)
+            {
+                return Convert.ToInt32(hour / year) + "年前";
+            }
+            else if (hour > 24)
+            {
+                return Convert.ToInt32(hour / 24) + "天前";
+            }
+            else if (hour > 0)
+            {
+                return Convert.ToInt32(hour) + "小时前";
+            }
+            else
+            {
+                var minute = totalSeconds / 60;
+                if (minute > 0)
+                {
+                    return Convert.ToInt32(minute) + "分钟前";
+                }
+                else
+                {
+                    return totalSeconds + "秒前";
+                }
+            }
+        }
     }
 }

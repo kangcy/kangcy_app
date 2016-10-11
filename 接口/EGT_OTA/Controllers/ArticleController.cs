@@ -382,7 +382,7 @@ namespace EGT_OTA.Controllers
                                    Keeps = a.Keeps,
                                    Pays = a.Pays,
                                    UserID = a.CreateUserID,
-                                   CreateDate = a.CreateDate.ToString("yyyy-MM-dd"),
+                                   CreateDate = FormatTime(a.CreateDate),
                                    TypeName = articletypes.Exists(x => x.ID == a.TypeID) ? articletypes.FirstOrDefault(x => x.ID == a.TypeID).Name : "",
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).ToList()
                                }).ToList();
