@@ -101,6 +101,7 @@ namespace EGT_OTA.Controllers
                 user.NickName = SqlFilter(ZNRequest.GetString("NickName"));
                 user.Password = DesEncryptHelper.Encrypt(password);
                 user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
+                user.Cover = ZNRequest.GetString("Cover");
                 user.Email = string.Empty;
                 user.Signature = string.Empty;
                 user.Avatar = string.Empty;
@@ -151,6 +152,37 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "请上传头像" }, JsonRequestBehavior.AllowGet);
                 }
                 user.Avatar = avatar;
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 修改封面
+        /// </summary>
+        public ActionResult EditCover()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var cover = ZNRequest.GetString("Cover").Trim();
+                if (string.IsNullOrEmpty(cover))
+                {
+                    return Json(new { result = false, message = "请上传背景图片" }, JsonRequestBehavior.AllowGet);
+                }
+                user.Cover = cover;
                 var result = db.Update<User>(user) > 0;
                 if (result)
                 {

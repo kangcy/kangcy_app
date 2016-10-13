@@ -170,6 +170,12 @@ namespace EGT_OTA.Models
         /// </summary>
         public DateTime CreateDate { get; set; }
 
+        /// <summary>
+        /// 封面
+        /// </summary>
+        [SubSonicNullString]
+        public string Cover { get; set; }
+
         #region  扩展字段
 
         /// <summary>

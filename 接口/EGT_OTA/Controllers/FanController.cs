@@ -44,6 +44,10 @@ namespace EGT_OTA.Controllers
                     model.ToUserID = userID;
                     model.Status = Enum_Status.Approved;
                 }
+                else
+                {
+                    return Json(new { result = false, message = "已关注" }, JsonRequestBehavior.AllowGet);
+                }
                 model.CreateDate = DateTime.Now;
                 model.CreateIP = Tools.GetClientIP;
                 var result = false;
