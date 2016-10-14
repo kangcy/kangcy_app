@@ -32,6 +32,15 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 ArticlePart model = new ArticlePart();
+                var id = ZNRequest.GetInt("ID");
+                if (id > 0)
+                {
+                    model = db.Single<ArticlePart>(x => x.ID == id);
+                }
+                if (model == null)
+                {
+                    model = new ArticlePart();
+                }
                 model.ID = ZNRequest.GetInt("ID");
                 if (model.ID == 0)
                 {
