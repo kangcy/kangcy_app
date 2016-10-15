@@ -118,7 +118,6 @@ namespace EGT_OTA.Controllers
                     {
 
                         var articlePart = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "SortID").From<ArticlePart>().ExecuteTypedList<ArticlePart>();
-                        var provider = new SubSonic.Query.Update<ArticlePart>(Repository.GetProvider());
 
                         var ids = parts.Split(',');
                         ids.ToList().ForEach(x =>
@@ -126,8 +125,7 @@ namespace EGT_OTA.Controllers
                             var id = x.Split('-');
                             var partid = Tools.SafeInt(id[0]);
                             var index = Tools.SafeInt(id[1]);
-
-                            provider.Set("SortID").EqualTo(index).Where<ArticlePart>(y => y.ID == partid).Execute();
+                            new SubSonic.Query.Update<ArticlePart>(Repository.GetProvider()).Set("SortID").EqualTo(index).Where<ArticlePart>(y => y.ID == partid).Execute();
                         });
                     }
                 }
