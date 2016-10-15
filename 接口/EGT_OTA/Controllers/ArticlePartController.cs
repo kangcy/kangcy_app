@@ -90,10 +90,10 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var id = ZNRequest.GetInt("ID");
-                var model = db.Single<Keep>(x => x.ID == id);
+                var model = db.Single<ArticlePart>(x => x.ID == id);
                 if (model != null)
                 {
-                    var result = db.Delete<Keep>(id) > 0;
+                    var result = db.Delete<ArticlePart>(id) > 0;
                     if (result)
                     {
                         return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
