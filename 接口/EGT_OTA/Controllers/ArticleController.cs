@@ -99,7 +99,7 @@ namespace EGT_OTA.Controllers
                         part.ArticleID = model.ID;
                         part.Types = 1;
                         part.Introduction = model.Cover;
-                        part.Index = 0;
+                        part.SortID = 0;
                         part.ID = Tools.SafeInt(db.Add<ArticlePart>(part));
                         result = part.ID > 0;
                     }
@@ -117,7 +117,7 @@ namespace EGT_OTA.Controllers
                     if (!string.IsNullOrEmpty(parts))
                     {
 
-                        var articlePart = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Index").From<ArticlePart>().ExecuteTypedList<ArticlePart>();
+                        var articlePart = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "SortID").From<ArticlePart>().ExecuteTypedList<ArticlePart>();
                         var provider = new SubSonic.Query.Update<ArticlePart>(Repository.GetProvider());
 
                         var ids = parts.Split(',');
@@ -127,7 +127,7 @@ namespace EGT_OTA.Controllers
                             var partid = Tools.SafeInt(id[0]);
                             var index = Tools.SafeInt(id[1]);
 
-                            provider.Set("Index").EqualTo(index).Where<ArticlePart>(y => y.ID == partid).Execute();
+                            provider.Set("SortID").EqualTo(index).Where<ArticlePart>(y => y.ID == partid).Execute();
                         });
                     }
                 }
@@ -380,7 +380,7 @@ namespace EGT_OTA.Controllers
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
 
                 var array = list.Select(x => x.ID).ToArray();
-                var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == 1).And("ArticleID").In(array).OrderAsc("Index").ExecuteTypedList<ArticlePart>();
+                var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == 1).And("ArticleID").In(array).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
                 if (parts.Count > 3)
                 {
                     parts = parts.Take(3).ToList();
