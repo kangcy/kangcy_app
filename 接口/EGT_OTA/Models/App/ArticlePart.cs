@@ -48,5 +48,7 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(1000), SubSonicNullString]
         public string Introduction { get; set; }
+
+        public int Index { get; set; }
     }
 }

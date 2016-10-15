@@ -54,6 +54,7 @@ namespace EGT_OTA.Controllers
                     {
                         return Json(new { result = false, message = "段落信息异常" }, JsonRequestBehavior.AllowGet);
                     }
+                    model.Index = 0;
                 }
                 model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"), false);
                 var newId = model.ID;
