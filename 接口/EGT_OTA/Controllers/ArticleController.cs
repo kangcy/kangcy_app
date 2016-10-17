@@ -363,6 +363,9 @@ namespace EGT_OTA.Controllers
                 if (CreateUserID != CurrUserID || CreateUserID == 0)
                 {
                     query = query.And("Status").IsEqualTo(Enum_Status.Approved);
+
+                    //查看公开或加密的文章
+                    query = query.And("ArticlePower").In(new int[1, 3]);
                 }
 
                 //文章类型
