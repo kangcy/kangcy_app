@@ -98,7 +98,7 @@ namespace EGT_OTA.Controllers
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
-                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
+                var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "ArticlePower").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
                 var newlist = (from l in list
                                join a in articles on l.ArticleID equals a.ID
@@ -107,12 +107,13 @@ namespace EGT_OTA.Controllers
                                {
                                    ID = l.ID,
                                    Summary = l.Summary,
-                                   CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                   CreateDate = FormatTime(l.CreateDate),
                                    UserID = u.ID,
                                    NickName = u.NickName,
                                    Avatar = GetFullUrl(u.Avatar),
                                    ArticleID = a.ID,
-                                   Title = a.Title
+                                   Title = a.Title,
+                                   ArticlePower = a.ArticlePower
                                }).ToList();
                 var result = new
                 {

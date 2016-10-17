@@ -329,6 +329,32 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 校验权限
+        /// </summary>
+        public ActionResult CheckPowerPwd()
+        {
+            try
+            {
+                var id = ZNRequest.GetInt("ArticleID");
+                if (id == 0)
+                {
+                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+                }
+                var pwd = ZNRequest.GetInt("ArticlePowerPwd");
+                var result = db.Exists<Article>(x => x.ID == id && x.ArticlePower == Enum_ArticlePower.Password && x.ArticlePowerPwd == pwd);
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 列表
         /// </summary>
         public ActionResult All()
