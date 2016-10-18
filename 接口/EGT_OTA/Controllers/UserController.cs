@@ -119,7 +119,7 @@ namespace EGT_OTA.Controllers
                 user.Keeps = 0;
                 user.Follows = 0;
                 user.Fans = 0;
-                user.FanText = ",";
+                user.FanText = "";
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {
