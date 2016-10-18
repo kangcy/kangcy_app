@@ -66,6 +66,10 @@ namespace EGT_OTA.Controllers
                         //点赞
                         user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == user.ID).GetRecordCount();
 
+                        //我关注的用户
+                        var fans = db.Find<Fan>(x => x.FromUserID == user.ID && x.Status == 1).Select(x => x.ToUserID).ToArray();
+                        user.FanText = string.Join(",", fans);
+
                         return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                     }
                 }
@@ -115,6 +119,7 @@ namespace EGT_OTA.Controllers
                 user.Keeps = 0;
                 user.Follows = 0;
                 user.Fans = 0;
+                user.FanText = ",";
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {
@@ -550,6 +555,10 @@ namespace EGT_OTA.Controllers
 
                     //点赞
                     user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == user.ID).GetRecordCount();
+
+                    //我关注的用户
+                    var fans = db.Find<Fan>(x => x.FromUserID == user.ID && x.Status == 1).Select(x => x.ToUserID).ToArray();
+                    user.FanText = string.Join(",", fans);
 
                     return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }

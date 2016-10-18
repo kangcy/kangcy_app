@@ -233,5 +233,11 @@ namespace EGT_OTA.Models
         public int Pays { get; set; }
 
         #endregion
+
+        /// <summary>
+        /// 关注人
+        /// </summary>
+        [SubSonicIgnore]
+        public string FanText { get; set; }
     }
 }
