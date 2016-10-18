@@ -553,6 +553,7 @@ namespace EGT_OTA.Controllers
 
                     //点赞
                     user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == user.ID).GetRecordCount();
+
                     return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }
             }
