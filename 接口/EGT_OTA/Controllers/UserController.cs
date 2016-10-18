@@ -82,12 +82,11 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Register()
         {
-            var status = false;
             var result = string.Empty;
             try
             {
-                var username = ZNRequest.GetString("username").Trim();
-                var password = ZNRequest.GetString("password").Trim();
+                var username = ZNRequest.GetString("UserName").Trim();
+                var password = ZNRequest.GetString("Password").Trim();
                 if (String.IsNullOrEmpty(username) || String.IsNullOrEmpty(password))
                 {
                     return Json(new { result = false, message = "用户名和密码不能为空" }, JsonRequestBehavior.AllowGet);
@@ -121,9 +120,7 @@ namespace EGT_OTA.Controllers
                 {
                     user.Number = user.ID.ToString();
                     db.Update<User>(user);
-
-                    string info = "\r\n" + username + "于" + DateTime.Now.ToString() + "登录APP\r\n" + "登录IP为:" + Tools.GetClientIP;
-                    LogHelper.UserLoger.Info(info);
+                    return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -131,7 +128,7 @@ namespace EGT_OTA.Controllers
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
                 result = ex.Message;
             }
-            return Json(new { status = status, result = result }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

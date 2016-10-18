@@ -130,7 +130,7 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
-        /// 列表
+        /// 我赞过的
         /// </summary>
         public ActionResult All()
         {
@@ -142,11 +142,6 @@ namespace EGT_OTA.Controllers
                 if (CreateUserID > 0)
                 {
                     query = query.And("CreateUserID").IsEqualTo(CreateUserID);
-                }
-                var ArticleUserID = ZNRequest.GetInt("ArticleUserID");
-                if (ArticleUserID > 0)
-                {
-                    query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
                 }
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
@@ -161,7 +156,6 @@ namespace EGT_OTA.Controllers
                 {
                     parts = parts.Take(3).ToList();
                 }
-
                 var newlist = (from a in articles
                                join u in users on a.CreateUserID equals u.ID
                                select new
@@ -182,6 +176,48 @@ namespace EGT_OTA.Controllers
                                    TypeName = articletypes.Exists(x => x.ID == a.TypeID) ? articletypes.FirstOrDefault(x => x.ID == a.TypeID).Name : "",
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).ToList()
                                }).ToList();
+                var result = new
+                {
+                    currpage = pager.Index,
+                    records = recordCount,
+                    totalpage = totalPage,
+                    list = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// 赞过我的
+        /// </summary>
+        public ActionResult All2()
+        {
+            try
+            {
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.Status == Enum_Status.Approved);
+                var ArticleUserID = ZNRequest.GetInt("ArticleUserID");
+                if (ArticleUserID > 0)
+                {
+                    query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
+                }
+                var recordCount = query.GetRecordCount();
+                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
+                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).Distinct().ToArray()).ExecuteTypedList<User>();
+                var newlist = (from u in users
+                               select new
+                                   {
+                                       UserID = u.ID,
+                                       NickName = u.NickName,
+                                       Signature = u.Signature,
+                                       Avatar = GetFullUrl(u.Avatar)
+                                   }).ToList();
                 var result = new
                 {
                     currpage = pager.Index,
