@@ -46,7 +46,7 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
-                    return Json(new { result = false, message = "已关注" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = "已关注" }, JsonRequestBehavior.AllowGet);
                 }
                 model.CreateDate = DateTime.Now;
                 model.CreateIP = Tools.GetClientIP;
@@ -61,7 +61,7 @@ namespace EGT_OTA.Controllers
                 }
                 if (result)
                 {
-                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = true, message = "已关注" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -69,6 +69,32 @@ namespace EGT_OTA.Controllers
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 检测是否关注
+        /// </summary>
+        public ActionResult Check()
+        {
+            User user = GetUserInfo();
+            if (user == null)
+            {
+                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+            }
+            var message = string.Empty;
+            var FromUserID = ZNRequest.GetInt("FromUserID");
+            var ToUserID = ZNRequest.GetInt("ToUserID");
+            try
+            {
+                var result = db.Exists<Fan>(x => x.FromUserID == FromUserID && x.ToUserID == ToUserID);
+                return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                message = ex.Message;
+            }
+            return Json(new { result = false, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
