@@ -129,10 +129,12 @@ namespace EGT_OTA.Controllers
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
                 var array = new List<int>();
+                //我关注的
                 if (FromUserID > 0)
                 {
                     array = list.Select(x => x.ToUserID).Distinct().ToList();
                 }
+                //关注我的
                 if (ToUserID > 0)
                 {
                     array = list.Select(x => x.FromUserID).Distinct().ToList();
@@ -147,6 +149,7 @@ namespace EGT_OTA.Controllers
                                    select new
                                    {
                                        CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                       UserID = u.ID,
                                        NickName = u.NickName,
                                        Signature = u.Signature,
                                        Avatar = GetFullUrl(u.Avatar)
@@ -169,6 +172,7 @@ namespace EGT_OTA.Controllers
                                    select new
                                    {
                                        CreateDate = l.CreateDate.ToString("yyyy-MM-dd"),
+                                       UserID = u.ID,
                                        NickName = u.NickName,
                                        Signature = u.Signature,
                                        Avatar = GetFullUrl(u.Avatar)
