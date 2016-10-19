@@ -25,7 +25,7 @@ namespace EGT_OTA.Models
     /// 文章类型
     /// </summary>
     [Serializable]
-    public class ArticleType : BaseModel
+    public class ArticleType
     {
         /// <summary>
         /// ID
@@ -61,5 +61,20 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(50), SubSonicNullString]
         public string ParentIDList { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int Status { get; set; }
+
+        /// <summary>
+        /// 订阅人数
+        /// </summary>
+        public int Number { get; set; }
+
+        /// <summary>
+        /// 排序值
+        /// </summary>
+        public int SortID { get; set; }
     }
 }
