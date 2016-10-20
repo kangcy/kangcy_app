@@ -69,6 +69,7 @@ namespace EGT_OTA.Controllers
                                    Cover = GetFullUrl(l.Cover),
                                    Name = l.Name,
                                    Summary = l.Summary,
+                                   CurrID = l.CurrID,
                                    ParentID = l.ParentID,
                                    ParentIDList = l.ParentIDList,
                                    Number = l.Number

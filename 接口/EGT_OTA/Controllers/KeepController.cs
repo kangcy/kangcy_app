@@ -139,7 +139,7 @@ namespace EGT_OTA.Controllers
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Keep>();
                 var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Goods", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
-                var articletypes = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Name").From<ArticleType>().ExecuteTypedList<ArticleType>();
+                var articletypes = new SubSonic.Query.Select(Repository.GetProvider(), "CurrID", "Name").From<ArticleType>().ExecuteTypedList<ArticleType>();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(articles.Select(x => x.CreateUserID).Distinct().ToArray()).ExecuteTypedList<User>();
 
                 var array = list.Select(x => x.ArticleID).ToArray();
@@ -166,7 +166,7 @@ namespace EGT_OTA.Controllers
                                    Keeps = a.Keeps,
                                    Pays = a.Pays,
                                    CreateDate = FormatTime(a.CreateDate),
-                                   TypeName = articletypes.Exists(x => x.ID == a.TypeID) ? articletypes.FirstOrDefault(x => x.ID == a.TypeID).Name : "",
+                                   TypeName = articletypes.Exists(x => x.CurrID == a.TypeID) ? articletypes.FirstOrDefault(x => x.CurrID == a.TypeID).Name : "",
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).ToList()
                                }).ToList();
                 var result = new

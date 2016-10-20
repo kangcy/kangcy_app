@@ -62,6 +62,12 @@ namespace EGT_OTA.Models
         public int TypeID { get; set; }
 
         /// <summary>
+        /// 类型父集合
+        /// </summary>
+        [SubSonicStringLength(32), SubSonicNullString]
+        public string TypeIDList { get; set; }
+
+        /// <summary>
         /// 浏览量
         /// </summary>
         public int Views { get; set; }

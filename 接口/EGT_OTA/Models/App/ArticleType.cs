@@ -27,6 +27,24 @@ namespace EGT_OTA.Models
     [Serializable]
     public class ArticleType
     {
+        public ArticleType()
+        {
+
+        }
+
+        public ArticleType(int currId, int parentId, string parentIdList, string name, string summary, string cover, int status = 1, int number = 0, int sortId = 0)
+        {
+            this.Name = name;
+            this.Summary = summary;
+            this.Cover = cover;
+            this.CurrID = currId;
+            this.ParentID = parentId;
+            this.ParentIDList = parentIdList;
+            this.Status = status;
+            this.Number = number;
+            this.SortID = sortId;
+        }
+
         /// <summary>
         /// ID
         /// </summary>
@@ -50,6 +68,11 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicStringLength(255), SubSonicNullString]
         public string Cover { get; set; }
+
+        /// <summary>
+        /// 当前索引值
+        /// </summary>
+        public int CurrID { get; set; }
 
         /// <summary>
         /// 父节点
