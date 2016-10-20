@@ -78,7 +78,7 @@ namespace EGT_OTA.Models
             var list = new List<ArticleType>();
 
             //其它
-            list.Add(new ArticleType(10000, 0, "-10000-", "其它", "", "http://www.dcloud.io/hellomui/images/1.jpg"));
+            list.Add(new ArticleType(10000, 0, "-10000-", "其它", "", "http://www.dcloud.io/hellomui/images/1.jpg", 1, 0, 10000));
 
             //女神
             list.Add(new ArticleType(1, 0, "-0-", "女神", "", "http://www.dcloud.io/hellomui/images/1.jpg"));
