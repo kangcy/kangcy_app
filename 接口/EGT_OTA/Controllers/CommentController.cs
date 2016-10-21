@@ -41,27 +41,27 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                else
-                {
-                    Comment model = new Comment();
-                    model.ArticleID = articleID;
-                    model.ArticleUserID = article.CreateUserID;
-                    model.Summary = summary;
-                    model.Status = Enum_Status.Approved;
-                    model.CreateDate = DateTime.Now;
-                    model.CreateUserID = user.ID;
-                    model.CreateIP = Tools.GetClientIP;
-                    var result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
 
-                    //修改评论数
+                Comment model = new Comment();
+                model.ArticleID = articleID;
+                model.ArticleUserID = article.CreateUserID;
+                model.Summary = summary;
+                model.Status = Enum_Status.Approved;
+                model.CreateDate = DateTime.Now;
+                model.CreateUserID = user.ID;
+                model.CreateIP = Tools.GetClientIP;
+                model.ParentCommentID = ZNRequest.GetInt("ParentCommentID");
+                model.ParentUserID = ZNRequest.GetInt("ParentUserID");
+                var result = Tools.SafeInt(db.Add<Comment>(model)) > 0;
+
+                //修改评论数
+                if (result)
+                {
+                    var comments = article.Comments + 1;
+                    result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Comments").EqualTo(comments).Where<Article>(x => x.ID == articleID).Execute() > 0;
                     if (result)
                     {
-                        var comments = article.Comments + 1;
-                        result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Comments").EqualTo(comments).Where<Article>(x => x.ID == articleID).Execute() > 0;
-                        if (result)
-                        {
-                            return Json(new { result = true, message = comments }, JsonRequestBehavior.AllowGet);
-                        }
+                        return Json(new { result = true, message = comments }, JsonRequestBehavior.AllowGet);
                     }
                 }
             }
@@ -70,6 +70,72 @@ namespace EGT_OTA.Controllers
                 LogHelper.ErrorLoger.Error(ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 文章评论
+        /// </summary>
+        public ActionResult ArticleComment()
+        {
+            try
+            {
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved);
+
+                //文章
+                var ArticleID = ZNRequest.GetInt("ArticleID");
+                if (ArticleID == 0)
+                {
+                    return Json(null, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    query = query.And("ArticleID").IsEqualTo(ArticleID);
+                }
+                var recordCount = query.GetRecordCount();
+                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
+
+                //所有用户
+                var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).Distinct().ToArray()).ExecuteTypedList<User>();
+
+                //父评论
+                var parentComment = new List<Comment>();
+                var parentUser = new List<User>();
+                if (list.Exists(x => x.ParentUserID > 0))
+                {
+                    parentComment = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Summary").From<Comment>().Where("ID").In(list.Select(x => x.ParentCommentID).Distinct().ToArray()).ExecuteTypedList<Comment>();
+                    parentUser = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.ParentUserID).Distinct().ToArray()).ExecuteTypedList<User>();
+                }
+                var newlist = (from l in list
+                               join u in users on l.CreateUserID equals u.ID
+                               select new
+                               {
+                                   ID = l.ID,
+                                   Summary = l.Summary,
+                                   CreateDate = FormatTime(l.CreateDate),
+                                   UserID = u.ID,
+                                   NickName = u.NickName,
+                                   Avatar = GetFullUrl(u.Avatar),
+                                   ParentCommentID = l.ParentCommentID,
+                                   ParentUserID = l.ParentUserID,
+                                   ParentNickName = l.ParentUserID == 0 ? "" : (parentUser.Exists(x => x.ID == l.ParentUserID) ? parentUser.FirstOrDefault(x => x.ID == l.ParentUserID).NickName : ""),
+                                   ParentSummary = l.ParentCommentID == 0 ? "" : (parentComment.Exists(x => x.ID == l.ParentCommentID) ? parentComment.FirstOrDefault(x => x.ID == l.ParentCommentID).Summary : "")
+                               }).ToList();
+                var result = new
+                {
+                    currpage = pager.Index,
+                    records = recordCount,
+                    totalpage = totalPage,
+                    list = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
         }
 
         /// <summary>

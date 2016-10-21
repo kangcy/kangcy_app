@@ -404,7 +404,7 @@ namespace EGT_OTA.Controllers
                 var TypeID = ZNRequest.GetInt("TypeID");
                 if (TypeID > 0)
                 {
-                    query = query.And("TypeIDList").Like("-" + TypeID + "-");
+                    query = query.And("TypeIDList").Like("%-" + TypeID + "-%");
                 }
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;

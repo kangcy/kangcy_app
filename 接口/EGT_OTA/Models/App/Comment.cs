@@ -50,6 +50,16 @@ namespace EGT_OTA.Models
         public string Summary { get; set; }
 
         /// <summary>
+        /// 回复评论ID
+        /// </summary>
+        public int ParentCommentID { get; set; }
+
+        /// <summary>
+        /// 回复用戶ID
+        /// </summary>
+        public int ParentUserID { get; set; }
+
+        /// <summary>
         /// 状态
         /// </summary>
         public int Status { get; set; }
