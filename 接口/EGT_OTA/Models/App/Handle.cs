@@ -24,7 +24,7 @@ namespace EGT_OTA.Models
     /// <summary>
     /// 操作(点赞、收藏)
     /// </summary>
-    public abstract class Handle : BaseModel
+    public abstract class Handle
     {
         /// <summary>
         /// 文章
@@ -35,5 +35,28 @@ namespace EGT_OTA.Models
         /// 文章作者
         /// </summary>
         public int ArticleUserID { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int Status { get; set; }
+
+        /// <summary>
+        /// 创建人ID
+        /// </summary>
+        [SubSonicNullString]
+        public int CreateUserID { get; set; }
+
+        /// <summary>
+        /// 创建日期
+        /// </summary>
+        [SubSonicNullString]
+        public DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// 创建IP
+        /// </summary>
+        [SubSonicStringLength(100), SubSonicNullString]
+        public string CreateIP { get; set; }
     }
 }

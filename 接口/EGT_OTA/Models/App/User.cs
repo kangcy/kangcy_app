@@ -33,12 +33,6 @@ namespace EGT_OTA.Models
         [SubSonicPrimaryKey]
         public int ID { get; set; }
 
-        /// <summary>
-        /// 轻墨号
-        /// </summary>
-        [SubSonicStringLength(20), SubSonicNullString]
-        public string Number { get; set; }
-
         ///<summary>
         ///登陆账号
         ///</summary>
@@ -54,7 +48,7 @@ namespace EGT_OTA.Models
         ///<summary>
         ///用户头像
         ///</summary>
-        [SubSonicStringLength(255), SubSonicNullString]
+        [SubSonicNullString]
         public string Avatar { get; set; }
 
         ///<summary>
@@ -176,6 +170,12 @@ namespace EGT_OTA.Models
         [SubSonicNullString]
         public string Cover { get; set; }
 
+        /// <summary>
+        /// 第三方登录编号
+        /// </summary>
+        [SubSonicNullString]
+        public string OpenID { get; set; }
+
         #region  扩展字段
 
         /// <summary>
@@ -239,5 +239,11 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public string FanText { get; set; }
+
+        /// <summary>
+        /// 收藏文章
+        /// </summary>
+        [SubSonicIgnore]
+        public string KeepText { get; set; }
     }
 }

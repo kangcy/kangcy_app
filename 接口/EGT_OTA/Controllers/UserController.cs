@@ -16,6 +16,102 @@ namespace EGT_OTA.Controllers
     public class UserController : BaseController
     {
         /// <summary>
+        /// 第三方登录
+        /// </summary>
+        public ActionResult LoginThird()
+        {
+            try
+            {
+                var NickName = SqlFilter(ZNRequest.GetString("NickName").Trim());
+                var Avatar = ZNRequest.GetString("Avatar").Trim();
+                var OpenID = ZNRequest.GetString("OpenID").Trim();
+
+                string info = "\r\n" + NickName + "于" + DateTime.Now.ToString() + "登录APP\r\n" + "登录IP为:" + Tools.GetClientIP;
+                LogHelper.UserLoger.Info(info);
+
+                User user = db.Single<User>(x => x.OpenID == OpenID);
+                if (user == null)
+                {
+                    user = new User();
+                    user.UserName = string.Empty;
+                    user.Password = string.Empty;
+                    user.NickName = NickName;
+                    user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
+                    user.Cover = ZNRequest.GetString("Cover");
+                    user.OpenID = OpenID;
+                    user.Email = string.Empty;
+                    user.Signature = string.Empty;
+                    user.Avatar = Avatar;
+                    user.Phone = string.Empty;
+                    user.WeiXin = string.Empty;
+                    user.LoginTimes = 1;
+                    user.CreateDate = DateTime.Now;
+                    user.LastLoginDate = DateTime.Now;
+                    user.LastLoginIP = Tools.GetClientIP;
+                    user.IsPhone = 0;
+                    user.IsEmail = 0;
+                    user.Keeps = 0;
+                    user.Follows = 0;
+                    user.Fans = 0;
+                    user.Articles = 0;
+                    user.Comments = 0;
+                    user.Zans = 0;
+                    user.FanText = "";
+                    user.KeepText = "";
+                    user.ID = Tools.SafeInt(db.Add<User>(user), 0);
+                    if (user.ID > 0)
+                    {
+                        user.Address = user.ProvinceName + " " + user.CityName;
+                        user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
+                        return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    user.LoginTimes += 1;
+                    user.LastLoginDate = DateTime.Now;
+                    user.LastLoginIP = Tools.GetClientIP;
+                    var result = db.Update<User>(user) > 0;
+                    if (result)
+                    {
+                        user.Address = user.ProvinceName + " " + user.CityName;
+                        user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
+
+                        //关注
+                        user.Follows = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.FromUserID == user.ID).GetRecordCount();
+
+                        //粉丝
+                        user.Fans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Fan>().Where<Fan>(x => x.ToUserID == user.ID).GetRecordCount();
+
+                        //我的
+                        user.Articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Article>().Where<Article>(x => x.CreateUserID == user.ID).GetRecordCount();
+
+                        //评论
+                        user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserID == user.ID).GetRecordCount();
+
+                        //点赞
+                        user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == user.ID).GetRecordCount();
+
+                        //我关注的用户
+                        var fans = db.Find<Fan>(x => x.FromUserID == user.ID && x.Status == Enum_Status.Approved).Select(x => x.ToUserID).ToArray();
+                        user.FanText = string.Join(",", fans);
+
+                        //我收藏的文章
+                        var keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == user.ID).ExecuteTypedList<Keep>();
+                        user.KeepText = string.Join(",", keeps.Select(x => x.ArticleID).ToArray());
+                        user.Keeps = keeps.Count();
+                        return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message, ex);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 登录
         /// </summary>
         public ActionResult Login()
@@ -57,9 +153,6 @@ namespace EGT_OTA.Controllers
                         //我的
                         user.Articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Article>().Where<Article>(x => x.CreateUserID == user.ID).GetRecordCount();
 
-                        //收藏
-                        user.Keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == user.ID).GetRecordCount();
-
                         //评论
                         user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserID == user.ID).GetRecordCount();
 
@@ -67,8 +160,13 @@ namespace EGT_OTA.Controllers
                         user.Zans = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Zan>().Where<Zan>(x => x.CreateUserID == user.ID).GetRecordCount();
 
                         //我关注的用户
-                        var fans = db.Find<Fan>(x => x.FromUserID == user.ID && x.Status == 1).Select(x => x.ToUserID).ToArray();
+                        var fans = db.Find<Fan>(x => x.FromUserID == user.ID && x.Status == Enum_Status.Approved).Select(x => x.ToUserID).ToArray();
                         user.FanText = string.Join(",", fans);
+
+                        //我收藏的文章
+                        var keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == user.ID).ExecuteTypedList<Keep>();
+                        user.KeepText = string.Join(",", keeps.Select(x => x.ArticleID).ToArray());
+                        user.Keeps = keeps.Count();
 
                         return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                     }
@@ -120,11 +218,10 @@ namespace EGT_OTA.Controllers
                 user.Follows = 0;
                 user.Fans = 0;
                 user.FanText = "";
+                user.OpenID = string.Empty;
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {
-                    user.Number = user.ID.ToString();
-                    db.Update<User>(user);
                     return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -547,9 +644,6 @@ namespace EGT_OTA.Controllers
                     //我的
                     user.Articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Article>().Where<Article>(x => x.CreateUserID == user.ID).GetRecordCount();
 
-                    //收藏
-                    user.Keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == user.ID).GetRecordCount();
-
                     //评论
                     user.Comments = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Comment>().Where<Comment>(x => x.CreateUserID == user.ID).GetRecordCount();
 
@@ -559,6 +653,11 @@ namespace EGT_OTA.Controllers
                     //我关注的用户
                     var fans = db.Find<Fan>(x => x.FromUserID == user.ID && x.Status == 1).Select(x => x.ToUserID).ToArray();
                     user.FanText = string.Join(",", fans);
+
+                    //我收藏的文章
+                    var keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == user.ID).ExecuteTypedList<Keep>();
+                    user.KeepText = string.Join(",", keeps.Select(x => x.ArticleID).ToArray());
+                    user.Keeps = keeps.Count();
 
                     return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }

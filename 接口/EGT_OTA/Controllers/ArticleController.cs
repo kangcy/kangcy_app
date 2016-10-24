@@ -376,7 +376,7 @@ namespace EGT_OTA.Controllers
                 var NickName = ZNRequest.GetString("NickName");
                 if (!string.IsNullOrEmpty(NickName))
                 {
-                    var user = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<User>().Where<User>(x => x.NickName == NickName || x.Number == NickName).ExecuteSingle<User>();
+                    var user = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<User>().Where<User>(x => x.NickName == NickName).ExecuteSingle<User>();
                     if (user != null)
                     {
                         CreateUserID = user.ID;

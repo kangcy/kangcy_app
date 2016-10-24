@@ -55,9 +55,6 @@ namespace EGT_OTA.Controllers
                 model.ArticleID = articleID;
                 model.ArticleUserID = article.CreateUserID;
                 model.Status = Enum_Status.Approved;
-                model.UpdateUserID = user.ID;
-                model.UpdateDate = DateTime.Now;
-                model.UpdateIP = Tools.GetClientIP;
                 var result = false;
                 if (model.ID == 0)
                 {
@@ -104,9 +101,6 @@ namespace EGT_OTA.Controllers
             {
                 if (model != null)
                 {
-                    model.UpdateUserID = user.ID;
-                    model.UpdateDate = DateTime.Now;
-                    model.UpdateIP = Tools.GetClientIP;
                     model.Status = Enum_Status.DELETE;
                     result = db.Update<Zan>(model) > 0;
 
