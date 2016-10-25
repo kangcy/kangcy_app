@@ -95,11 +95,8 @@ namespace EGT_OTA.Controllers
         /// </summary>
         protected User GetUserInfo()
         {
-            var username = ZNRequest.GetString("UserName");
-            var password = ZNRequest.GetString("Password");
             var openid = ZNRequest.GetString("OpenID");
-            //var password = DesEncryptHelper.Encrypt(ZNRequest.GetString("Password"));
-            return db.Single<User>(x => (x.UserName == username && x.Password == password) || x.OpenID == openid);
+            return db.Single<User>(x => x.OpenID == openid);
         }
 
         /// <summary>
