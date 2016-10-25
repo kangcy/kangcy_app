@@ -28,14 +28,10 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var id = ZNRequest.GetInt("ID");
-                var model = db.Single<Keep>(x => x.ID == id);
-                if (model != null)
+                var result = db.Delete<Article>(id) > 0;
+                if (result)
                 {
-                    var result = db.Delete<Keep>(id) > 0;
-                    if (result)
-                    {
-                        return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
-                    }
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -163,6 +159,11 @@ namespace EGT_OTA.Controllers
                 if (model == null)
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+
+                if (model.Status == Enum_Status.DELETE)
+                {
+                    return Json(new { result = false, message = "当前文章不存在" }, JsonRequestBehavior.AllowGet);
                 }
 
                 string password = ZNRequest.GetString("ArticlePassword");
