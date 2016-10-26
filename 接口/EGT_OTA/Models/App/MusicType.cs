@@ -66,5 +66,8 @@ namespace EGT_OTA.Models
         /// 排序值
         /// </summary>
         public int SortID { get; set; }
+
+        [SubSonicIgnore]
+        public List<Music> Music { get; set; }
     }
 }

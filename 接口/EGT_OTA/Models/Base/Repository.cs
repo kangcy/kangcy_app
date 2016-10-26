@@ -160,37 +160,46 @@ namespace EGT_OTA.Models
         {
             var list = new List<Music>();
 
-            list.Add(new Music(0, "默认", "无背景音乐", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            //默认
+            list.Add(new Music(0, "无背景音乐", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
 
-            list.Add(new Music(1, "欢快", "土耳其进行曲", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
-            list.Add(new Music(1, "欢快", "斗牛士进行曲", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
-            list.Add(new Music(1, "欢快", "菊次郎的夏天", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
-            list.Add(new Music(1, "欢快", "春之声圆舞曲", "", "http://www.dcloud.io/hellomui/images/4.jpg", ""));
-            list.Add(new Music(1, "欢快", "雨中漫步", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            //欢快
+            list.Add(new Music(1, "土耳其进行曲", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            list.Add(new Music(1, "斗牛士进行曲", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
+            list.Add(new Music(1, "菊次郎的夏天", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
+            list.Add(new Music(1, "春之声圆舞曲", "", "http://www.dcloud.io/hellomui/images/4.jpg", ""));
+            list.Add(new Music(1, "雨中漫步", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
 
-            list.Add(new Music(2, "优美", "清晨", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
-            list.Add(new Music(2, "优美", "初雪", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
-            list.Add(new Music(2, "优美", "卡农", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
+            //优美
+            list.Add(new Music(2, "清晨", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            list.Add(new Music(2, "初雪", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
+            list.Add(new Music(2, "卡农", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
 
-            list.Add(new Music(3, "浪漫", "月亮代表我的心", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
-            list.Add(new Music(3, "浪漫", "梦中的婚礼", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
-            list.Add(new Music(3, "浪漫", "爱的协奏曲", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
-            list.Add(new Music(3, "浪漫", "爱的罗曼史", "", "http://www.dcloud.io/hellomui/images/4.jpg", ""));
+            //浪漫
+            list.Add(new Music(3, "月亮代表我的心", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            list.Add(new Music(3, "梦中的婚礼", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
+            list.Add(new Music(3, "爱的协奏曲", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
+            list.Add(new Music(3, "爱的罗曼史", "", "http://www.dcloud.io/hellomui/images/4.jpg", ""));
 
-            list.Add(new Music(4, "激情", "克罗地亚狂想曲", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            //激情
+            list.Add(new Music(4, "克罗地亚狂想曲", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
 
-            list.Add(new Music(5, "古韵", "高山流水", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
-            list.Add(new Music(5, "古韵", "梁祝", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
-            list.Add(new Music(5, "古韵", "茉莉花", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
-            list.Add(new Music(5, "古韵", "一帘幽梦", "", "http://www.dcloud.io/hellomui/images/4.jpg", ""));
+            //古韵
+            list.Add(new Music(5, "高山流水", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            list.Add(new Music(5, "梁祝", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
+            list.Add(new Music(5, "茉莉花", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
+            list.Add(new Music(5, "一帘幽梦", "", "http://www.dcloud.io/hellomui/images/4.jpg", ""));
 
-            list.Add(new Music(6, "情境", "生日快乐", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
-            list.Add(new Music(6, "情境", "摇篮曲", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
-            list.Add(new Music(6, "情境", "婚礼进行曲", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
+            //情境
+            list.Add(new Music(6, "生日快乐", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            list.Add(new Music(6, "摇篮曲", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
+            list.Add(new Music(6, "婚礼进行曲", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
 
-            list.Add(new Music(7, "忧伤", "再见警察", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            //忧伤
+            list.Add(new Music(7, "再见警察", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
 
-            list.Add(new Music(8, "年代", "莫斯科郊外的晚上", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            //年代
+            list.Add(new Music(8, "莫斯科郊外的晚上", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
 
             repo.AddMany<Music>(list);
         }

@@ -25,17 +25,16 @@ namespace EGT_OTA.Models
     /// 音乐
     /// </summary>
     [Serializable]
-    public class Music : BaseModel
+    public class Music
     {
         public Music()
         {
 
         }
 
-        public Music(int typeId, string typeName, string name, string author, string cover, string fileUrl)
+        public Music(int typeId, string name, string author, string cover, string fileUrl)
         {
             this.TypeID = typeId;
-            this.TypeName = typeName;
             this.Name = name;
             this.Author = author;
             this.Cover = cover;

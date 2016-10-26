@@ -20,37 +20,60 @@ namespace EGT_OTA.Controllers
     public class MusicController : BaseController
     {
         /// <summary>
+        /// 类型列表
+        /// </summary>
+        public ActionResult TypeAll()
+        {
+            try
+            {
+                var list = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticleType>().Where<MusicType>(x => x.Status == Enum_Status.Approved).OrderAsc("SortID").ExecuteTypedList<MusicType>();
+                var newlist = (from l in list
+                               select new
+                               {
+                                   ID = l.ID,
+                                   Name = l.Name,
+                                   CurrID = l.CurrID
+                               }).ToList();
+                var result = new
+                {
+                    currpage = 1,
+                    records = list.Count(),
+                    totalpage = 1,
+                    list = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
         /// 列表
         /// </summary>
         public ActionResult All()
         {
             try
             {
-                var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Music>().Where<Music>(x => x.Status == Enum_Status.Approved);
-                string Name = ZNRequest.GetString("Name");
-                if (!string.IsNullOrWhiteSpace(Name))
+                var musicType = db.Find<MusicType>(x => x.Status == Enum_Status.Approved).OrderBy(x => x.SortID).ToList();
+                var music = db.All<Music>().ToList();
+                musicType.ForEach(x =>
                 {
-                    query = query.And("Name").Like("%" + Name + "%").Or("Author").Like("%" + Name + "%");
-                }
-                var recordCount = query.GetRecordCount();
-                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Music>();
-                var newlist = (from l in list
-                               select new
-                               {
-                                   ID = l.ID,
-                                   Name = l.Name,
-                                   Author = l.Author,
-                                   Cover = GetFullUrl(l.Cover),
-                                   FileUrl = GetFullUrl(l.FileUrl)
-                               }).ToList();
+                    x.Music = music.FindAll(y => y.TypeID == x.CurrID);
+                    x.Music.ForEach(l =>
+                    {
+                        l.Cover = GetFullUrl(l.Cover);
+                        l.FileUrl = GetFullUrl(l.FileUrl);
+                    });
+                });
                 var result = new
                 {
-                    currpage = pager.Index,
-                    records = recordCount,
-                    totalpage = totalPage,
-                    list = newlist
+                    currpage = 1,
+                    records = musicType.Count,
+                    totalpage = 1,
+                    list = musicType
                 };
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
