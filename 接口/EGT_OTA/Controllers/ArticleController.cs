@@ -163,7 +163,7 @@ namespace EGT_OTA.Controllers
 
                 if (model.Status == Enum_Status.DELETE)
                 {
-                    return Json(new { result = false, message = "当前文章不存在" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { result = false, message = "当前文章已删除，请刷新重试" }, JsonRequestBehavior.AllowGet);
                 }
 
                 string password = ZNRequest.GetString("ArticlePassword");

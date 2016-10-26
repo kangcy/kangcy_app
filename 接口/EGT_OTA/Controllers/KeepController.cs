@@ -60,15 +60,15 @@ namespace EGT_OTA.Controllers
                     if (result)
                     {
                         result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Keeps").EqualTo(article.Keeps + 1).Where<Article>(x => x.ID == articleID).Execute() > 0;
-                        if (result)
-                        {
-                            return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
-                        }
                     }
                 }
                 else
                 {
                     result = db.Update<Keep>(model) > 0;
+                }
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
