@@ -22,24 +22,22 @@ using SubSonic.SqlGeneration.Schema;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 音乐
+    /// 音乐类型
     /// </summary>
     [Serializable]
-    public class Music : BaseModel
+    public class MusicType
     {
-        public Music()
+        public MusicType()
         {
 
         }
 
-        public Music(int typeId, string typeName, string name, string author, string cover, string fileUrl)
+        public MusicType(int currId, string name, int status = 1, int sortId = 0)
         {
-            this.TypeID = typeId;
-            this.TypeName = typeName;
             this.Name = name;
-            this.Author = author;
-            this.Cover = cover;
-            this.FileUrl = fileUrl;
+            this.CurrID = currId;
+            this.Status = status;
+            this.SortID = sortId;
         }
 
         /// <summary>
@@ -51,31 +49,22 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 名称
         /// </summary>
+        [SubSonicStringLength(100), SubSonicNullString]
         public string Name { get; set; }
 
         /// <summary>
-        /// 作者
+        /// 当前索引值
         /// </summary>
-        [SubSonicNullString]
-        public string Author { get; set; }
+        public int CurrID { get; set; }
 
         /// <summary>
-        /// 封面
+        /// 状态
         /// </summary>
-        [SubSonicNullString]
-        public string Cover { get; set; }
+        public int Status { get; set; }
 
         /// <summary>
-        /// 文件地址
+        /// 排序值
         /// </summary>
-        public string FileUrl { get; set; }
-
-        /// <summary>
-        /// 类型
-        /// </summary>
-        public int TypeID { get; set; }
-
-        [SubSonicIgnore]
-        public string TypeName { get; set; }
+        public int SortID { get; set; }
     }
 }

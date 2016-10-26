@@ -198,6 +198,7 @@
     <Compile Include="Models\App\Zan.cs" />
     <Compile Include="Models\App\Help.cs" />
     <Compile Include="Models\App\ArticlePart.cs" />
+    <Compile Include="Models\App\MusicType.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\Repository.cs" />
     <Compile Include="Models\Base\WebApplication.cs" />

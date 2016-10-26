@@ -56,6 +56,7 @@ namespace EGT_OTA.Models
             repo.Single<ArticleType>(x => x.ID == 0);//文章类型
             repo.Single<Comment>(x => x.ID == 0);//评论
             repo.Single<Music>(x => x.ID == 0);//音乐
+            repo.Single<MusicType>(x => x.ID == 0);//音乐类型
             repo.Single<Video>(x => x.ID == 0);//视频
             repo.Single<Fan>(x => x.ID == 0);//关注
             repo.Single<Keep>(x => x.ID == 0);//收藏
@@ -64,14 +65,24 @@ namespace EGT_OTA.Models
             repo.Single<FeedBack>(x => x.ID == 0);//意见反馈
             repo.Single<Help>(x => x.ID == 0);//帮助中心
 
-            if (!repo.Exists<ArticleType>(x => x.CurrID == 1))
+            if (!repo.Exists<ArticleType>(x => x.ID > 0))
             {
                 InitArticleType(repo);
+            }
+
+            if (!repo.Exists<MusicType>(x => x.ID > 0))
+            {
+                InitMusicType(repo);
+            }
+
+            if (!repo.Exists<Music>(x => x.ID > 0))
+            {
+                InitMusic(repo);
             }
         }
 
         /// <summary>
-        /// 类型初始化
+        /// 文章类型初始化
         /// </summary>
         protected static void InitArticleType(SimpleRepository repo)
         {
@@ -122,6 +133,66 @@ namespace EGT_OTA.Models
             list.Add(new ArticleType(54, 5, "-0-5-54-", "暖男", "", "http://www.dcloud.io/hellomui/images/2.jpg"));
 
             repo.AddMany<ArticleType>(list);
+        }
+
+        /// <summary>
+        /// 音乐类型初始化
+        /// </summary>
+        protected static void InitMusicType(SimpleRepository repo)
+        {
+            var list = new List<MusicType>();
+            list.Add(new MusicType(0, "默认", 0));
+            list.Add(new MusicType(1, "欢快", 1));
+            list.Add(new MusicType(2, "优美", 2));
+            list.Add(new MusicType(3, "浪漫", 3));
+            list.Add(new MusicType(4, "激情", 4));
+            list.Add(new MusicType(5, "古韵", 5));
+            list.Add(new MusicType(6, "情境", 6));
+            list.Add(new MusicType(7, "忧伤", 7));
+            list.Add(new MusicType(8, "年代", 8));
+            repo.AddMany<MusicType>(list);
+        }
+
+        /// <summary>
+        /// 音乐初始化
+        /// </summary>
+        protected static void InitMusic(SimpleRepository repo)
+        {
+            var list = new List<Music>();
+
+            list.Add(new Music(0, "默认", "无背景音乐", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+
+            list.Add(new Music(1, "欢快", "土耳其进行曲", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            list.Add(new Music(1, "欢快", "斗牛士进行曲", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
+            list.Add(new Music(1, "欢快", "菊次郎的夏天", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
+            list.Add(new Music(1, "欢快", "春之声圆舞曲", "", "http://www.dcloud.io/hellomui/images/4.jpg", ""));
+            list.Add(new Music(1, "欢快", "雨中漫步", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+
+            list.Add(new Music(2, "优美", "清晨", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            list.Add(new Music(2, "优美", "初雪", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
+            list.Add(new Music(2, "优美", "卡农", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
+
+            list.Add(new Music(3, "浪漫", "月亮代表我的心", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            list.Add(new Music(3, "浪漫", "梦中的婚礼", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
+            list.Add(new Music(3, "浪漫", "爱的协奏曲", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
+            list.Add(new Music(3, "浪漫", "爱的罗曼史", "", "http://www.dcloud.io/hellomui/images/4.jpg", ""));
+
+            list.Add(new Music(4, "激情", "克罗地亚狂想曲", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+
+            list.Add(new Music(5, "古韵", "高山流水", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            list.Add(new Music(5, "古韵", "梁祝", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
+            list.Add(new Music(5, "古韵", "茉莉花", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
+            list.Add(new Music(5, "古韵", "一帘幽梦", "", "http://www.dcloud.io/hellomui/images/4.jpg", ""));
+
+            list.Add(new Music(6, "情境", "生日快乐", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+            list.Add(new Music(6, "情境", "摇篮曲", "", "http://www.dcloud.io/hellomui/images/2.jpg", ""));
+            list.Add(new Music(6, "情境", "婚礼进行曲", "", "http://www.dcloud.io/hellomui/images/3.jpg", ""));
+
+            list.Add(new Music(7, "忧伤", "再见警察", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+
+            list.Add(new Music(8, "年代", "莫斯科郊外的晚上", "", "http://www.dcloud.io/hellomui/images/1.jpg", ""));
+
+            repo.AddMany<Music>(list);
         }
     }
 }
