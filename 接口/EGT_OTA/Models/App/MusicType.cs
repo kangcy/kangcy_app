@@ -32,7 +32,7 @@ namespace EGT_OTA.Models
 
         }
 
-        public MusicType(int currId, string name, int status = 1, int sortId = 0)
+        public MusicType(int currId, string name, int sortId = 0, int status = 1)
         {
             this.Name = name;
             this.CurrID = currId;
