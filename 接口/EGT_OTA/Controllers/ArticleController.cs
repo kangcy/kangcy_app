@@ -185,6 +185,7 @@ namespace EGT_OTA.Controllers
                 {
                     Music music = db.Single<Music>(x => x.ID == model.MusicID);
                     model.MusicUrl = music == null ? "" : music.FileUrl;
+                    model.MusicName = music == null ? "" : music.Name;
                 }
 
                 //设置

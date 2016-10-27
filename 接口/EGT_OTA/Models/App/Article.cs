@@ -141,6 +141,12 @@ namespace EGT_OTA.Models
         public int ShareNick { get; set; }
 
         /// <summary>
+        /// 音乐名称
+        /// </summary>
+        [SubSonicIgnore]
+        public string MusicName { get; set; }
+
+        /// <summary>
         /// 文章部分
         /// </summary>
         [SubSonicIgnore]
