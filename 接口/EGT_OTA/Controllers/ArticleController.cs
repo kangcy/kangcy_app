@@ -64,7 +64,6 @@ namespace EGT_OTA.Controllers
                     }
                 }
                 model.Title = SqlFilter(ZNRequest.GetString("Title"));
-                model.Cover = ZNRequest.GetString("Cover");
                 model.MusicID = ZNRequest.GetInt("MusicID", 0);
                 model.MusicUrl = ZNRequest.GetString("MusicUrl");
                 model.UpdateUserID = user.ID;
@@ -73,6 +72,7 @@ namespace EGT_OTA.Controllers
                 var result = false;
                 if (model.ID == 0)
                 {
+                    model.Cover = ZNRequest.GetString("Cover");
                     model.Status = Enum_Status.Audit;
                     model.Views = 0;
                     model.Goods = 0;
