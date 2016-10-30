@@ -38,6 +38,10 @@ namespace EGT_OTA.Controllers
                     user.NickName = NickName;
                     user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
                     user.Cover = ZNRequest.GetString("Cover");
+                    if (string.IsNullOrWhiteSpace(OpenID))
+                    {
+                        OpenID = Guid.NewGuid().ToString("N");
+                    }
                     user.OpenID = OpenID;
                     user.Email = string.Empty;
                     user.Signature = string.Empty;
