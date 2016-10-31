@@ -400,6 +400,14 @@ namespace EGT_OTA.Controllers
                 {
                     query = query.And("TypeIDList").Like("%-" + TypeID + "-%");
                 }
+
+                //搜索默认显示推荐文章
+                var Source = ZNRequest.GetString("Source");
+                if (!string.IsNullOrWhiteSpace(Source))
+                {
+                    query = query.And("IsRecommend").IsEqualTo(1);
+                }
+
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Article>();

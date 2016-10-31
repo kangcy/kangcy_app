@@ -62,6 +62,7 @@ namespace EGT_OTA.Controllers
                     user.Zans = 0;
                     user.FanText = "";
                     user.KeepText = "";
+                    user.Status = Enum_Status.Approved;
                     user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                     if (user.ID > 0)
                     {
@@ -222,6 +223,8 @@ namespace EGT_OTA.Controllers
                 user.Follows = 0;
                 user.Fans = 0;
                 user.FanText = "";
+                user.KeepText = "";
+                user.Status = Enum_Status.Approved;
                 user.OpenID = Guid.NewGuid().ToString("N");
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
@@ -686,9 +689,25 @@ namespace EGT_OTA.Controllers
                 {
                     query.And("NickName").IsNotNull().And("NickName").Like("%" + nickname + "%");
                 }
-                var recordCount = query.GetRecordCount();
+
+                //搜索默认显示推荐文章
+                var Source = ZNRequest.GetString("Source");
+                if (!string.IsNullOrWhiteSpace(Source))
+                {
+                    query = query.And("NickName").IsNotNull().And("Signature").IsNotNull().And("Avatar").IsNotNull();
+                }
+                var list = new List<User>();
+                if (string.IsNullOrWhiteSpace(Source))
+                {
+                    list = query.OrderDesc("ID").ExecuteTypedList<User>();
+                }
+                else
+                {
+                    list = query.Paged(1, 100).OrderDesc("ID").ExecuteTypedList<User>();
+                }
+
+                var recordCount = list.Count;
                 var totalPage = 1;
-                var list = query.OrderDesc("ID").ExecuteTypedList<User>();
                 var newlist = (from l in list
                                select new
                                {
