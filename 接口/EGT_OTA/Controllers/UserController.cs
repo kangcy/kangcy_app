@@ -328,7 +328,6 @@ namespace EGT_OTA.Controllers
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
-
         /// <summary>
         /// 修改性别
         /// </summary>
@@ -671,6 +670,47 @@ namespace EGT_OTA.Controllers
                 LogHelper.ErrorLoger.Error(ex.Message, ex);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        public ActionResult All()
+        {
+            try
+            {
+                var pager = new Pager();
+                var nickname = ZNRequest.GetString("NickName");
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<User>().Where<User>(x => x.Status == Enum_Status.Approved);
+                if (!string.IsNullOrWhiteSpace(nickname))
+                {
+                    query.And("NickName").IsNotNull().And("NickName").Like("%" + nickname + "%");
+                }
+                var recordCount = query.GetRecordCount();
+                var totalPage = 1;
+                var list = query.OrderDesc("ID").ExecuteTypedList<User>();
+                var newlist = (from l in list
+                               select new
+                               {
+                                   ID = l.ID,
+                                   NickName = l.NickName,
+                                   Signature = l.Signature,
+                                   Avatar = GetFullUrl(l.Avatar)
+                               }).ToList();
+                var result = new
+                {
+                    currpage = pager.Index,
+                    records = recordCount,
+                    totalpage = totalPage,
+                    list = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

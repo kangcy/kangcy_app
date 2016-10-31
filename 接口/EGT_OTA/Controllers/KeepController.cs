@@ -165,8 +165,7 @@ namespace EGT_OTA.Controllers
                                    CreateDate = FormatTime(a.CreateDate),
                                    TypeName = articletypes.Exists(x => x.CurrID == a.TypeID) ? articletypes.FirstOrDefault(x => x.CurrID == a.TypeID).Name : "",
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).ToList(),
-                                   ArticlePower = a.ArticlePower,
-                                   ArticlePowerPwd = a.ArticlePowerPwd
+                                   ArticlePower = a.ArticlePower
                                }).ToList();
                 var result = new
                 {

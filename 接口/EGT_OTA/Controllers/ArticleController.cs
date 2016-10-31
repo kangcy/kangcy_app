@@ -370,24 +370,16 @@ namespace EGT_OTA.Controllers
             try
             {
                 //创建人
-                var CreateUserID = 0;
                 var pager = new Pager();
                 var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.ID > 0);
 
                 //昵称、轻墨号
-                var NickName = ZNRequest.GetString("NickName");
-                if (!string.IsNullOrEmpty(NickName))
+                var title = ZNRequest.GetString("Title");
+                if (!string.IsNullOrEmpty(title))
                 {
-                    var user = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<User>().Where<User>(x => x.NickName == NickName).ExecuteSingle<User>();
-                    if (user != null)
-                    {
-                        CreateUserID = user.ID;
-                    }
+                    query.And("Title").Like("%" + title + "%");
                 }
-                else
-                {
-                    CreateUserID = ZNRequest.GetInt("CreateUserID");
-                }
+                var CreateUserID = ZNRequest.GetInt("CreateUserID");
                 if (CreateUserID > 0)
                 {
                     query = query.And("CreateUserID").IsEqualTo(CreateUserID);
@@ -399,7 +391,7 @@ namespace EGT_OTA.Controllers
                     query = query.And("Status").IsEqualTo(Enum_Status.Approved);
 
                     //查看公开或加密的文章
-                    query = query.And("ArticlePower").In(new int[1, 3]);
+                    query = query.And("ArticlePower").In(new int[] { 1, 3 });
                 }
 
                 //文章类型
@@ -439,8 +431,7 @@ namespace EGT_OTA.Controllers
                                    CreateDate = FormatTime(a.CreateDate),
                                    TypeName = articletypes.Exists(x => x.CurrID == a.TypeID) ? articletypes.FirstOrDefault(x => x.CurrID == a.TypeID).Name : "",
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).ToList(),
-                                   ArticlePower = a.ArticlePower,
-                                   ArticlePowerPwd = a.ArticlePowerPwd
+                                   ArticlePower = a.ArticlePower
                                }).ToList();
                 var result = new
                 {
