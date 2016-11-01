@@ -497,6 +497,58 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 修改是否分享昵称
+        /// </summary>
+        public ActionResult EditShareNick()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                user.ShareNick = ZNRequest.GetInt("ShareNick");
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 修改是否自动播放音乐
+        /// </summary>
+        public ActionResult EditAutoMusic()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                user.AutoMusic = ZNRequest.GetInt("AutoMusic");
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 邮箱认证
         /// </summary>
         public ActionResult EmailVerify()
@@ -588,43 +640,6 @@ namespace EGT_OTA.Controllers
                 {
                     message = "邮箱验证失败！<br />可能原因如下：<br />1、验证码过期<br />2、点击连接时网络连接失败<br />请重新发送验证请求";
                 }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
-            }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
-        /// 修改设置
-        /// </summary>
-        public ActionResult ChangeSetting()
-        {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
-            try
-            {
-                var newpassword = ZNRequest.GetString("newpassword").Trim();
-                if (string.IsNullOrEmpty(newpassword))
-                {
-                    return Json(new { result = result, message = "参数异常" }, JsonRequestBehavior.AllowGet);
-                }
-                newpassword = DesEncryptHelper.Encrypt(newpassword);
-                if (user.Password == newpassword)
-                {
-                    return Json(new { result = result, message = "新密码与原密码相同" }, JsonRequestBehavior.AllowGet);
-                }
-                user.Password = newpassword;
-                result = db.Update<User>(user) > 0;
-
             }
             catch (Exception ex)
             {
