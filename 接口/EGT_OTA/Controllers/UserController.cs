@@ -69,11 +69,12 @@ namespace EGT_OTA.Controllers
                     user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                     if (user.ID > 0)
                     {
-                        user.Address = user.ProvinceName + " " + user.CityName;
-                        user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
-
                         UserLogin userlogin = new UserLogin(user.ID, openID, source);
                         db.Add<UserLogin>(userlogin);
+
+                        user.Address = user.ProvinceName + " " + user.CityName;
+                        user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
+                        user.UserLogin = new List<UserLogin>() { userlogin };
 
                         return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                     }
@@ -180,6 +181,8 @@ namespace EGT_OTA.Controllers
                         user.KeepText = "," + string.Join(",", keeps.Select(x => x.ArticleID).ToArray()) + ",";
                         user.Keeps = keeps.Count();
 
+                        user.UserLogin = db.Find<UserLogin>(x => x.UserID == user.ID).ToList();
+
                         return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                     }
                 }
@@ -234,11 +237,12 @@ namespace EGT_OTA.Controllers
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {
-                    user.Address = user.ProvinceName + " " + user.CityName;
-                    user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
-
                     UserLogin userlogin = new UserLogin(user.ID, Guid.NewGuid().ToString("N"), Enum_UserLogin.Common);
                     db.Add<UserLogin>(userlogin);
+
+                    user.Address = user.ProvinceName + " " + user.CityName;
+                    user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
+                    user.UserLogin = new List<UserLogin>() { userlogin };
 
                     return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }
@@ -675,6 +679,8 @@ namespace EGT_OTA.Controllers
                     var keeps = new SubSonic.Query.Select(Repository.GetProvider(), "ID").From<Keep>().Where<Keep>(x => x.CreateUserID == user.ID).ExecuteTypedList<Keep>();
                     user.KeepText = "," + string.Join(",", keeps.Select(x => x.ArticleID).ToArray()) + ",";
                     user.Keeps = keeps.Count();
+
+                    user.UserLogin = db.Find<UserLogin>(x => x.UserID == user.ID).ToList();
 
                     return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }
