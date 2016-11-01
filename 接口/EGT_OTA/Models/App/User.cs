@@ -101,32 +101,17 @@ namespace EGT_OTA.Models
         [SubSonicNullString]
         public string Email { get; set; }
 
-        /// <summary>
-        /// 是否邮箱认证
-        /// </summary>
-        public int IsEmail { get; set; }
-
         ///<summary>
         ///绑定手机
         ///</summary>
-        [SubSonicStringLength(13), SubSonicNullString]
+        [SubSonicStringLength(11), SubSonicNullString]
         public string Phone { get; set; }
-
-        /// <summary>
-        /// 是否号码认证
-        /// </summary>
-        public int IsPhone { get; set; }
 
         ///<summary>
         ///绑定微信
         ///</summary>
         [SubSonicStringLength(50), SubSonicNullString]
         public string WeiXin { get; set; }
-
-        /// <summary>
-        /// 是否绑定微信
-        /// </summary>
-        public int IsWeixin { get; set; }
 
         /// <summary>
         /// 音乐自动播放
@@ -137,11 +122,6 @@ namespace EGT_OTA.Models
         /// 分享带昵称
         /// </summary>
         public int ShareNick { get; set; }
-
-        /// <summary>
-        /// 状态
-        /// </summary>
-        public int Status { get; set; }
 
         ///<summary>
         ///上次登录IP
@@ -171,10 +151,14 @@ namespace EGT_OTA.Models
         public string Cover { get; set; }
 
         /// <summary>
-        /// 第三方登录编号
+        /// 状态
         /// </summary>
-        [SubSonicNullString]
-        public string OpenID { get; set; }
+        public int Status { get; set; }
+
+        /// <summary>
+        /// 是否邮箱认证
+        /// </summary>
+        public int IsEmail { get; set; }
 
         #region  扩展字段
 
@@ -232,8 +216,6 @@ namespace EGT_OTA.Models
         [SubSonicIgnore]
         public int Pays { get; set; }
 
-        #endregion
-
         /// <summary>
         /// 关注人
         /// </summary>
@@ -245,5 +227,7 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public string KeepText { get; set; }
+
+        #endregion
     }
 }

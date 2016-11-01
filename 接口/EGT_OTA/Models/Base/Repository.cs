@@ -64,6 +64,7 @@ namespace EGT_OTA.Models
             repo.Single<Pay>(x => x.ID == 0);//打赏
             repo.Single<FeedBack>(x => x.ID == 0);//意见反馈
             repo.Single<Help>(x => x.ID == 0);//帮助中心
+            repo.Single<UserLogin>(x => x.ID == 0);//登录方式
 
             if (!repo.Exists<ArticleType>(x => x.ID > 0))
             {

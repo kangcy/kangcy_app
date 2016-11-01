@@ -23,13 +23,23 @@ namespace EGT_OTA.Controllers
             try
             {
                 var NickName = SqlFilter(ZNRequest.GetString("NickName").Trim());
-                var Avatar = ZNRequest.GetString("Avatar").Trim();
-                var OpenID = ZNRequest.GetString("OpenID").Trim();
+                var avatar = ZNRequest.GetString("Avatar").Trim();
+                var openID = ZNRequest.GetString("OpenID").Trim();
+                var source = ZNRequest.GetInt("Source");
 
-                string info = "\r\n" + NickName + "于" + DateTime.Now.ToString() + "登录APP\r\n" + "登录IP为:" + Tools.GetClientIP;
-                LogHelper.UserLoger.Info(info);
-
-                User user = db.Single<User>(x => x.OpenID == OpenID);
+                User user = null;
+                if (string.IsNullOrWhiteSpace(openID))
+                {
+                    openID = Guid.NewGuid().ToString("N");
+                }
+                else
+                {
+                    var userLogin = db.Single<UserLogin>(x => x.OpenID == openID);
+                    if (userLogin != null)
+                    {
+                        user = db.Single<User>(x => x.ID == userLogin.UserID);
+                    }
+                }
                 if (user == null)
                 {
                     user = new User();
@@ -38,22 +48,16 @@ namespace EGT_OTA.Controllers
                     user.NickName = NickName;
                     user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
                     user.Cover = ZNRequest.GetString("Cover");
-                    if (string.IsNullOrWhiteSpace(OpenID))
-                    {
-                        OpenID = Guid.NewGuid().ToString("N");
-                    }
-                    user.OpenID = OpenID;
                     user.Email = string.Empty;
+                    user.IsEmail = 0;
                     user.Signature = string.Empty;
-                    user.Avatar = Avatar;
+                    user.Avatar = avatar;
                     user.Phone = string.Empty;
                     user.WeiXin = string.Empty;
                     user.LoginTimes = 1;
                     user.CreateDate = DateTime.Now;
                     user.LastLoginDate = DateTime.Now;
                     user.LastLoginIP = Tools.GetClientIP;
-                    user.IsPhone = 0;
-                    user.IsEmail = 0;
                     user.Keeps = 0;
                     user.Follows = 0;
                     user.Fans = 0;
@@ -62,12 +66,15 @@ namespace EGT_OTA.Controllers
                     user.Zans = 0;
                     user.FanText = "";
                     user.KeepText = "";
-                    user.Status = Enum_Status.Approved;
                     user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                     if (user.ID > 0)
                     {
                         user.Address = user.ProvinceName + " " + user.CityName;
                         user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
+
+                        UserLogin userlogin = new UserLogin(user.ID, openID, source);
+                        db.Add<UserLogin>(userlogin);
+
                         return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                     }
                 }
@@ -209,6 +216,7 @@ namespace EGT_OTA.Controllers
                 user.Sex = ZNRequest.GetInt("Sex", Enum_Sex.Boy);
                 user.Cover = ZNRequest.GetString("Cover");
                 user.Email = string.Empty;
+                user.IsEmail = 0;
                 user.Signature = string.Empty;
                 user.Avatar = string.Empty;
                 user.Phone = string.Empty;
@@ -217,18 +225,21 @@ namespace EGT_OTA.Controllers
                 user.CreateDate = DateTime.Now;
                 user.LastLoginDate = DateTime.Now;
                 user.LastLoginIP = Tools.GetClientIP;
-                user.IsPhone = 0;
-                user.IsEmail = 0;
                 user.Keeps = 0;
                 user.Follows = 0;
                 user.Fans = 0;
                 user.FanText = "";
                 user.KeepText = "";
                 user.Status = Enum_Status.Approved;
-                user.OpenID = Guid.NewGuid().ToString("N");
                 user.ID = Tools.SafeInt(db.Add<User>(user), 0);
                 if (user.ID > 0)
                 {
+                    user.Address = user.ProvinceName + " " + user.CityName;
+                    user.BirthdayText = user.Birthday.ToString("yyyy-MM-dd");
+
+                    UserLogin userlogin = new UserLogin(user.ID, Guid.NewGuid().ToString("N"), Enum_UserLogin.Common);
+                    db.Add<UserLogin>(userlogin);
+
                     return Json(new { result = true, message = user }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -730,6 +741,134 @@ namespace EGT_OTA.Controllers
                 LogHelper.ErrorLoger.Error(ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        /// <summary>
+        /// 绑定号码
+        /// </summary>
+        public ActionResult BindPhone()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var phone = ZNRequest.GetString("Phone");
+                if (string.IsNullOrEmpty(phone))
+                {
+                    return Json(new { result = false, message = "请填写手机号码" }, JsonRequestBehavior.AllowGet);
+                }
+                if (db.Exists<User>(x => x.Phone == phone && x.ID != user.ID))
+                {
+                    return Json(new { result = false, message = "该手机号码已绑定其他账号" }, JsonRequestBehavior.AllowGet);
+                }
+                user.Phone = phone;
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 绑定微信
+        /// </summary>
+        public ActionResult BindWeixin()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var key = ZNRequest.GetString("Key");
+                if (db.Exists<UserLogin>(x => x.OpenID == key && x.Source == Enum_UserLogin.Weixin))
+                {
+                    return Json(new { result = false, message = "该微信账号已绑定其他账号" }, JsonRequestBehavior.AllowGet);
+                }
+                UserLogin userLogin = new UserLogin(user.ID, key, Enum_UserLogin.Weixin);
+                userLogin.ID = Tools.SafeInt(db.Add<UserLogin>(userLogin), 0);
+                if (userLogin.ID > 0)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 绑定微博
+        /// </summary>
+        public ActionResult BindWeibo()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var key = ZNRequest.GetString("Key");
+                if (db.Exists<UserLogin>(x => x.OpenID == key && x.Source == Enum_UserLogin.Weibo))
+                {
+                    return Json(new { result = false, message = "该微博账号已绑定其他账号" }, JsonRequestBehavior.AllowGet);
+                }
+                UserLogin userLogin = new UserLogin(user.ID, key, Enum_UserLogin.Weibo);
+                userLogin.ID = Tools.SafeInt(db.Add<UserLogin>(userLogin), 0);
+                if (userLogin.ID > 0)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 绑定QQ
+        /// </summary>
+        public ActionResult BindQQ()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var key = ZNRequest.GetString("Key");
+                if (db.Exists<UserLogin>(x => x.OpenID == key && x.Source == Enum_UserLogin.QQ))
+                {
+                    return Json(new { result = false, message = "该QQ账号已绑定其他账号" }, JsonRequestBehavior.AllowGet);
+                }
+                UserLogin userLogin = new UserLogin(user.ID, key, Enum_UserLogin.QQ);
+                userLogin.ID = Tools.SafeInt(db.Add<UserLogin>(userLogin), 0);
+                if (userLogin.ID > 0)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
     }
 }

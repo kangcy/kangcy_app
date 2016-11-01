@@ -95,8 +95,13 @@ namespace EGT_OTA.Controllers
         /// </summary>
         protected User GetUserInfo()
         {
-            var openid = ZNRequest.GetString("OpenID");
-            return db.Single<User>(x => x.OpenID == openid);
+            var openId = ZNRequest.GetString("OpenID");
+            var userLogin = db.Single<UserLogin>(x => x.OpenID == openId);
+            if (userLogin == null)
+            {
+                return null;
+            }
+            return db.Single<User>(x => x.ID == userLogin.UserID);
         }
 
         /// <summary>
