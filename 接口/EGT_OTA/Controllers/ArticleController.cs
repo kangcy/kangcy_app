@@ -27,7 +27,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var id = ZNRequest.GetInt("ID");
+                var id = ZNRequest.GetInt("ArticleID");
                 var result = db.Delete<Article>(id) > 0;
                 if (result)
                 {
@@ -54,7 +54,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 Article model = new Article();
-                model.ID = ZNRequest.GetInt("ID");
+                model.ID = ZNRequest.GetInt("ArticleID");
                 if (model.ID > 0)
                 {
                     model = db.Single<Article>(x => x.ID == model.ID);
@@ -150,7 +150,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var id = ZNRequest.GetInt("ID");
+                var id = ZNRequest.GetInt("ArticleID");
                 if (id == 0)
                 {
                     return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);

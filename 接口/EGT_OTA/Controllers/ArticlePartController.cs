@@ -41,7 +41,7 @@ namespace EGT_OTA.Controllers
                 {
                     model = new ArticlePart();
                 }
-                model.ID = ZNRequest.GetInt("ID");
+                model.ID = ZNRequest.GetInt("PartID");
                 if (model.ID == 0)
                 {
                     model.ArticleID = ZNRequest.GetInt("ArticleID", 0);
@@ -90,7 +90,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                var id = ZNRequest.GetInt("ID");
+                var id = ZNRequest.GetInt("PartID");
                 var model = db.Single<ArticlePart>(x => x.ID == id);
                 if (model != null)
                 {
