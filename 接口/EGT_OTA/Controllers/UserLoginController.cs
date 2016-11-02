@@ -26,21 +26,11 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                User user = GetUserInfo();
-                if (user == null)
+                var id = ZNRequest.GetInt("ID");
+                var result = db.Delete<UserLogin>(id);
+                if (result > 0)
                 {
-                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-                }
-                var id = ZNRequest.GetInt("UserLoginID");
-                var model = db.Single<UserLogin>(x => x.ID == id);
-                if (model != null)
-                {
-                    model.Status = Enum_Status.Audit;
-                    var result = db.Update<UserLogin>(model);
-                    if (result > 0)
-                    {
-                        return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
-                    }
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
