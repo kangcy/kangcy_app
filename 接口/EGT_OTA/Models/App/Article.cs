@@ -108,6 +108,12 @@ namespace EGT_OTA.Models
         [SubSonicStringLength(50), SubSonicNullString]
         public int ArticlePowerPwd { get; set; }
 
+        /// <summary>
+        /// 文章编号
+        /// </summary>
+        [SubSonicStringLength(32), SubSonicNullString]
+        public string Number { get; set; }
+
         #region 扩展
 
         /// <summary>

@@ -143,14 +143,17 @@ namespace EGT_OTA.Models
         {
             var list = new List<MusicType>();
             list.Add(new MusicType(0, "默认", 0));
-            list.Add(new MusicType(1, "欢快", 1));
-            list.Add(new MusicType(2, "优美", 2));
-            list.Add(new MusicType(3, "浪漫", 3));
-            list.Add(new MusicType(4, "激情", 4));
-            list.Add(new MusicType(5, "古韵", 5));
-            list.Add(new MusicType(6, "情境", 6));
-            list.Add(new MusicType(7, "忧伤", 7));
-            list.Add(new MusicType(8, "年代", 8));
+            list.Add(new MusicType(1, "曾经的非主流", 1));
+            list.Add(new MusicType(2, "动漫ACG", 2));
+            list.Add(new MusicType(3, "恶搞", 3));
+            list.Add(new MusicType(4, "古风", 4));
+            list.Add(new MusicType(5, "怀旧", 5));
+            list.Add(new MusicType(6, "欢快", 6));
+            list.Add(new MusicType(7, "浪漫", 7));
+            list.Add(new MusicType(8, "另类", 8));
+            list.Add(new MusicType(9, "燃曲", 9));
+            list.Add(new MusicType(10, "伤感", 10));
+            list.Add(new MusicType(11, "粤语", 11));
             repo.AddMany<MusicType>(list);
         }
 

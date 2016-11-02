@@ -29,11 +29,12 @@ namespace EGT_OTA.Models
     {
         public UserLogin() { }
 
-        public UserLogin(int userId, string openId, int source)
+        public UserLogin(int userId, string openId, int source, int status = Enum_Status.Approved)
         {
             this.UserID = userId;
             this.OpenID = openId;
             this.Source = source;
+            this.Status = status;
         }
 
         /// <summary>
@@ -57,5 +58,10 @@ namespace EGT_OTA.Models
         /// 登录方式
         /// </summary>
         public int Source { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int Status { get; set; }
     }
 }
