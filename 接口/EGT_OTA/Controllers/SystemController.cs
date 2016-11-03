@@ -28,6 +28,12 @@ namespace EGT_OTA.Controllers
             {
                 var client = ZNRequest.GetString("client");
                 var version = ZNRequest.GetString("version");
+
+                if (string.IsNullOrWhiteSpace(client) || string.IsNullOrWhiteSpace(version))
+                {
+                    return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+                }
+
                 var currVersion = "";
                 var currUrl = "";
                 if (client == "android")
@@ -45,7 +51,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "当前已是最新版本" }, JsonRequestBehavior.AllowGet);
                 }
-                return Json(new { result = true, version = currVersion, url = currUrl }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = true, version = currVersion, url = currUrl, remark = System.Configuration.ConfigurationManager.AppSettings["curr_version_remark"] }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
