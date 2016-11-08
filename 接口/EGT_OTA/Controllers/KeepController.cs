@@ -141,10 +141,6 @@ namespace EGT_OTA.Controllers
 
                 var array = list.Select(x => x.ArticleID).ToArray();
                 var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == 1).And("ArticleID").In(array).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
-                if (parts.Count > 3)
-                {
-                    parts = parts.Take(3).ToList();
-                }
 
                 var newlist = (from a in articles
                                join u in users on a.CreateUserID equals u.ID
@@ -164,7 +160,7 @@ namespace EGT_OTA.Controllers
                                    Pays = a.Pays,
                                    CreateDate = FormatTime(a.CreateDate),
                                    TypeName = articletypes.Exists(x => x.CurrID == a.TypeID) ? articletypes.FirstOrDefault(x => x.CurrID == a.TypeID).Name : "",
-                                   ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).ToList(),
+                                   ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).Take(3).ToList(),
                                    ArticlePower = a.ArticlePower
                                }).ToList();
                 var result = new
