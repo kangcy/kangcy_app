@@ -176,6 +176,7 @@ namespace EGT_OTA.Controllers
                 //创建人
                 User createUser = db.Single<User>(x => x.ID == model.CreateUserID);
                 model.NickName = createUser == null ? "" : createUser.NickName;
+                model.Avatar = createUser == null ? GetFullUrl(null) : GetFullUrl(createUser.Avatar);
 
                 //类型
                 ArticleType articleType = db.Single<ArticleType>(x => x.CurrID == model.TypeID);

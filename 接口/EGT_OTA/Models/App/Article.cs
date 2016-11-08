@@ -117,6 +117,12 @@ namespace EGT_OTA.Models
         #region 扩展
 
         /// <summary>
+        /// 创建人头像
+        /// </summary>
+        [SubSonicIgnore]
+        public string Avatar { get; set; }
+
+        /// <summary>
         /// 创建人
         /// </summary>
         [SubSonicIgnore]
