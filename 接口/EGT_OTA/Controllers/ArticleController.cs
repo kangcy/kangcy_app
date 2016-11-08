@@ -427,7 +427,6 @@ namespace EGT_OTA.Controllers
                                    Avatar = GetFullUrl(u.Avatar),
                                    ArticleID = a.ID,
                                    Title = a.Title,
-                                   Cover = GetFullUrl(a.Cover),
                                    Views = a.Views,
                                    Goods = a.Goods,
                                    Comments = a.Comments,
@@ -436,7 +435,7 @@ namespace EGT_OTA.Controllers
                                    UserID = a.CreateUserID,
                                    CreateDate = FormatTime(a.CreateDate),
                                    TypeName = articletypes.Exists(x => x.CurrID == a.TypeID) ? articletypes.FirstOrDefault(x => x.CurrID == a.TypeID).Name : "",
-                                   ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).Take(3).ToList(),
+                                   ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).Take(4).ToList(),
                                    ArticlePower = a.ArticlePower
                                }).ToList();
                 var result = new
