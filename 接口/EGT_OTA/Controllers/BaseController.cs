@@ -136,17 +136,27 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 音乐
         /// </summary>
-        protected List<Music> GetMusic()
+        protected List<MusicJson> GetMusic()
         {
-            string str = string.Empty;
-            string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/music.config");
-            if (System.IO.File.Exists(filePath))
+            List<MusicJson> list = new List<MusicJson>();
+            if (CacheHelper.Exists("Music"))
             {
-                StreamReader sr = new StreamReader(filePath, Encoding.Default);
-                str = sr.ReadToEnd();
-                sr.Close();
+                list = (List<MusicJson>)CacheHelper.GetCache("Music");
             }
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<Music>>(str);
+            else
+            {
+                string str = string.Empty;
+                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/music.config");
+                if (System.IO.File.Exists(filePath))
+                {
+                    StreamReader sr = new StreamReader(filePath, Encoding.Default);
+                    str = sr.ReadToEnd();
+                    sr.Close();
+                }
+                list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MusicJson>>(str);
+                CacheHelper.Insert("Music", list);
+            }
+            return list.FindAll(x => x.Status == Enum_Status.Approved);
         }
 
         /// <summary>
@@ -154,15 +164,25 @@ namespace EGT_OTA.Controllers
         /// </summary>
         protected List<ArticleType> GetArticleType()
         {
-            string str = string.Empty;
-            string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/articletype.config");
-            if (System.IO.File.Exists(filePath))
+            List<ArticleType> list = new List<ArticleType>();
+            if (CacheHelper.Exists("ArticleType"))
             {
-                StreamReader sr = new StreamReader(filePath, Encoding.Default);
-                str = sr.ReadToEnd();
-                sr.Close();
+                list = (List<ArticleType>)CacheHelper.GetCache("ArticleType");
             }
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<ArticleType>>(str);
+            else
+            {
+                string str = string.Empty;
+                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/articletype.config");
+                if (System.IO.File.Exists(filePath))
+                {
+                    StreamReader sr = new StreamReader(filePath, Encoding.Default);
+                    str = sr.ReadToEnd();
+                    sr.Close();
+                }
+                list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ArticleType>>(str);
+                CacheHelper.Insert("ArticleType", list);
+            }
+            return list.FindAll(x => x.Status == Enum_Status.Approved);
         }
 
         /// <summary>
@@ -170,15 +190,25 @@ namespace EGT_OTA.Controllers
         /// </summary>
         protected List<ArticleTemp> GetArticleTemp()
         {
-            string str = string.Empty;
-            string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/articletemp.config");
-            if (System.IO.File.Exists(filePath))
+            List<ArticleTemp> list = new List<ArticleTemp>();
+            if (CacheHelper.Exists("ArticleTemp"))
             {
-                StreamReader sr = new StreamReader(filePath, Encoding.Default);
-                str = sr.ReadToEnd();
-                sr.Close();
+                list = (List<ArticleTemp>)CacheHelper.GetCache("ArticleTemp");
             }
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<ArticleTemp>>(str);
+            else
+            {
+                string str = string.Empty;
+                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/articletemp.config");
+                if (System.IO.File.Exists(filePath))
+                {
+                    StreamReader sr = new StreamReader(filePath, Encoding.Default);
+                    str = sr.ReadToEnd();
+                    sr.Close();
+                }
+                list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ArticleTemp>>(str);
+                CacheHelper.Insert("ArticleTemp", list);
+            }
+            return list.FindAll(x => x.Status == Enum_Status.Approved);
         }
     }
 }

@@ -27,24 +27,9 @@ namespace EGT_OTA.Models
     [Serializable]
     public class Music
     {
-        public Music()
-        {
-
-        }
-
-        public Music(int typeId, string name, string author, string cover, string fileUrl)
-        {
-            this.TypeID = typeId;
-            this.Name = name;
-            this.Author = author;
-            this.Cover = cover;
-            this.FileUrl = fileUrl;
-        }
-
         /// <summary>
         /// ID
         /// </summary>
-        [SubSonicPrimaryKey]
         public int ID { get; set; }
 
         /// <summary>
@@ -55,26 +40,47 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 作者
         /// </summary>
-        [SubSonicNullString]
         public string Author { get; set; }
 
         /// <summary>
         /// 封面
         /// </summary>
-        [SubSonicNullString]
         public string Cover { get; set; }
 
         /// <summary>
         /// 文件地址
         /// </summary>
         public string FileUrl { get; set; }
+    }
+
+    [Serializable]
+    public class MusicJson
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        public int ID { get; set; }
 
         /// <summary>
-        /// 类型
+        /// 名称
         /// </summary>
-        public int TypeID { get; set; }
+        public string Name { get; set; }
 
-        [SubSonicIgnore]
-        public string TypeName { get; set; }
+        /// <summary>
+        /// 当前索引值
+        /// </summary>
+        public int CurrID { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int Status { get; set; }
+
+        /// <summary>
+        /// 排序值
+        /// </summary>
+        public int SortID { get; set; }
+
+        public List<Music> Music { get; set; }
     }
 }

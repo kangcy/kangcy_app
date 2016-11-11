@@ -11,6 +11,7 @@ using EGT_OTA.Helper;
 using System.Web.Security;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using System.Net;
 
 namespace EGT_OTA.Controllers
 {
@@ -20,48 +21,15 @@ namespace EGT_OTA.Controllers
     public class MusicController : BaseController
     {
         /// <summary>
-        /// 类型列表
-        /// </summary>
-        public ActionResult TypeAll()
-        {
-            try
-            {
-                var list = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticleType>().Where<MusicType>(x => x.Status == Enum_Status.Approved).OrderAsc("SortID").ExecuteTypedList<MusicType>();
-                var newlist = (from l in list
-                               select new
-                               {
-                                   ID = l.ID,
-                                   Name = l.Name,
-                                   CurrID = l.CurrID
-                               }).ToList();
-                var result = new
-                {
-                    currpage = 1,
-                    records = list.Count(),
-                    totalpage = 1,
-                    list = newlist
-                };
-                return Json(result, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error(ex.Message);
-                return Json(null, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        /// <summary>
         /// 列表
         /// </summary>
         public ActionResult All()
         {
             try
             {
-                var musicType = db.Find<MusicType>(x => x.Status == Enum_Status.Approved).OrderBy(x => x.SortID).ToList();
-                var music = db.All<Music>().ToList();
+                var musicType = GetMusic().OrderBy(x => x.SortID).ToList();
                 musicType.ForEach(x =>
                 {
-                    x.Music = music.FindAll(y => y.TypeID == x.CurrID);
                     x.Music.ForEach(l =>
                     {
                         l.Cover = GetFullUrl(l.Cover);
@@ -83,5 +51,59 @@ namespace EGT_OTA.Controllers
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
+
+        #region  百度ApiStore
+
+        public ActionResult SearchMusic()
+        {
+            var name = ZNRequest.GetString("name");
+            var page = ZNRequest.GetInt("page", 1);
+            var size = ZNRequest.GetInt("rows", 15);
+            var url = string.Format("http://apis.baidu.com/geekery/music/query?s={0}&size={1}&page={2}", name, size, page);
+            string str = HttpHelper.Get(url);
+
+            System.Net.HttpWebRequest request;
+            request = (System.Net.HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.Headers.Add("apikey", System.Configuration.ConfigurationManager.AppSettings["apikey"]);
+            System.Net.HttpWebResponse response;
+            response = (System.Net.HttpWebResponse)request.GetResponse();
+            System.IO.Stream s;
+            s = response.GetResponseStream();
+            string StrDate = "";
+            StringBuilder sbr = new StringBuilder();
+            StreamReader Reader = new StreamReader(s, Encoding.UTF8);
+            while ((StrDate = Reader.ReadLine()) != null)
+            {
+                sbr.Append(StrDate);
+            }
+            return Content(sbr.ToString());
+        }
+
+        public ActionResult MusicDetail()
+        {
+            var hash = ZNRequest.GetString("hash");
+            var url = string.Format("http://apis.baidu.com/geekery/music/playinfo?hash={0}", hash);
+            string str = HttpHelper.Get(url);
+
+            System.Net.HttpWebRequest request;
+            request = (System.Net.HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.Headers.Add("apikey", System.Configuration.ConfigurationManager.AppSettings["apikey"]);
+            System.Net.HttpWebResponse response;
+            response = (System.Net.HttpWebResponse)request.GetResponse();
+            System.IO.Stream s;
+            s = response.GetResponseStream();
+            string StrDate = "";
+            StringBuilder sbr = new StringBuilder();
+            StreamReader Reader = new StreamReader(s, Encoding.UTF8);
+            while ((StrDate = Reader.ReadLine()) != null)
+            {
+                sbr.Append(StrDate);
+            }
+            return Content(sbr.ToString());
+        }
+
+        #endregion
     }
 }

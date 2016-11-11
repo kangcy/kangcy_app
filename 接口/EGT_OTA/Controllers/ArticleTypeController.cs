@@ -20,41 +20,6 @@ namespace EGT_OTA.Controllers
     public class ArticleTypeController : BaseController
     {
         /// <summary>
-        /// 申请订阅
-        /// </summary>
-        public ActionResult Approve()
-        {
-            User user = GetUserInfo();
-            if (user == null)
-            {
-                return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-            }
-
-            var result = false;
-            var message = string.Empty;
-            var id = ZNRequest.GetInt("ID");
-            try
-            {
-                var model = db.Single<ArticleType>(x => x.ID == id);
-                if (model == null)
-                {
-                    return Json(new { result = false, message = "类型不存在" }, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    //model.Number += 1;
-                    result = db.Update<ArticleType>(model) > 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
-                message = ex.Message;
-            }
-            return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
         /// 列表
         /// </summary>
         public ActionResult All()
