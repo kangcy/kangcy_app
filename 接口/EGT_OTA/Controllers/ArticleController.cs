@@ -179,7 +179,7 @@ namespace EGT_OTA.Controllers
                 model.Avatar = createUser == null ? GetFullUrl(null) : GetFullUrl(createUser.Avatar);
 
                 //类型
-                ArticleType articleType = db.Single<ArticleType>(x => x.CurrID == model.TypeID);
+                ArticleType articleType = GetArticleType().Single<ArticleType>(x => x.ID == model.TypeID);
                 model.TypeName = articleType == null ? "" : articleType.Name;
 
                 //音乐
@@ -320,7 +320,7 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
                 var TypeID = ZNRequest.GetInt("ArticleType");
-                var articleType = db.Single<ArticleType>(x => x.CurrID == TypeID);
+                var articleType = GetArticleType().Single<ArticleType>(x => x.ID == TypeID);
                 if (articleType == null)
                 {
                     return Json(new { result = false, message = "不存在当前类型" }, JsonRequestBehavior.AllowGet);
@@ -413,7 +413,7 @@ namespace EGT_OTA.Controllers
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Article>();
-                var articletypes = new SubSonic.Query.Select(Repository.GetProvider(), "CurrID", "Name").From<ArticleType>().ExecuteTypedList<ArticleType>();
+                var articletypes = GetArticleType();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
 
                 var array = list.Select(x => x.ID).ToArray();
@@ -435,7 +435,7 @@ namespace EGT_OTA.Controllers
                                    Pays = a.Pays,
                                    UserID = a.CreateUserID,
                                    CreateDate = FormatTime(a.CreateDate),
-                                   TypeName = articletypes.Exists(x => x.CurrID == a.TypeID) ? articletypes.FirstOrDefault(x => x.CurrID == a.TypeID).Name : "",
+                                   TypeName = articletypes.Exists(x => x.ID == a.TypeID) ? articletypes.FirstOrDefault(x => x.ID == a.TypeID).Name : "",
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).Take(4).ToList(),
                                    ArticlePower = a.ArticlePower
                                }).ToList();

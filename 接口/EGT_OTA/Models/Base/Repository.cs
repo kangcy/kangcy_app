@@ -53,7 +53,6 @@ namespace EGT_OTA.Models
             repo.Single<User>(x => x.ID == 0);//用户
             repo.Single<Article>(x => x.ID == 0);//文章
             repo.Single<ArticlePart>(x => x.ID == 0);//文章部分
-            repo.Single<ArticleType>(x => x.ID == 0);//文章类型
             repo.Single<Comment>(x => x.ID == 0);//评论
             repo.Single<Music>(x => x.ID == 0);//音乐
             repo.Single<MusicType>(x => x.ID == 0);//音乐类型
@@ -65,11 +64,6 @@ namespace EGT_OTA.Models
             repo.Single<FeedBack>(x => x.ID == 0);//意见反馈
             repo.Single<Help>(x => x.ID == 0);//帮助中心
             repo.Single<UserLogin>(x => x.ID == 0);//登录方式
-
-            if (!repo.Exists<ArticleType>(x => x.ID > 0))
-            {
-                InitArticleType(repo);
-            }
 
             if (!repo.Exists<MusicType>(x => x.ID > 0))
             {
@@ -90,7 +84,7 @@ namespace EGT_OTA.Models
             var list = new List<ArticleType>();
 
             //其它
-            list.Add(new ArticleType(10000, 0, "-0-10000-", "其它", "", "http://www.dcloud.io/hellomui/images/1.jpg", 1, 0, 10000));
+            list.Add(new ArticleType(10000, 0, "-0-10000-", "其它", "", "http://www.dcloud.io/hellomui/images/1.jpg", 1, 10000));
 
             //女神
             list.Add(new ArticleType(1, 0, "-0-1-", "女神", "", "http://www.dcloud.io/hellomui/images/1.jpg"));

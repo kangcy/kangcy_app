@@ -132,5 +132,53 @@ namespace EGT_OTA.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// 音乐
+        /// </summary>
+        protected List<Music> GetMusic()
+        {
+            string str = string.Empty;
+            string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/music.config");
+            if (System.IO.File.Exists(filePath))
+            {
+                StreamReader sr = new StreamReader(filePath, Encoding.Default);
+                str = sr.ReadToEnd();
+                sr.Close();
+            }
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<Music>>(str);
+        }
+
+        /// <summary>
+        /// 文章类型
+        /// </summary>
+        protected List<ArticleType> GetArticleType()
+        {
+            string str = string.Empty;
+            string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/articletype.config");
+            if (System.IO.File.Exists(filePath))
+            {
+                StreamReader sr = new StreamReader(filePath, Encoding.Default);
+                str = sr.ReadToEnd();
+                sr.Close();
+            }
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<ArticleType>>(str);
+        }
+
+        /// <summary>
+        /// 文章模板
+        /// </summary>
+        protected List<ArticleTemp> GetArticleTemp()
+        {
+            string str = string.Empty;
+            string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/articletemp.config");
+            if (System.IO.File.Exists(filePath))
+            {
+                StreamReader sr = new StreamReader(filePath, Encoding.Default);
+                str = sr.ReadToEnd();
+                sr.Close();
+            }
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<ArticleTemp>>(str);
+        }
     }
 }

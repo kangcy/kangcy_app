@@ -42,7 +42,7 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
-                    model.Number += 1;
+                    //model.Number += 1;
                     result = db.Update<ArticleType>(model) > 0;
                 }
             }
@@ -61,7 +61,7 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                var list = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticleType>().Where<ArticleType>(x => x.Status == Enum_Status.Approved).OrderAsc("SortID").ExecuteTypedList<ArticleType>();
+                var list = GetArticleType().OrderBy(x => x.SortID).ToList();
                 var newlist = (from l in list
                                select new
                                {
@@ -69,10 +69,8 @@ namespace EGT_OTA.Controllers
                                    Cover = GetFullUrl(l.Cover),
                                    Name = l.Name,
                                    Summary = l.Summary,
-                                   CurrID = l.CurrID,
                                    ParentID = l.ParentID,
-                                   ParentIDList = l.ParentIDList,
-                                   Number = l.Number
+                                   ParentIDList = l.ParentIDList
                                }).ToList();
                 var result = new
                 {

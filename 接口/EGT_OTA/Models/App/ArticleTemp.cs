@@ -22,57 +22,62 @@ using SubSonic.SqlGeneration.Schema;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 文章类型
+    /// 文章模板
     /// </summary>
     [Serializable]
-    public class ArticleType
+    public class ArticleTemp
     {
-        public ArticleType()
+        public ArticleTemp()
         {
 
         }
 
-        public ArticleType(int Id, int parentId, string parentIdList, string name, string summary, string cover, int status = 1, int sortId = 0)
+        public ArticleTemp(int currId, int parentId, string parentIdList, string name, string summary, string cover, int status = 1, int number = 0, int sortId = 0)
         {
-            this.ID = Id;
-            this.Name = name;
-            this.Summary = summary;
-            this.Cover = cover;
-            this.ParentID = parentId;
-            this.ParentIDList = parentIdList;
-            this.Status = status;
-            this.SortID = sortId;
+            //this.Name = name;
+            //this.Summary = summary;
+            //this.Cover = cover;
+            //this.CurrID = currId;
+            //this.ParentID = parentId;
+            //this.ParentIDList = parentIdList;
+            //this.Status = status;
+            //this.Number = number;
+            //this.SortID = sortId;
         }
 
         /// <summary>
         /// ID
         /// </summary>
+        [SubSonicPrimaryKey]
         public int ID { get; set; }
 
         /// <summary>
         /// 名称
         /// </summary>
+        [SubSonicStringLength(50), SubSonicNullString]
         public string Name { get; set; }
 
         /// <summary>
-        /// 简介
+        /// 缩略图
         /// </summary>
-        public string Summary { get; set; }
+        [SubSonicStringLength(255), SubSonicNullString]
+        public string Thumbnail { get; set; }
 
         /// <summary>
-        /// 封面
+        /// 背景图
         /// </summary>
+        [SubSonicStringLength(255), SubSonicNullString]
         public string Cover { get; set; }
+
+        /// <summary>
+        /// 当前索引值
+        /// </summary>
+        public int CurrID { get; set; }
 
         /// <summary>
         /// 父节点
         /// </summary>
-        public int ParentID { get; set; }
-
-        /// <summary>
-        /// 父节点ID集合
-        /// </summary>
-        public string ParentIDList { get; set; }
+        public int TypeID { get; set; }
 
         /// <summary>
         /// 状态
