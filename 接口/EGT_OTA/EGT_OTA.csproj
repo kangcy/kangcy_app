@@ -135,6 +135,7 @@
   <ItemGroup>
     <Compile Include="ConstKeys\ConstKeys.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MusicController.cs" />
     <Compile Include="Controllers\ArticleTypeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -225,6 +226,11 @@
     <Content Include="DLL\Tools.dll" />
     <Content Include="Global.asax" />
     <Content Include="Config\log4net.config" />
+    <Content Include="Home\animate.css" />
+    <Content Include="Home\jquery-1.10.2.min.js" />
+    <Content Include="Home\mui.min.css" />
+    <Content Include="Home\mui.min.js" />
+    <Content Include="Home\music.js" />
     <Content Include="Images\default.png" />
     <Content Include="obj\Debug\EGT_OTA.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\EGT_OTA.dll" />

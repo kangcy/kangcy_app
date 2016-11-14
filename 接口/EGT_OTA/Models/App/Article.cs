@@ -51,9 +51,15 @@ namespace EGT_OTA.Models
         public int MusicID { get; set; }
 
         /// <summary>
-        /// 音乐外链
+        /// 音乐名称
         /// </summary>
         [SubSonicStringLength(255), SubSonicNullString]
+        public string MusicName { get; set; }
+
+        /// <summary>
+        /// 音乐外链
+        /// </summary>
+        [SubSonicStringLength(500), SubSonicNullString]
         public string MusicUrl { get; set; }
 
         /// <summary>
@@ -151,12 +157,6 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public int ShareNick { get; set; }
-
-        /// <summary>
-        /// 音乐名称
-        /// </summary>
-        [SubSonicIgnore]
-        public string MusicName { get; set; }
 
         /// <summary>
         /// 文章部分

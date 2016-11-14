@@ -65,6 +65,7 @@ namespace EGT_OTA.Controllers
                 }
                 model.Title = SqlFilter(ZNRequest.GetString("Title"));
                 model.MusicID = ZNRequest.GetInt("MusicID", 0);
+                model.MusicName = ZNRequest.GetString("MusicName");
                 model.MusicUrl = ZNRequest.GetString("MusicUrl");
                 model.UpdateUserID = user.ID;
                 model.UpdateDate = DateTime.Now;
@@ -146,11 +147,6 @@ namespace EGT_OTA.Controllers
         {
             try
             {
-                User user = GetUserInfo();
-                if (user == null)
-                {
-                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
-                }
                 var id = ZNRequest.GetInt("ArticleID");
                 if (id == 0)
                 {
@@ -168,16 +164,19 @@ namespace EGT_OTA.Controllers
                 }
 
                 string password = ZNRequest.GetString("ArticlePassword");
-                //权限
 
                 //浏览数
                 new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Views").EqualTo(model.Views + 1).Where<Article>(x => x.ID == model.ID).Execute();
 
                 //创建人
                 User createUser = db.Single<User>(x => x.ID == model.CreateUserID);
-                model.NickName = createUser == null ? "" : createUser.NickName;
-                model.Avatar = createUser == null ? GetFullUrl(null) : GetFullUrl(createUser.Avatar);
-
+                if (createUser != null)
+                {
+                    model.NickName = createUser == null ? "" : createUser.NickName;
+                    model.Avatar = createUser == null ? GetFullUrl(null) : GetFullUrl(createUser.Avatar);
+                    model.AutoMusic = createUser.AutoMusic;
+                    model.ShareNick = createUser.ShareNick;
+                }
                 //类型
                 ArticleType articleType = GetArticleType().Single<ArticleType>(x => x.ID == model.TypeID);
                 model.TypeName = articleType == null ? "" : articleType.Name;
@@ -189,10 +188,6 @@ namespace EGT_OTA.Controllers
                     model.MusicUrl = music == null ? "" : music.FileUrl;
                     model.MusicName = music == null ? "" : music.Name;
                 }
-
-                //设置
-                model.AutoMusic = user.AutoMusic;
-                model.ShareNick = user.ShareNick;
 
                 //文章部分
                 model.ArticlePart = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleID == id).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
@@ -257,8 +252,9 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
                 var MusicID = ZNRequest.GetInt("MusicID");
+                var MusicName = ZNRequest.GetString("MusicName");
                 var MusicUrl = ZNRequest.GetString("MusicUrl");
-                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("MusicID").EqualTo(MusicID).Set("MusicUrl").EqualTo(MusicUrl).Where<Article>(x => x.ID == id).Execute() > 0;
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("MusicID").EqualTo(MusicID).Set("MusicUrl").EqualTo(MusicUrl).Set("MusicName").EqualTo(MusicName).Where<Article>(x => x.ID == id).Execute() > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
