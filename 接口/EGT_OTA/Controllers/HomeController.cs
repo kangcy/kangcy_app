@@ -19,8 +19,7 @@ namespace EGT_OTA.Controllers
             {
                 return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
             }
-            var from = ZNRequest.GetString("from");
-            return Redirect(System.Configuration.ConfigurationManager.AppSettings["share_url"] + "?key=" + number + "&from=" + from);
+            return Redirect(System.Configuration.ConfigurationManager.AppSettings["share_url"] + "Home/index.html?key=" + number);
         }
 
         /// <summary>
@@ -28,8 +27,6 @@ namespace EGT_OTA.Controllers
         /// </summary>
         public ActionResult Info()
         {
-            var from = ZNRequest.GetString("from");
-
             var number = ZNRequest.GetString("key");
 
             if (string.IsNullOrWhiteSpace(number))

@@ -87,7 +87,7 @@ namespace EGT_OTA.Controllers
                     model.CreateUserID = user.ID;
                     model.CreateDate = DateTime.Now;
                     model.CreateIP = Tools.GetClientIP;
-                    model.Number = Guid.NewGuid().ToString("N");
+                    model.Number = ValidateCodeHelper.BuildCode(10);
                     model.ID = Tools.SafeInt(db.Add<Article>(model));
                     result = model.ID > 0;
 
