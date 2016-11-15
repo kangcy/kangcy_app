@@ -28,7 +28,17 @@ namespace EGT_OTA.Controllers
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
                 var id = ZNRequest.GetInt("ArticleID");
-                var result = db.Delete<Article>(id) > 0;
+                Article article = db.Single<Article>(x => x.ID == id);
+                if (article == null)
+                {
+                    return Json(new { result = false, message = "当前文章不存在" }, JsonRequestBehavior.AllowGet);
+                }
+                if (article.CreateUserID != user.ID)
+                {
+                    return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
+                }
+                article.Status = Enum_Status.DELETE;
+                var result = db.Update<Article>(article) > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -370,7 +380,7 @@ namespace EGT_OTA.Controllers
             {
                 //创建人
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.ID > 0);
+                var query = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Keeps", "Comments", "CreateUserID", "CreateDate").From<Article>().Where<Article>(x => x.ID > 0 && x.Status == Enum_Status.Approved);
 
                 //昵称、轻墨号
                 var title = ZNRequest.GetString("Title");
@@ -387,8 +397,6 @@ namespace EGT_OTA.Controllers
                 var CurrUserID = ZNRequest.GetInt("CurrUserID", 0);
                 if (CreateUserID != CurrUserID || CreateUserID == 0)
                 {
-                    query = query.And("Status").IsEqualTo(Enum_Status.Approved);
-
                     //查看公开或加密的文章
                     query = query.And("ArticlePower").In(new int[] { 1, 3 });
                 }
