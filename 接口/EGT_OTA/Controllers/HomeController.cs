@@ -10,25 +10,36 @@ namespace EGT_OTA.Controllers
 {
     public class HomeController : BaseController
     {
-        public ActionResult Index()
+        /// <summary>
+        /// 跳转
+        /// </summary>
+        public ActionResult Short(string number)
         {
-            var from = ZNRequest.GetString("from");//来源
+            if (string.IsNullOrWhiteSpace(number))
+            {
+                return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+            }
+            var from = ZNRequest.GetString("from");
+            return Redirect(System.Configuration.ConfigurationManager.AppSettings["share_url"] + "?key=" + number + "&from=" + from);
+        }
 
-            var number = ZNRequest.GetString("Number");
+        /// <summary>
+        /// 详情
+        /// </summary>
+        public ActionResult Info()
+        {
+            var from = ZNRequest.GetString("from");
+
+            var number = ZNRequest.GetString("key");
 
             if (string.IsNullOrWhiteSpace(number))
             {
                 return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
             }
-            Article model = db.Single<Article>(x => x.Number == number);
+            Article model = db.Single<Article>(x => x.Number == number && x.Status == Enum_Status.Approved);
             if (model == null)
             {
-                return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
-            }
-
-            if (model.Status == Enum_Status.DELETE)
-            {
-                return Json(new { result = false, message = "当前文章已删除，请刷新重试" }, JsonRequestBehavior.AllowGet);
+                return Json(new { result = false, message = "信息异常" }, JsonRequestBehavior.AllowGet);
             }
 
             string password = ZNRequest.GetString("ArticlePassword");

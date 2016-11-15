@@ -152,6 +152,7 @@
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Controllers\UserLoginController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
+    <Compile Include="Controllers\ShareLogController.cs" />
     <Compile Include="Enum\EnumAttribute.cs" />
     <Compile Include="Enum\EnumBase.cs" />
     <Compile Include="Enum\Enum_Price.cs" />
@@ -204,6 +205,7 @@
     <Compile Include="Models\App\ArticlePart.cs" />
     <Compile Include="Models\App\UserLogin.cs" />
     <Compile Include="Models\App\ArticleTemp.cs" />
+    <Compile Include="Models\App\ShareLog.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\Repository.cs" />
     <Compile Include="Models\Base\WebApplication.cs" />
@@ -226,11 +228,6 @@
     <Content Include="DLL\Tools.dll" />
     <Content Include="Global.asax" />
     <Content Include="Config\log4net.config" />
-    <Content Include="Home\animate.css" />
-    <Content Include="Home\jquery-1.10.2.min.js" />
-    <Content Include="Home\mui.min.css" />
-    <Content Include="Home\mui.min.js" />
-    <Content Include="Home\music.js" />
     <Content Include="Images\default.png" />
     <Content Include="obj\Debug\EGT_OTA.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\EGT_OTA.dll" />

@@ -22,6 +22,13 @@ namespace EGT_OTA
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            //短链路由
+            routes.MapRoute(
+                name: "short",
+                url: "{number}",
+                defaults: new { controller = "Home", action = "Short" }
+            );
+
             routes.MapRoute(
                 "Default", // 路由名称
                 "{controller}/{action}/{id}", // 带有参数的 URL

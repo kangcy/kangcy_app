@@ -62,6 +62,7 @@ namespace EGT_OTA.Models
             repo.Single<FeedBack>(x => x.ID == 0);//意见反馈
             repo.Single<Help>(x => x.ID == 0);//帮助中心
             repo.Single<UserLogin>(x => x.ID == 0);//登录方式
+            repo.Single<ShareLog>(x => x.ID == 0);//分享记录
         }
     }
 }

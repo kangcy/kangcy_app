@@ -193,6 +193,7 @@ namespace EGT_OTA.Controllers
                 model.ArticlePart = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.ArticleID == id).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
 
                 model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd");
+                model.ShareUrl = System.Configuration.ConfigurationManager.AppSettings["share_url"] + model.Number;
 
                 return Json(new { result = true, message = model }, JsonRequestBehavior.AllowGet);
             }

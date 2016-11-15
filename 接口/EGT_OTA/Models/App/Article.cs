@@ -99,6 +99,11 @@ namespace EGT_OTA.Models
         public int Pays { get; set; }
 
         /// <summary>
+        /// 分享数
+        /// </summary>
+        public int Shares { get; set; }
+
+        /// <summary>
         /// 是否推荐
         /// </summary>
         public int IsRecommend { get; set; }
@@ -157,6 +162,12 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicIgnore]
         public int ShareNick { get; set; }
+
+        /// <summary>
+        /// 分享链接
+        /// </summary>
+        [SubSonicIgnore]
+        public string ShareUrl { get; set; }
 
         /// <summary>
         /// 文章部分
