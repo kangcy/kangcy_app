@@ -11,27 +11,21 @@ namespace EGT_OTA.Models
     public class Enum_ArticleTag : EnumBase
     {
         /// <summary>
-        /// 系统
+        /// 无
         /// </summary>
-        [EnumAttribute("系统")]
-        public const int System = 1;
-
-        /// <summary>
-        /// 荐
-        /// </summary>
-        [EnumAttribute("荐")]
-        public const int Recommend = 2;
+        [EnumAttribute("无")]
+        public const int None = 0;
 
         /// <summary>
         /// 精
         /// </summary>
         [EnumAttribute("精")]
-        public const int Wonderful = 3;
+        public const int Recommend = 99;
 
         /// <summary>
-        /// 无
+        /// 系统
         /// </summary>
-        [EnumAttribute("无")]
-        public const int None = 100;
+        [EnumAttribute("系统")]
+        public const int System = 100;
     }
 }
