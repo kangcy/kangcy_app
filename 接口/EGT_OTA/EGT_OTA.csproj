@@ -161,6 +161,7 @@
     <Compile Include="Enum\Enum_Used.cs" />
     <Compile Include="Enum\Enum_ArticlePower.cs" />
     <Compile Include="Enum\Enum_UserLogin.cs" />
+    <Compile Include="Enum\Enum_ArticleTag.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

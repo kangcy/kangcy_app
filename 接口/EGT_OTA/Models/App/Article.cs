@@ -104,9 +104,9 @@ namespace EGT_OTA.Models
         public int Shares { get; set; }
 
         /// <summary>
-        /// 是否推荐
+        /// 标签
         /// </summary>
-        public int IsRecommend { get; set; }
+        public int Tag { get; set; }
 
         /// <summary>
         /// 文章权限

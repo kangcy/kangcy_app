@@ -90,7 +90,7 @@ namespace EGT_OTA.Controllers
                     model.Keeps = 0;
                     model.Comments = 0;
                     model.Pays = 0;
-                    model.IsRecommend = 0;
+                    model.Tag = Enum_ArticleTag.None;
                     model.TypeID = 10000;
                     model.TypeIDList = "-10000-";
                     model.ArticlePower = Enum_ArticlePower.Myself;
@@ -412,12 +412,12 @@ namespace EGT_OTA.Controllers
                 var Source = ZNRequest.GetString("Source");
                 if (!string.IsNullOrWhiteSpace(Source))
                 {
-                    query = query.And("IsRecommend").IsEqualTo(1);
+                    query = query.And("Tag").IsEqualTo(Enum_ArticleTag.Recommend);
                 }
 
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Article>();
+                var list = query.Paged(pager.Index, pager.Size).OrderAsc("Tag").ExecuteTypedList<Article>();
                 var articletypes = GetArticleType();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
 
@@ -442,7 +442,8 @@ namespace EGT_OTA.Controllers
                                    CreateDate = FormatTime(a.CreateDate),
                                    TypeName = articletypes.Exists(x => x.ID == a.TypeID) ? articletypes.FirstOrDefault(x => x.ID == a.TypeID).Name : "",
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).Take(4).ToList(),
-                                   ArticlePower = a.ArticlePower
+                                   ArticlePower = a.ArticlePower,
+                                   Tag = a.Tag
                                }).ToList();
                 var result = new
                 {
