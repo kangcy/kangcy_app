@@ -77,6 +77,7 @@ namespace EGT_OTA.Controllers
                 model.MusicID = ZNRequest.GetInt("MusicID", 0);
                 model.MusicName = ZNRequest.GetString("MusicName");
                 model.MusicUrl = ZNRequest.GetString("MusicUrl");
+                model.City = ZNRequest.GetString("City");
                 model.UpdateUserID = user.ID;
                 model.UpdateDate = DateTime.Now;
                 model.UpdateIP = Tools.GetClientIP;
@@ -125,7 +126,6 @@ namespace EGT_OTA.Controllers
                     var parts = ZNRequest.GetString("PartIDs");
                     if (!string.IsNullOrEmpty(parts))
                     {
-
                         var articlePart = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "SortID").From<ArticlePart>().ExecuteTypedList<ArticlePart>();
 
                         var ids = parts.Split(',');
@@ -443,7 +443,8 @@ namespace EGT_OTA.Controllers
                                    TypeName = articletypes.Exists(x => x.ID == a.TypeID) ? articletypes.FirstOrDefault(x => x.ID == a.TypeID).Name : "",
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).Take(4).ToList(),
                                    ArticlePower = a.ArticlePower,
-                                   Tag = a.Tag
+                                   Tag = a.Tag,
+                                   City = a.City
                                }).ToList();
                 var result = new
                 {

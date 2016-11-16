@@ -120,6 +120,12 @@ namespace EGT_OTA.Models
         public int ArticlePowerPwd { get; set; }
 
         /// <summary>
+        /// 发帖城市
+        /// </summary>
+        [SubSonicNullString]
+        public string City { get; set; }
+
+        /// <summary>
         /// 文章编号
         /// </summary>
         [SubSonicStringLength(32), SubSonicNullString]
