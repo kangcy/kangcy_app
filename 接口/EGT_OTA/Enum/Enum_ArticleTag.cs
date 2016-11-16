@@ -32,6 +32,6 @@ namespace EGT_OTA.Models
         /// 无
         /// </summary>
         [EnumAttribute("无")]
-        public const int None = 4;
+        public const int None = 100;
     }
 }
