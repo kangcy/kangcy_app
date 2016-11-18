@@ -71,6 +71,11 @@ namespace EGT_OTA.Models
         public int Status { get; set; }
 
         /// <summary>
+        /// 点赞数
+        /// </summary>
+        public int Goods { get; set; }
+
+        /// <summary>
         /// 创建人
         /// </summary>
         public int CreateUserID { get; set; }

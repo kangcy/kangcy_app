@@ -15,6 +15,66 @@ namespace EGT_OTA.Controllers
     public class CommentController : BaseController
     {
         /// <summary>
+        /// 评论点赞
+        /// </summary>
+        public ActionResult Zan()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var commentID = ZNRequest.GetInt("CommentID");
+                if (commentID == 0)
+                {
+                    return Json(new { result = false, message = "评论信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+                Comment comment = db.Single<Comment>(x => x.ID == commentID);
+                if (comment == null)
+                {
+                    return Json(new { result = false, message = "评论信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+
+                Zan model = db.Single<Zan>(x => x.CreateUserID == user.ID && x.ArticleID == commentID && x.ZanType == Enum_Zan.Comment);
+                if (model == null)
+                {
+                    model = new Zan();
+                    model.CreateDate = DateTime.Now;
+                    model.CreateUserID = user.ID;
+                    model.CreateIP = Tools.GetClientIP;
+                }
+                else
+                {
+                    return Json(new { result = false, message = "已赞" }, JsonRequestBehavior.AllowGet);
+                }
+                model.ArticleID = comment.ArticleID;
+                model.ArticleUserID = comment.ArticleUserID;
+                model.ZanType = Enum_Zan.Article;
+                var result = false;
+                if (model.ID == 0)
+                {
+                    result = Tools.SafeInt(db.Add<Zan>(model)) > 0;
+                }
+                else
+                {
+                    result = db.Update<Zan>(model) > 0;
+                }
+                if (result)
+                {
+                    comment.Goods += 1;
+                    db.Update<Comment>(comment);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 评论编辑
         /// </summary>
         public ActionResult Edit()

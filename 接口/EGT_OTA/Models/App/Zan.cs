@@ -25,12 +25,45 @@ namespace EGT_OTA.Models
     /// 点赞
     /// </summary>
     [Serializable]
-    public class Zan : Handle
+    public class Zan
     {
         /// <summary>
         /// ID
         /// </summary>
         [SubSonicPrimaryKey]
         public int ID { get; set; }
+
+        /// <summary>
+        /// 文章
+        /// </summary>
+        public int ArticleID { get; set; }
+
+        /// <summary>
+        /// 文章作者
+        /// </summary>
+        public int ArticleUserID { get; set; }
+
+        /// <summary>
+        /// 创建人ID
+        /// </summary>
+        [SubSonicNullString]
+        public int CreateUserID { get; set; }
+
+        /// <summary>
+        /// 创建日期
+        /// </summary>
+        [SubSonicNullString]
+        public DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// 创建IP
+        /// </summary>
+        [SubSonicStringLength(100), SubSonicNullString]
+        public string CreateIP { get; set; }
+
+        /// <summary>
+        /// 点赞类型
+        /// </summary>
+        public int ZanType { get; set; }
     }
 }

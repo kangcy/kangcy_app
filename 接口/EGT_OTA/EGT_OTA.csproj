@@ -162,6 +162,7 @@
     <Compile Include="Enum\Enum_ArticlePower.cs" />
     <Compile Include="Enum\Enum_UserLogin.cs" />
     <Compile Include="Enum\Enum_ArticleTag.cs" />
+    <Compile Include="Enum\Enum_Zan.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -198,7 +199,6 @@
     <Compile Include="Models\App\Fan.cs" />
     <Compile Include="Models\App\Music.cs" />
     <Compile Include="Models\App\Video.cs" />
-    <Compile Include="Models\App\Handle.cs" />
     <Compile Include="Models\App\Pay.cs" />
     <Compile Include="Models\App\FeedBack.cs" />
     <Compile Include="Models\App\Zan.cs" />

@@ -40,7 +40,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                Zan model = db.Single<Zan>(x => x.CreateUserID == user.ID && x.ArticleID == articleID && x.Status == Enum_Status.Approved);
+                Zan model = db.Single<Zan>(x => x.CreateUserID == user.ID && x.ArticleID == articleID && x.ZanType == Enum_Zan.Article);
                 if (model == null)
                 {
                     model = new Zan();
@@ -54,7 +54,7 @@ namespace EGT_OTA.Controllers
                 }
                 model.ArticleID = articleID;
                 model.ArticleUserID = article.CreateUserID;
-                model.Status = Enum_Status.Approved;
+                model.ZanType = Enum_Zan.Article;
                 var result = false;
                 if (model.ID == 0)
                 {
@@ -101,8 +101,7 @@ namespace EGT_OTA.Controllers
             {
                 if (model != null)
                 {
-                    model.Status = Enum_Status.DELETE;
-                    result = db.Update<Zan>(model) > 0;
+                    result = db.Delete<Zan>(id) > 0;
 
                     //修改文章点赞数
                     if (result)
@@ -131,7 +130,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.ZanType == Enum_Zan.Article);
                 var CreateUserID = ZNRequest.GetInt("CreateUserID");
                 if (CreateUserID > 0)
                 {
@@ -192,7 +191,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Zan>().Where<Zan>(x => x.ZanType == Enum_Zan.Article);
                 var ArticleUserID = ZNRequest.GetInt("ArticleUserID");
                 if (ArticleUserID > 0)
                 {
