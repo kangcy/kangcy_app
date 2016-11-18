@@ -891,5 +891,46 @@ namespace EGT_OTA.Controllers
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 相册
+        /// </summary>
+        public ActionResult Pic()
+        {
+            try
+            {
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic);
+                var UserID = ZNRequest.GetInt("UserID");
+                if (UserID == 0)
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = 0,
+                        totalpage = 1,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+                query = query.And("CreateUserID").IsEqualTo(UserID);
+                var recordCount = query.GetRecordCount();
+                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<ArticlePart>();
+                var result = new
+                {
+                    currpage = pager.Index,
+                    records = recordCount,
+                    totalpage = totalPage,
+                    list = list
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

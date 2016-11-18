@@ -50,5 +50,15 @@ namespace EGT_OTA.Models
         public string Introduction { get; set; }
 
         public int SortID { get; set; }
+
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        public int CreateUserID { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateDate { get; set; }
     }
 }
