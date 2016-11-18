@@ -52,7 +52,7 @@ namespace EGT_OTA.Controllers
                 model.ArticleID = comment.ArticleID;
                 model.ArticleUserID = comment.ArticleUserID;
                 model.ZanType = Enum_Zan.Comment;
-                var result = db.Update<Zan>(model) > 0;
+                var result = Tools.SafeInt(db.Add<Zan>(model)) > 0;
                 if (result)
                 {
                     comment.Goods += 1;
