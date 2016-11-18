@@ -36,8 +36,14 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "请填写反馈信息" }, JsonRequestBehavior.AllowGet);
                 }
+                var qq = ZNRequest.GetString("QQ");
+                if (string.IsNullOrWhiteSpace(qq))
+                {
+                    return Json(new { result = false, message = "请填写联系方式" }, JsonRequestBehavior.AllowGet);
+                }
                 FeedBack model = new FeedBack();
                 model.Summary = summary;
+                model.QQ = qq;
                 model.CreateDate = DateTime.Now;
                 model.CreateUserID = user.ID;
                 model.CreateIP = Tools.GetClientIP;
