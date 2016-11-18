@@ -49,7 +49,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "已赞" }, JsonRequestBehavior.AllowGet);
                 }
-                model.ArticleID = comment.ArticleID;
+                model.ArticleID = commentID;
                 model.ArticleUserID = comment.ArticleUserID;
                 model.ZanType = Enum_Zan.Comment;
                 var result = Tools.SafeInt(db.Add<Zan>(model)) > 0;
