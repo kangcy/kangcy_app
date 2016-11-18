@@ -46,6 +46,7 @@ namespace EGT_OTA.Controllers
                 model.ArticleID = articleID;
                 model.ArticleUserID = article.CreateUserID;
                 model.Summary = summary;
+                model.City = ZNRequest.GetString("City");
                 model.Status = Enum_Status.Approved;
                 model.CreateDate = DateTime.Now;
                 model.CreateUserID = user.ID;
@@ -113,6 +114,7 @@ namespace EGT_OTA.Controllers
                                {
                                    ID = l.ID,
                                    Summary = l.Summary,
+                                   City = l.City,
                                    CreateDate = FormatTime(l.CreateDate),
                                    UserID = u.ID,
                                    NickName = u.NickName,
@@ -173,6 +175,7 @@ namespace EGT_OTA.Controllers
                                {
                                    ID = l.ID,
                                    Summary = l.Summary,
+                                   City = l.City,
                                    CreateDate = FormatTime(l.CreateDate),
                                    UserID = u.ID,
                                    NickName = u.NickName,

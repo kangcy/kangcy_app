@@ -50,6 +50,12 @@ namespace EGT_OTA.Models
         public string Summary { get; set; }
 
         /// <summary>
+        /// 评论城市
+        /// </summary>
+        [SubSonicNullString]
+        public string City { get; set; }
+
+        /// <summary>
         /// 回复评论ID
         /// </summary>
         public int ParentCommentID { get; set; }
