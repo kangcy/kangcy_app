@@ -51,20 +51,16 @@ namespace EGT_OTA.Controllers
                 }
                 model.ArticleID = comment.ArticleID;
                 model.ArticleUserID = comment.ArticleUserID;
-                model.ZanType = Enum_Zan.Article;
-                var result = false;
-                if (model.ID == 0)
-                {
-                    result = Tools.SafeInt(db.Add<Zan>(model)) > 0;
-                }
-                else
-                {
-                    result = db.Update<Zan>(model) > 0;
-                }
+                model.ZanType = Enum_Zan.Comment;
+                var result = db.Update<Zan>(model) > 0;
                 if (result)
                 {
                     comment.Goods += 1;
-                    db.Update<Comment>(comment);
+                    result = db.Update<Comment>(comment) > 0;
+                }
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -155,7 +151,7 @@ namespace EGT_OTA.Controllers
                 }
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
+                var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
 
                 //所有用户
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).Distinct().ToArray()).ExecuteTypedList<User>();
@@ -175,6 +171,7 @@ namespace EGT_OTA.Controllers
                                    ID = l.ID,
                                    Summary = l.Summary,
                                    City = l.City,
+                                   Goods = l.Goods,
                                    CreateDate = FormatTime(l.CreateDate),
                                    UserID = u.ID,
                                    NickName = u.NickName,
@@ -225,7 +222,7 @@ namespace EGT_OTA.Controllers
                 }
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
+                var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
                 var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "ArticlePower").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
                 var newlist = (from l in list
@@ -236,6 +233,7 @@ namespace EGT_OTA.Controllers
                                    ID = l.ID,
                                    Summary = l.Summary,
                                    City = l.City,
+                                   Goods = l.Goods,
                                    CreateDate = FormatTime(l.CreateDate),
                                    UserID = u.ID,
                                    NickName = u.NickName,

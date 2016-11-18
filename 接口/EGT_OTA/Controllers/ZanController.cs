@@ -55,15 +55,7 @@ namespace EGT_OTA.Controllers
                 model.ArticleID = articleID;
                 model.ArticleUserID = article.CreateUserID;
                 model.ZanType = Enum_Zan.Article;
-                var result = false;
-                if (model.ID == 0)
-                {
-                    result = Tools.SafeInt(db.Add<Zan>(model)) > 0;
-                }
-                else
-                {
-                    result = db.Update<Zan>(model) > 0;
-                }
+                var result = db.Update<Zan>(model) > 0;
                 //修改点赞数
                 if (result)
                 {
