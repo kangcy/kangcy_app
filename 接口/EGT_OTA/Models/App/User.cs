@@ -60,16 +60,6 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 省
         /// </summary>
-        public int ProvinceID { get; set; }
-
-        /// <summary>
-        /// 市
-        /// </summary>
-        public int CityID { get; set; }
-
-        /// <summary>
-        /// 省
-        /// </summary>
         [SubSonicStringLength(50), SubSonicNullString]
         public string ProvinceName { get; set; }
 

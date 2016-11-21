@@ -329,8 +329,6 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
                 }
-                user.ProvinceID = ZNRequest.GetInt("ProvinceID");
-                user.CityID = ZNRequest.GetInt("CityID");
                 user.ProvinceName = ZNRequest.GetString("ProvinceName");
                 user.CityName = ZNRequest.GetString("CityName");
                 var result = db.Update<User>(user) > 0;
