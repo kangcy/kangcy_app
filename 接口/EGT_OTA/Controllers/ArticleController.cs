@@ -380,7 +380,7 @@ namespace EGT_OTA.Controllers
             {
                 //创建人
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.ID > 0 && x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
 
                 //昵称、轻墨号
                 var title = ZNRequest.GetString("Title");
@@ -439,6 +439,7 @@ namespace EGT_OTA.Controllers
                                    Keeps = a.Keeps,
                                    Pays = a.Pays,
                                    UserID = a.CreateUserID,
+                                   Cover = a.Cover,
                                    CreateDate = FormatTime(a.CreateDate),
                                    TypeName = articletypes.Exists(x => x.ID == a.TypeID) ? articletypes.FirstOrDefault(x => x.ID == a.TypeID).Name : "",
                                    ArticlePart = parts.Where(x => x.ArticleID == a.ID).OrderBy(x => x.ID).Take(4).ToList(),
@@ -451,6 +452,84 @@ namespace EGT_OTA.Controllers
                     currpage = pager.Index,
                     records = recordCount,
                     totalpage = totalPage,
+                    list = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        public ActionResult Top()
+        {
+            try
+            {
+                //创建人
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+
+                //昵称、轻墨号
+                var title = ZNRequest.GetString("Title");
+                if (!string.IsNullOrEmpty(title))
+                {
+                    query.And("Title").Like("%" + title + "%");
+                }
+                var CreateUserID = ZNRequest.GetInt("CreateUserID");
+                if (CreateUserID > 0)
+                {
+                    query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                }
+
+                var CurrUserID = ZNRequest.GetInt("CurrUserID", 0);
+                if (CreateUserID != CurrUserID || CreateUserID == 0)
+                {
+                    //查看公开或加密的文章
+                    query = query.And("ArticlePower").In(new int[] { 1, 3 });
+                }
+
+                //文章类型
+                var TypeID = ZNRequest.GetInt("TypeID");
+                if (TypeID > 0)
+                {
+                    query = query.And("TypeIDList").Like("%-" + TypeID + "-%");
+                }
+
+                //搜索默认显示推荐文章
+                var Source = ZNRequest.GetString("Source");
+                if (!string.IsNullOrWhiteSpace(Source))
+                {
+                    query = query.And("Tag").IsEqualTo(Enum_ArticleTag.Recommend);
+                }
+
+                var recordCount = query.GetRecordCount();
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Tag", "ID" }).ExecuteTypedList<Article>();
+
+                var newlist = (from a in list
+                               select new
+                               {
+                                   ArticleID = a.ID,
+                                   Title = a.Title,
+                                   Views = a.Views,
+                                   Goods = a.Goods,
+                                   Comments = a.Comments,
+                                   Keeps = a.Keeps,
+                                   Pays = a.Pays,
+                                   UserID = a.CreateUserID,
+                                   Cover = a.Cover,
+                                   CreateDate = FormatTime(a.CreateDate),
+                                   ArticlePower = a.ArticlePower,
+                                   Tag = a.Tag,
+                                   City = a.City
+                               }).ToList();
+                var result = new
+                {
+                    records = recordCount,
                     list = newlist
                 };
                 return Json(result, JsonRequestBehavior.AllowGet);
