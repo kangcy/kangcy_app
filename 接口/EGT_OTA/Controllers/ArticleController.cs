@@ -37,8 +37,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "没有权限" }, JsonRequestBehavior.AllowGet);
                 }
-                article.Status = Enum_Status.DELETE;
-                var result = db.Update<Article>(article) > 0;
+                var result = db.Delete<Article>(id) > 0;
                 if (result)
                 {
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
@@ -85,7 +84,6 @@ namespace EGT_OTA.Controllers
                 if (model.ID == 0)
                 {
                     model.Cover = ZNRequest.GetString("Cover");
-                    model.Status = Enum_Status.Audit;
                     model.Views = 0;
                     model.Goods = 0;
                     model.Keeps = 0;
@@ -120,7 +118,6 @@ namespace EGT_OTA.Controllers
                 }
                 else
                 {
-                    model.Status = Enum_Status.Approved;
                     result = db.Update<Article>(model) > 0;
 
                     var parts = ZNRequest.GetString("PartIDs");
@@ -295,10 +292,17 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
                 }
-                var ArticlePower = ZNRequest.GetInt("ArticlePower");
+                var ArticlePower = ZNRequest.GetInt("ArticlePower", Enum_ArticlePower.Myself);
                 var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("ArticlePower").EqualTo(ArticlePower).Where<Article>(x => x.ID == id).Execute() > 0;
                 if (result)
                 {
+                    var parts = db.Find<ArticlePart>(x => x.ArticleID == id).ToList();
+                    var status = ArticlePower == Enum_ArticlePower.Public ? Enum_Status.Approved : Enum_Status.Audit;
+                    parts.ForEach(x =>
+                    {
+                        x.Status = status;
+                    });
+                    db.UpdateMany<ArticlePart>(parts);
                     return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -380,7 +384,7 @@ namespace EGT_OTA.Controllers
             {
                 //创建人
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.ID > 0);
 
                 //昵称、轻墨号
                 var title = ZNRequest.GetString("Title");
@@ -472,7 +476,7 @@ namespace EGT_OTA.Controllers
             {
                 //创建人
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.Status == Enum_Status.Approved);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Article>().Where<Article>(x => x.ID > 0);
 
                 //昵称、轻墨号
                 var title = ZNRequest.GetString("Title");

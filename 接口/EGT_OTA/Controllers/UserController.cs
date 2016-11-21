@@ -900,7 +900,7 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic && x.Status == Enum_Status.Approved);
                 var UserID = ZNRequest.GetInt("UserID");
                 if (UserID == 0)
                 {

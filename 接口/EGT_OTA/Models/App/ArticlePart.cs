@@ -60,5 +60,10 @@ namespace EGT_OTA.Models
         /// 创建时间
         /// </summary>
         public DateTime CreateDate { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int Status { get; set; }
     }
 }

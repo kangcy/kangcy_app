@@ -58,6 +58,7 @@ namespace EGT_OTA.Controllers
                 }
                 model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"), false);
                 model.CreateUserID = user.ID;
+                model.Status = Enum_Status.Audit;
                 var newId = model.ID;
                 var result = false;
                 if (model.ID == 0)
