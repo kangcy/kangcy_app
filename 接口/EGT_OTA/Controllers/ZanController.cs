@@ -190,7 +190,11 @@ namespace EGT_OTA.Controllers
                 {
                     query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
                 }
-                var recordCount = query.GetRecordCount();
+                //var recordCount = query.GetRecordCount();
+
+                var all = query.ExecuteTypedList<Zan>();
+                var recordCount = all.Select(x => x.CreateUserID).Distinct().Count();
+
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar", "Signature").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).Distinct().ToArray()).ExecuteTypedList<User>();

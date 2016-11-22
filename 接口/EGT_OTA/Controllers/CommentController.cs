@@ -102,6 +102,7 @@ namespace EGT_OTA.Controllers
                 model.ArticleID = articleID;
                 model.ArticleUserID = article.CreateUserID;
                 model.Summary = summary;
+                model.Province = ZNRequest.GetString("Province");
                 model.City = ZNRequest.GetString("City");
                 model.Status = Enum_Status.Approved;
                 model.CreateDate = DateTime.Now;
@@ -220,6 +221,14 @@ namespace EGT_OTA.Controllers
                 {
                     query = query.And("ArticleUserID").IsEqualTo(ArticleUserID);
                 }
+
+                //父评论人
+                var ParentUserID = ZNRequest.GetInt("ParentUserID");
+                if (ParentUserID > 0)
+                {
+                    query = query.And("ParentUserID").IsEqualTo(ParentUserID);
+                }
+
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
@@ -241,6 +250,53 @@ namespace EGT_OTA.Controllers
                                    ArticleID = a.ID,
                                    Title = a.Title,
                                    ArticlePower = a.ArticlePower
+                               }).ToList();
+                var result = new
+                {
+                    currpage = pager.Index,
+                    records = recordCount,
+                    totalpage = totalPage,
+                    list = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// 列表
+        /// </summary>
+        public ActionResult Top()
+        {
+            try
+            {
+                var pager = new Pager();
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved && x.ParentCommentID > 0);
+
+                var CreateUserID = ZNRequest.GetInt("CreateUserID");
+                if (CreateUserID > 0)
+                {
+                    query = query.And("CreateUserID").IsEqualTo(CreateUserID);
+                }
+
+                var recordCount = query.GetRecordCount();
+                var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
+                var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
+                var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("ID").In(list.Select(x => x.ParentCommentID).Distinct().ToArray()).ExecuteTypedList<Comment>();
+                var newlist = (from l in list
+                               select new
+                               {
+                                   ID = l.ID,
+                                   Summary = l.Summary,
+                                   City = l.City,
+                                   Goods = l.Goods,
+                                   CreateDate = FormatTime(l.CreateDate),
+                                   ArticleID = l.ArticleID,
+                                   ParentSummary = comments.Exists(x => x.ID == l.ParentCommentID) ? comments.FirstOrDefault(x => x.ID == l.ParentCommentID).Summary : ""
                                }).ToList();
                 var result = new
                 {

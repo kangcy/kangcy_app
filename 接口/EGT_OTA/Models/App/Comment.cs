@@ -50,6 +50,12 @@ namespace EGT_OTA.Models
         public string Summary { get; set; }
 
         /// <summary>
+        /// 评论省份
+        /// </summary>
+        [SubSonicNullString]
+        public string Province { get; set; }
+
+        /// <summary>
         /// 评论城市
         /// </summary>
         [SubSonicNullString]

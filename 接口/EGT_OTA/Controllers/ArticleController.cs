@@ -76,6 +76,7 @@ namespace EGT_OTA.Controllers
                 model.MusicID = ZNRequest.GetInt("MusicID", 0);
                 model.MusicName = ZNRequest.GetString("MusicName");
                 model.MusicUrl = ZNRequest.GetString("MusicUrl");
+                model.Province = ZNRequest.GetString("Province");
                 model.City = ZNRequest.GetString("City");
                 model.UpdateUserID = user.ID;
                 model.UpdateDate = DateTime.Now;
