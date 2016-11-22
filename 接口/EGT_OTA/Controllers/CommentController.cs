@@ -229,11 +229,31 @@ namespace EGT_OTA.Controllers
                     query = query.And("ParentUserID").IsEqualTo(ParentUserID);
                 }
 
+                var IsReply = ZNRequest.GetInt("IsReply", 0);
+                if (IsReply == 0)
+                {
+                    query = query.And("ParentCommentID").IsEqualTo(0);
+                }
+                else if (IsReply == 1)
+                {
+                    query = query.And("ParentCommentID").IsGreaterThan(0);
+                }
+
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
                 var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "ArticlePower").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();
                 var users = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.CreateUserID).ToArray()).ExecuteTypedList<User>();
+
+                //父评论
+                var parentComment = new List<Comment>();
+                var parentUser = new List<User>();
+                if (list.Exists(x => x.ParentUserID > 0))
+                {
+                    parentComment = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Summary").From<Comment>().Where("ID").In(list.Select(x => x.ParentCommentID).Distinct().ToArray()).ExecuteTypedList<Comment>();
+                    parentUser = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "NickName", "Avatar").From<User>().Where("ID").In(list.Select(x => x.ParentUserID).Distinct().ToArray()).ExecuteTypedList<User>();
+                }
+
                 var newlist = (from l in list
                                join a in articles on l.ArticleID equals a.ID
                                join u in users on l.CreateUserID equals u.ID
@@ -247,9 +267,14 @@ namespace EGT_OTA.Controllers
                                    UserID = u.ID,
                                    NickName = u.NickName,
                                    Avatar = GetFullUrl(u.Avatar),
-                                   ArticleID = a.ID,
+                                   ArticleID = l.ArticleID,
                                    Title = a.Title,
-                                   ArticlePower = a.ArticlePower
+                                   ArticleUserID = a.CreateUserID,
+                                   ArticlePower = a.ArticlePower,
+                                   ParentCommentID = l.ParentCommentID,
+                                   ParentUserID = l.ParentUserID,
+                                   ParentNickName = l.ParentUserID == 0 ? "" : (parentUser.Exists(x => x.ID == l.ParentUserID) ? parentUser.FirstOrDefault(x => x.ID == l.ParentUserID).NickName : ""),
+                                   ParentSummary = l.ParentCommentID == 0 ? "" : (parentComment.Exists(x => x.ID == l.ParentCommentID) ? parentComment.FirstOrDefault(x => x.ID == l.ParentCommentID).Summary : "")
                                }).ToList();
                 var result = new
                 {
@@ -275,14 +300,31 @@ namespace EGT_OTA.Controllers
             try
             {
                 var pager = new Pager();
-                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved && x.ParentCommentID > 0);
+                var query = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where<Comment>(x => x.Status == Enum_Status.Approved);
 
+                //创建人
                 var CreateUserID = ZNRequest.GetInt("CreateUserID");
                 if (CreateUserID > 0)
                 {
                     query = query.And("CreateUserID").IsEqualTo(CreateUserID);
                 }
 
+                //父评论人
+                var ParentUserID = ZNRequest.GetInt("ParentUserID");
+                if (ParentUserID > 0)
+                {
+                    query = query.And("ParentUserID").IsEqualTo(ParentUserID);
+                }
+
+                var IsReply = ZNRequest.GetInt("IsReply", 0);
+                if (IsReply == 0)
+                {
+                    query = query.And("ParentCommentID").IsEqualTo(0);
+                }
+                else if (IsReply == 1)
+                {
+                    query = query.And("ParentCommentID").IsGreaterThan(0);
+                }
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
