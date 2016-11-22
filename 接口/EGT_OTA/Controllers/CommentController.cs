@@ -285,8 +285,12 @@ namespace EGT_OTA.Controllers
 
                 var recordCount = query.GetRecordCount();
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
-                var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
+                var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
                 var comments = new SubSonic.Query.Select(Repository.GetProvider()).From<Comment>().Where("ID").In(list.Select(x => x.ParentCommentID).Distinct().ToArray()).ExecuteTypedList<Comment>();
+
+                var today = DateTime.Now.ToString("yyyyMMdd");
+                var yesterday = DateTime.Now.AddDays(-1).ToString("yyyyMMdd");
+
                 var newlist = (from l in list
                                select new
                                {
@@ -295,6 +299,8 @@ namespace EGT_OTA.Controllers
                                    City = l.City,
                                    Goods = l.Goods,
                                    CreateDate = FormatTime(l.CreateDate),
+                                   Month = l.CreateDate.ToString("yyyyMMdd") == today ? "今天" : l.CreateDate.ToString("yyyyMMdd") == yesterday ? "昨天" : l.CreateDate.Month.ToString(),
+                                   Day = l.CreateDate.ToString("yyyyMMdd") == today ? "今天" : l.CreateDate.ToString("yyyyMMdd") == yesterday ? "昨天" : l.CreateDate.Day.ToString(),
                                    ArticleID = l.ArticleID,
                                    ParentSummary = comments.Exists(x => x.ID == l.ParentCommentID) ? comments.FirstOrDefault(x => x.ID == l.ParentCommentID).Summary : ""
                                }).ToList();

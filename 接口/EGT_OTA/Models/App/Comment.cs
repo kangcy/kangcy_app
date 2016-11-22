@@ -96,5 +96,21 @@ namespace EGT_OTA.Models
         /// </summary>
         [SubSonicNullString]
         public string CreateIP { get; set; }
+
+        #region 扩展
+
+        /// <summary>
+        /// 创建月
+        /// </summary>
+        [SubSonicIgnore]
+        public string Month { get; set; }
+
+        /// <summary>
+        /// 创建日
+        /// </summary>
+        [SubSonicIgnore]
+        public string Day { get; set; }
+
+        #endregion
     }
 }
