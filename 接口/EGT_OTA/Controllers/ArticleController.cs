@@ -84,7 +84,10 @@ namespace EGT_OTA.Controllers
                 var result = false;
                 if (model.ID == 0)
                 {
-                    model.Cover = ZNRequest.GetString("Cover");
+                    var cover = ZNRequest.GetString("Cover");
+                    var covers = cover.Split(',');
+
+                    model.Cover = covers[0];
                     model.Views = 0;
                     model.Goods = 0;
                     model.Keeps = 0;
@@ -102,19 +105,22 @@ namespace EGT_OTA.Controllers
                     result = model.ID > 0;
 
                     //初始化文章段落
-                    ArticlePart part = new ArticlePart();
                     if (result)
                     {
-                        part.ArticleID = model.ID;
-                        part.Types = 1;
-                        part.Introduction = model.Cover;
-                        part.SortID = 0;
-                        part.ID = Tools.SafeInt(db.Add<ArticlePart>(part));
-                        result = part.ID > 0;
+                        for (var i = 0; i < covers.Length; i++)
+                        {
+                            ArticlePart part = new ArticlePart();
+                            part.ArticleID = model.ID;
+                            part.Types = 1;
+                            part.Introduction = covers[i];
+                            part.SortID = 0;
+                            part.ID = Tools.SafeInt(db.Add<ArticlePart>(part));
+                            result = part.ID > 0;
+                        }
                     }
                     if (result)
                     {
-                        return Json(new { result = true, message = part }, JsonRequestBehavior.AllowGet);
+                        return Json(new { result = true, message = model.ID }, JsonRequestBehavior.AllowGet);
                     }
                 }
                 else
@@ -402,8 +408,7 @@ namespace EGT_OTA.Controllers
                 var CurrUserID = ZNRequest.GetInt("CurrUserID", 0);
                 if (CreateUserID != CurrUserID || CreateUserID == 0)
                 {
-                    //查看公开或加密的文章
-                    query = query.And("ArticlePower").In(new int[] { 1, 3 });
+                    query = query.And("ArticlePower").IsEqualTo(Enum_ArticlePower.Public);
                 }
 
                 //文章类型
@@ -494,8 +499,7 @@ namespace EGT_OTA.Controllers
                 var CurrUserID = ZNRequest.GetInt("CurrUserID", 0);
                 if (CreateUserID != CurrUserID || CreateUserID == 0)
                 {
-                    //查看公开或加密的文章
-                    query = query.And("ArticlePower").In(new int[] { 1, 3 });
+                    query = query.And("ArticlePower").IsEqualTo(Enum_ArticlePower.Public);
                 }
 
                 //文章类型
