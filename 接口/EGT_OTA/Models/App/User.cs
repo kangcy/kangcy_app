@@ -155,6 +155,11 @@ namespace EGT_OTA.Models
         /// </summary>
         public int IsPay { get; set; }
 
+        /// <summary>
+        /// 账户余额
+        /// </summary>
+        public int Money { get; set; }
+
         #region  扩展字段
 
         /// <summary>

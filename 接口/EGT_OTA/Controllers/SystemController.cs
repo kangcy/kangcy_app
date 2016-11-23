@@ -62,6 +62,14 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 申请提现
+        /// </summary>
+        public ActionResult ApplyMoney()
+        {
+            return Json(true);
+        }
+
+        /// <summary>
         /// 发送短信
         /// </summary>
         public ActionResult SendSMS()
