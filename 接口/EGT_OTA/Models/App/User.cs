@@ -150,6 +150,11 @@ namespace EGT_OTA.Models
         /// </summary>
         public int IsEmail { get; set; }
 
+        /// <summary>
+        /// 是否启用打赏
+        /// </summary>
+        public int IsPay { get; set; }
+
         #region  扩展字段
 
         /// <summary>

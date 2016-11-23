@@ -371,6 +371,32 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 修改打赏
+        /// </summary>
+        public ActionResult EditPay()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                user.IsPay = ZNRequest.GetInt("IsPay");
+                var result = db.Update<User>(user) > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 修改生日
         /// </summary>
         public ActionResult EditBirthday()
