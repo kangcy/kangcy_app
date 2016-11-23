@@ -87,7 +87,7 @@ namespace EGT_OTA.Controllers
                 {
                     return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
                 }
-                var summary = SqlFilter(ZNRequest.GetString("Summary"));
+                var summary = SqlFilter(ZNRequest.GetString("Summary"), false);
                 if (string.IsNullOrWhiteSpace(summary))
                 {
                     return Json(new { result = false, message = "请填写评论内容" }, JsonRequestBehavior.AllowGet);
