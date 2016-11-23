@@ -193,6 +193,7 @@
     <Compile Include="Helper\ValidateCodeHelper.cs" />
     <Compile Include="Helper\XmlHelper.cs" />
     <Compile Include="Models\App\Article.cs" />
+    <Compile Include="Models\App\SendSMS.cs" />
     <Compile Include="Models\App\User.cs" />
     <Compile Include="Models\App\ArticleType.cs" />
     <Compile Include="Models\App\Comment.cs" />

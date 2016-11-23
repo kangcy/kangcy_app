@@ -102,6 +102,7 @@ namespace EGT_OTA.Controllers
                 model.ArticleID = articleID;
                 model.ArticleUserID = article.CreateUserID;
                 model.Summary = summary;
+
                 model.Province = ZNRequest.GetString("Province");
                 model.City = ZNRequest.GetString("City");
                 model.Status = Enum_Status.Approved;

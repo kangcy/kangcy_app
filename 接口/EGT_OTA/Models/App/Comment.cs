@@ -46,7 +46,7 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 评论内容
         /// </summary>
-        [SubSonicStringLength(255), SubSonicNullString]
+        [SubSonicStringLength(5000), SubSonicNullString]
         public string Summary { get; set; }
 
         /// <summary>

@@ -64,7 +64,11 @@ namespace EGT_OTA.Controllers
                     {
                         inputString = Tools.NoHTML(inputString);
                     }
-                    inputString = Regex.Replace(inputString, @"\b(" + SqlStr + @")\b", string.Empty, RegexOptions.IgnoreCase).Replace("&nbsp;", "");
+                    inputString = Regex.Replace(inputString, @"\b(" + SqlStr + @")\b", string.Empty, RegexOptions.IgnoreCase);
+                    if (nohtml)
+                    {
+                        inputString = inputString.Replace("&nbsp;", "");
+                    }
                 }
             }
             catch (Exception ex)
