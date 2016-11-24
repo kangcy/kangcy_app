@@ -209,6 +209,7 @@
     <Compile Include="Models\App\UserLogin.cs" />
     <Compile Include="Models\App\ArticleTemp.cs" />
     <Compile Include="Models\App\ShareLog.cs" />
+    <Compile Include="Models\App\ApplyMoney.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\Repository.cs" />
     <Compile Include="Models\Base\WebApplication.cs" />

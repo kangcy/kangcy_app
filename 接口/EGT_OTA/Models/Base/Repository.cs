@@ -64,6 +64,7 @@ namespace EGT_OTA.Models
             repo.Single<UserLogin>(x => x.ID == 0);//登录方式
             repo.Single<ShareLog>(x => x.ID == 0);//分享记录
             repo.Single<SendSMS>(x => x.ID == 0);//短信发送记录
+            repo.Single<ApplyMoney>(x => x.ID == 0);//提现申请记录
         }
     }
 }

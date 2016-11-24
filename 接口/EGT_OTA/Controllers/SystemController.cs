@@ -62,11 +62,100 @@ namespace EGT_OTA.Controllers
         }
 
         /// <summary>
+        /// 检查提现申请
+        /// </summary>
+        public ActionResult CheckApplyMoney()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                if (user.Money < 100)
+                {
+                    return Json(new { result = false, message = "账户余额不足100元,暂时无法提现" }, JsonRequestBehavior.AllowGet);
+                }
+                if (db.Exists<ApplyMoney>(x => x.UserID == user.ID && x.Status == Enum_Status.Audit))
+                {
+                    return Json(new { result = false, message = "已申请，申请后5个工作日内发放完毕" }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 申请提现
         /// </summary>
         public ActionResult ApplyMoney()
         {
-            return Json(true);
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                if (user.Money < 100)
+                {
+                    return Json(new { result = false, message = "账户余额不足100元,暂时无法提现" }, JsonRequestBehavior.AllowGet);
+                }
+                if (db.Exists<ApplyMoney>(x => x.UserID == user.ID && x.Status == Enum_Status.Audit))
+                {
+                    return Json(new { result = false, message = "已申请，申请后5个工作日内发放完毕" }, JsonRequestBehavior.AllowGet);
+                }
+
+                var name = ZNRequest.GetString("Name");
+                var account = ZNRequest.GetString("Account");
+                ApplyMoney model = new ApplyMoney();
+                model.Account = account;
+                model.AccountName = name;
+                model.UserID = user.ID;
+                model.Status = Enum_Status.Audit;
+                model.CreateDate = DateTime.Now;
+                model.CreateIP = Tools.GetClientIP;
+                var result = Tools.SafeInt(db.Add<ApplyMoney>(model)) > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error(ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 申请提现处理
+        /// </summary>
+        public ActionResult ApplyMoneyDeal()
+        {
+            try
+            {
+                var id = ZNRequest.GetInt("ID");
+                var model = db.Single<ApplyMoney>(x => x.ID == id);
+                if (model != null)
+                {
+                    model.Status = Enum_Status.Approved;
+                }
+                else
+                {
+                    return Json(new { result = false, message = "当前记录不存在" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
