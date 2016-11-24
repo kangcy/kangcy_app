@@ -85,8 +85,14 @@ namespace EGT_OTA.Controllers
                 {
                     result = db.Update<ArticlePart>(model) > 0;
                 }
-                return Json(new { result = true, message = newId }, JsonRequestBehavior.AllowGet);
-
+                if (model.Types == Enum_ArticlePart.Video)
+                {
+                    return Json(new { result = true, message = new { ID = newId, Url = model.Introduction } }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { result = true, message = newId }, JsonRequestBehavior.AllowGet);
+                }
             }
             catch (Exception ex)
             {

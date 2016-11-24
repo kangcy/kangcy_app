@@ -396,7 +396,7 @@ namespace EGT_OTA.Controllers
 
                 //昵称、轻墨号
                 var title = ZNRequest.GetString("Title");
-                if (!string.IsNullOrEmpty(title))
+                if (!string.IsNullOrWhiteSpace(title))
                 {
                     query.And("Title").Like("%" + title + "%");
                 }
@@ -414,9 +414,10 @@ namespace EGT_OTA.Controllers
 
                 //文章类型
                 var TypeID = ZNRequest.GetInt("TypeID");
+
                 if (TypeID > 0)
                 {
-                    query = query.And("TypeIDList").Like("%-" + TypeID + "-%");
+                    query = query.And("TypeIDList").Like("%-" + TypeID.ToString() + "-%");
                 }
 
                 //搜索默认显示推荐文章
@@ -427,6 +428,16 @@ namespace EGT_OTA.Controllers
                 }
 
                 var recordCount = query.GetRecordCount();
+                if (recordCount == 0)
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = recordCount,
+                        totalpage = 1,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc(new string[] { "Tag", "ID" }).ExecuteTypedList<Article>();
                 var articletypes = GetArticleType();
@@ -434,7 +445,7 @@ namespace EGT_OTA.Controllers
 
                 var array = list.Select(x => x.ID).ToArray();
 
-                var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == 1).And("ArticleID").In(array).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
+                var parts = new SubSonic.Query.Select(Repository.GetProvider()).From<ArticlePart>().Where<ArticlePart>(x => x.Types == Enum_ArticlePart.Pic).And("ArticleID").In(array).OrderAsc("SortID").ExecuteTypedList<ArticlePart>();
 
                 var newlist = (from a in list
                                join u in users on a.CreateUserID equals u.ID
