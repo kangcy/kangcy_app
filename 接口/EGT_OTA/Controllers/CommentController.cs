@@ -65,7 +65,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("CommentController_Zan:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -126,7 +126,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("CommentController_Edit:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -194,7 +194,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("CommentController_ArticleComment:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
@@ -288,7 +288,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("CommentController_All:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
@@ -358,7 +358,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("CommentController_Top:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }

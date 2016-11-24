@@ -56,7 +56,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("SystemController_CheckUpdate:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -128,7 +128,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("SystemController_ApplyMoney:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -145,6 +145,27 @@ namespace EGT_OTA.Controllers
                 if (model != null)
                 {
                     model.Status = Enum_Status.Approved;
+                    var result = db.Update<ApplyMoney>(model);
+                    if (result > 0)
+                    {
+                        var user = db.Single<User>(x => x.ID == model.UserID);
+                        if (user != null)
+                        {
+                            if (user.Money >= 100)
+                            {
+                                user.Money -= 100;
+                            }
+                            else
+                            {
+                                user.Money = 0;
+                            }
+                            result = db.Update<User>(user);
+                            if (result > 0)
+                            {
+                                return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -153,9 +174,9 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { result = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+                LogHelper.ErrorLoger.Error("SystemController_ApplyMoneyDeal:" + ex.Message);
             }
-            return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

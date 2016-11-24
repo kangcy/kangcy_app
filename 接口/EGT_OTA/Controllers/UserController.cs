@@ -119,7 +119,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("UserController_LoginThird" + ex.Message, ex);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -189,7 +189,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("UserController_Login" + ex.Message, ex);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -249,7 +249,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("UserController_Register" + ex.Message, ex);
                 result = ex.Message;
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
@@ -281,7 +281,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditAvatar" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -312,7 +312,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditCover" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -339,7 +339,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditAddress" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -365,7 +365,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditSex" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -391,7 +391,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditPay" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -417,7 +417,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditBirthday" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -448,7 +448,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditNickName" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -479,7 +479,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditSignature" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -515,7 +515,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditPassword" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -541,7 +541,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditShareNick" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -567,7 +567,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_EditAutoMusic" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -623,7 +623,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("UserController_EmailVerify:" + ex.Message, ex);
                 message = ex.Message;
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
@@ -667,7 +667,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("UserController_CheckEmail" + ex.Message, ex);
                 message = ex.Message;
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
@@ -726,7 +726,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("UserController_Detail" + ex.Message, ex);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -783,7 +783,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_All" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
@@ -818,7 +818,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_BindPhone" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -849,7 +849,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_BindWeixin" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -880,7 +880,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_BindWeibo" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -911,7 +911,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_BindQQ" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -952,7 +952,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("UserController_Pic" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }

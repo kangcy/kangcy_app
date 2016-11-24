@@ -77,7 +77,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("UploadController_UploadFile" + ex.Message, ex);
                 message = ex.Message;
             }
             return Json(new { result = true, message = url }, JsonRequestBehavior.AllowGet);
@@ -118,7 +118,7 @@ namespace EGT_OTA.Controllers
             catch (Exception ex)
             {
                 error = ex.Message;
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("UploadController_Upload" + ex.Message, ex);
             }
             return Json(new
             {

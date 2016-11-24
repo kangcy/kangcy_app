@@ -56,7 +56,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("PayController_Edit:" + ex.Message, ex);
                 message = ex.Message;
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
@@ -87,7 +87,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("PayController_Delete:" + ex.Message, ex);
                 message = ex.Message;
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
@@ -144,7 +144,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("PayController_All:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }

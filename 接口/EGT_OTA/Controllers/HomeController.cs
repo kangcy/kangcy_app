@@ -33,7 +33,7 @@ namespace EGT_OTA.Controllers
             {
                 return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
             }
-            Article model = db.Single<Article>(x => x.Number == number && x.Status == Enum_Status.Approved);
+            Article model = db.Single<Article>(x => x.Number == number);
             if (model == null)
             {
                 return Json(new { result = false, message = "信息异常" }, JsonRequestBehavior.AllowGet);

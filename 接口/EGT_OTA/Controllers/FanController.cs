@@ -66,7 +66,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("FanController_Edit:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -91,7 +91,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("FanController_Check:" + ex.Message, ex);
                 message = ex.Message;
             }
             return Json(new { result = false, message = message }, JsonRequestBehavior.AllowGet);
@@ -122,7 +122,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message, ex);
+                LogHelper.ErrorLoger.Error("FanController_Delete:" + ex.Message, ex);
                 message = ex.Message;
             }
             return Json(new { result = result, message = message }, JsonRequestBehavior.AllowGet);
@@ -216,7 +216,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("FanController_All:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }

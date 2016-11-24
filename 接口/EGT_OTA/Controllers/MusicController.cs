@@ -47,7 +47,7 @@ namespace EGT_OTA.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.ErrorLoger.Error(ex.Message);
+                LogHelper.ErrorLoger.Error("MusicController_All:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
