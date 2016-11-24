@@ -57,12 +57,27 @@ namespace EGT_OTA.Controllers
                     model.CreateDate = DateTime.Now;
                 }
                 model.Introduction = SqlFilter(ZNRequest.GetString("Introduction"), false);
+                if (string.IsNullOrWhiteSpace(model.Introduction))
+                {
+                    return Json(new { result = false, message = "段落信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+                if (model.Types == Enum_ArticlePart.Video)
+                {
+                    if (!model.Introduction.Contains("id_") || !model.Introduction.Contains(".html"))
+                    {
+                        return Json(new { result = false, message = "视频网址错误，无法识别" }, JsonRequestBehavior.AllowGet);
+                    }
+                    var urls = model.Introduction.Split('/');
+                    model.Introduction = urls[urls.Length - 1];
+                    urls = model.Introduction.Split('.');
+                    model.Introduction = urls[0].Replace("id_", "");
+                }
                 model.CreateUserID = user.ID;
-                model.Status = Enum_Status.Audit;
                 var newId = model.ID;
                 var result = false;
                 if (model.ID == 0)
                 {
+                    model.Status = Enum_Status.Audit;
                     newId = Tools.SafeInt(db.Add<ArticlePart>(model));
                     result = newId > 0;
                 }
