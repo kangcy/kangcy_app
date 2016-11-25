@@ -118,6 +118,7 @@ namespace EGT_OTA.Controllers
                             part.Status = Enum_Status.Audit;
                             part.CreateDate = DateTime.Now;
                             part.CreateUserID = user.ID;
+                            part.CreateIP = Tools.GetClientIP;
                             part.ID = Tools.SafeInt(db.Add<ArticlePart>(part));
                             result = part.ID > 0;
                         }

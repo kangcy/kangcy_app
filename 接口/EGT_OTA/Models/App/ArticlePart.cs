@@ -65,5 +65,8 @@ namespace EGT_OTA.Models
         /// 状态
         /// </summary>
         public int Status { get; set; }
+
+        [SubSonicNullString]
+        public string CreateIP { get; set; }
     }
 }

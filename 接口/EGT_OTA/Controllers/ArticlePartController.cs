@@ -72,11 +72,12 @@ namespace EGT_OTA.Controllers
                     urls = model.Introduction.Split('.');
                     model.Introduction = urls[0].Replace("id_", "");
                 }
-                model.CreateUserID = user.ID;
                 var newId = model.ID;
                 var result = false;
                 if (model.ID == 0)
                 {
+                    model.CreateUserID = user.ID;
+                    model.CreateIP = Tools.GetClientIP;
                     model.Status = Enum_Status.Audit;
                     newId = Tools.SafeInt(db.Add<ArticlePart>(model));
                     result = newId > 0;

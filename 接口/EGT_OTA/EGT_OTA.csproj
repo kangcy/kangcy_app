@@ -368,6 +368,9 @@
     <Content Include="packages\Modernizr.2.5.3\Modernizr.2.5.3.nupkg" />
     <Content Include="packages\repositories.config" />
     <None Include="Properties\PublishProfiles\egt.pubxml" />
+    <Content Include="System\Video\1.png" />
+    <Content Include="System\Video\2.png" />
+    <Content Include="System\Video\3.png" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
