@@ -152,6 +152,18 @@ namespace EGT_OTA.Controllers
                     query = query.And("ArticleID").IsEqualTo(ArticleID);
                 }
                 var recordCount = query.GetRecordCount();
+
+                if (recordCount == 0)
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = recordCount,
+                        totalpage = 1,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderAsc("ID").ExecuteTypedList<Comment>();
 
@@ -241,6 +253,18 @@ namespace EGT_OTA.Controllers
                 }
 
                 var recordCount = query.GetRecordCount();
+
+                if (recordCount == 0)
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = recordCount,
+                        totalpage = 1,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Comment>();
                 var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "ArticlePower").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).ExecuteTypedList<Article>();

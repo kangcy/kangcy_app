@@ -130,6 +130,18 @@ namespace EGT_OTA.Controllers
                     query = query.And("CreateUserID").IsEqualTo(CreateUserID);
                 }
                 var recordCount = query.GetRecordCount();
+
+                if (recordCount == 0)
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = recordCount,
+                        totalpage = 1,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();
                 var articles = new SubSonic.Query.Select(Repository.GetProvider(), "ID", "Title", "TypeID", "Cover", "Views", "Goods", "Keeps", "Comments", "CreateUserID", "CreateDate", "ArticlePower", "ArticlePowerPwd", "Tag", "City").From<Article>().Where("ID").In(list.Select(x => x.ArticleID).ToArray()).OrderDesc(new string[] { "Tag", "ID" }).ExecuteTypedList<Article>();
@@ -194,6 +206,17 @@ namespace EGT_OTA.Controllers
 
                 var all = query.ExecuteTypedList<Zan>();
                 var recordCount = all.Select(x => x.CreateUserID).Distinct().Count();
+
+                if (recordCount == 0)
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = recordCount,
+                        totalpage = 1,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
 
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Zan>();

@@ -152,6 +152,18 @@ namespace EGT_OTA.Controllers
                     query = query.And("ToUserID").IsEqualTo(ToUserID);
                 }
                 var recordCount = query.GetRecordCount();
+
+                if (recordCount == 0)
+                {
+                    return Json(new
+                    {
+                        currpage = pager.Index,
+                        records = recordCount,
+                        totalpage = 1,
+                        list = string.Empty
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
                 var totalPage = recordCount % pager.Size == 0 ? recordCount / pager.Size : recordCount / pager.Size + 1;
                 var list = query.Paged(pager.Index, pager.Size).OrderDesc("ID").ExecuteTypedList<Fan>();
                 var array = new List<int>();
