@@ -112,9 +112,12 @@ namespace EGT_OTA.Controllers
                         {
                             ArticlePart part = new ArticlePart();
                             part.ArticleID = model.ID;
-                            part.Types = 1;
+                            part.Types = Enum_ArticlePart.Pic;
                             part.Introduction = covers[i];
-                            part.SortID = 0;
+                            part.SortID = i;
+                            part.Status = Enum_Status.Audit;
+                            part.CreateDate = DateTime.Now;
+                            part.CreateUserID = user.ID;
                             part.ID = Tools.SafeInt(db.Add<ArticlePart>(part));
                             result = part.ID > 0;
                         }
