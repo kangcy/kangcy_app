@@ -16,6 +16,86 @@ namespace EGT_OTA.Controllers
     public class ArticleController : BaseController
     {
         /// <summary>
+        /// 复制
+        /// </summary>
+        public ActionResult Copy()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var id = ZNRequest.GetInt("ArticleID");
+                Article article = db.Single<Article>(x => x.ID == id);
+                if (article == null)
+                {
+                    return Json(new { result = false, message = "当前文章不存在" }, JsonRequestBehavior.AllowGet);
+                }
+                var result = false;
+                var model = new Article();
+                model.Title = article.Title + "(副本)";
+                model.MusicID = article.MusicID;
+                model.MusicName = article.MusicName;
+                model.MusicUrl = article.MusicUrl;
+                model.Province = ZNRequest.GetString("Province");
+                model.City = ZNRequest.GetString("City");
+                model.UpdateUserID = user.ID;
+                model.UpdateDate = DateTime.Now;
+                model.UpdateIP = Tools.GetClientIP;
+                model.Status = Enum_Status.Approved;
+                model.Cover = article.Cover;
+                model.Background = article.Background;
+                model.Views = 0;
+                model.Goods = 0;
+                model.Keeps = 0;
+                model.Comments = 0;
+                model.Pays = 0;
+                model.Tag = Enum_ArticleTag.None;
+                model.TypeID = article.TypeID;
+                model.TypeIDList = article.TypeIDList;
+                model.ArticlePower = Enum_ArticlePower.Myself;
+                model.CreateUserID = user.ID;
+                model.CreateDate = DateTime.Now;
+                model.CreateIP = Tools.GetClientIP;
+                model.Number = ValidateCodeHelper.BuildCode(10);
+                model.ID = Tools.SafeInt(db.Add<Article>(model));
+                result = model.ID > 0;
+
+                if (result)
+                {
+                    List<ArticlePart> list = new List<ArticlePart>();
+                    var parts = db.Find<ArticlePart>(x => x.ArticleID == id).ToList();
+                    parts.ForEach(x =>
+                    {
+                        ArticlePart part = new ArticlePart();
+                        part.ArticleID = model.ID;
+                        part.Types = x.Types;
+                        part.Introduction = x.Introduction;
+                        part.SortID = x.SortID;
+                        part.Status = Enum_Status.Audit;
+                        part.CreateDate = DateTime.Now;
+                        part.CreateUserID = user.ID;
+                        part.CreateIP = Tools.GetClientIP;
+                        list.Add(part);
+                    });
+                    db.AddMany<ArticlePart>(list);
+                }
+                if (result)
+                {
+                    return Json(new { result = true, message = model.ID }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("ArticleController_Copy:" + ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        /// <summary>
         /// 删除
         /// </summary>
         public ActionResult Delete()
@@ -102,6 +182,7 @@ namespace EGT_OTA.Controllers
                     model.CreateDate = DateTime.Now;
                     model.CreateIP = Tools.GetClientIP;
                     model.Number = ValidateCodeHelper.BuildCode(10);
+                    model.Background = 0;
                     model.ID = Tools.SafeInt(db.Add<Article>(model));
                     result = model.ID > 0;
 
@@ -383,6 +464,32 @@ namespace EGT_OTA.Controllers
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("ArticleController_CheckPowerPwd:" + ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 编辑背景
+        /// </summary>
+        public ActionResult EditBackground()
+        {
+            try
+            {
+                var id = ZNRequest.GetInt("ArticleID");
+                if (id == 0)
+                {
+                    return Json(new { result = false, message = "参数异常" }, JsonRequestBehavior.AllowGet);
+                }
+                var background = ZNRequest.GetInt("Background");
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Background").EqualTo(background).Where<Article>(x => x.ID == id).Execute() > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("ArticleController_EditBackground:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }

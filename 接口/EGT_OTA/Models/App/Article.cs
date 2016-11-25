@@ -137,6 +137,11 @@ namespace EGT_OTA.Models
         [SubSonicStringLength(32), SubSonicNullString]
         public string Number { get; set; }
 
+        /// <summary>
+        /// 背景展示方式（0:全屏,1:居顶,2:平铺）
+        /// </summary>
+        public int Background { get; set; }
+
         #region 扩展
 
         /// <summary>
