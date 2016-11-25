@@ -46,7 +46,7 @@ namespace EGT_OTA.Models
         /// <summary>
         /// 详细
         /// </summary>
-        [SubSonicStringLength(1000), SubSonicNullString]
+        [SubSonicStringLength(5000), SubSonicNullString]
         public string Introduction { get; set; }
 
         public int SortID { get; set; }

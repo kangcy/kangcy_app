@@ -51,7 +51,7 @@ namespace EGT_OTA.Controllers
                     }
                     if (model.Types == 0)
                     {
-                        return Json(new { result = false, message = "段落信息异常" }, JsonRequestBehavior.AllowGet);
+                        return Json(new { result = false, message = "段落类型异常" }, JsonRequestBehavior.AllowGet);
                     }
                     model.SortID = 0;
                     model.CreateDate = DateTime.Now;
