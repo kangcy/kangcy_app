@@ -22,71 +22,44 @@ using SubSonic.SqlGeneration.Schema;
 namespace EGT_OTA.Models
 {
     /// <summary>
-    /// 文章模板
+    /// 模板
     /// </summary>
     [Serializable]
-    public class ArticleTemp
+    public class Template
     {
-        public ArticleTemp()
-        {
-
-        }
-
-        public ArticleTemp(int currId, int parentId, string parentIdList, string name, string summary, string cover, int status = 1, int number = 0, int sortId = 0)
-        {
-            //this.Name = name;
-            //this.Summary = summary;
-            //this.Cover = cover;
-            //this.CurrID = currId;
-            //this.ParentID = parentId;
-            //this.ParentIDList = parentIdList;
-            //this.Status = status;
-            //this.Number = number;
-            //this.SortID = sortId;
-        }
-
         /// <summary>
         /// ID
         /// </summary>
-        [SubSonicPrimaryKey]
         public int ID { get; set; }
 
         /// <summary>
         /// 名称
         /// </summary>
-        [SubSonicStringLength(50), SubSonicNullString]
         public string Name { get; set; }
 
         /// <summary>
-        /// 缩略图
+        /// 排版类型
         /// </summary>
-        [SubSonicStringLength(255), SubSonicNullString]
-        public string Thumbnail { get; set; }
+        public int TemplateType { get; set; }
 
         /// <summary>
-        /// 背景图
+        /// 名称
         /// </summary>
-        [SubSonicStringLength(255), SubSonicNullString]
+        public string MarginTop { get; set; }
+
+        /// <summary>
+        /// 标题颜色
+        /// </summary>
+        public string TitleColor { get; set; }
+
+        /// <summary>
+        /// 背景缩略图
+        /// </summary>
+        public string ThumbUrl { get; set; }
+
+        /// <summary>
+        /// 背景图片
+        /// </summary>
         public string Cover { get; set; }
-
-        /// <summary>
-        /// 当前索引值
-        /// </summary>
-        public int CurrID { get; set; }
-
-        /// <summary>
-        /// 父节点
-        /// </summary>
-        public int TypeID { get; set; }
-
-        /// <summary>
-        /// 状态
-        /// </summary>
-        public int Status { get; set; }
-
-        /// <summary>
-        /// 排序值
-        /// </summary>
-        public int SortID { get; set; }
     }
 }

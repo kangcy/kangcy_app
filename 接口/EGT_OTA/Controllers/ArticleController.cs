@@ -47,6 +47,7 @@ namespace EGT_OTA.Controllers
                 model.Status = Enum_Status.Approved;
                 model.Cover = article.Cover;
                 model.Background = article.Background;
+                model.Template = article.Template;
                 model.Views = 0;
                 model.Goods = 0;
                 model.Keeps = 0;
@@ -183,6 +184,7 @@ namespace EGT_OTA.Controllers
                     model.CreateIP = Tools.GetClientIP;
                     model.Number = ValidateCodeHelper.BuildCode(10);
                     model.Background = 0;
+                    model.Template = 0;
                     model.ID = Tools.SafeInt(db.Add<Article>(model));
                     result = model.ID > 0;
 
@@ -300,6 +302,37 @@ namespace EGT_OTA.Controllers
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("ArticleController_Detail:" + ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 编辑模板
+        /// </summary>
+        public ActionResult EditArticleTemp()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var id = ZNRequest.GetInt("ArticleID");
+                if (id == 0)
+                {
+                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+                var Template = ZNRequest.GetInt("Template");
+                var result = new SubSonic.Query.Update<Article>(Repository.GetProvider()).Set("Template").EqualTo(Template).Where<Article>(x => x.ID == id).Execute() > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("ArticleController_EditArticleTemp:" + ex.Message);
             }
             return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
         }
@@ -669,6 +702,42 @@ namespace EGT_OTA.Controllers
             catch (Exception ex)
             {
                 LogHelper.ErrorLoger.Error("ArticleController_Top:" + ex.Message);
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// 模板列表
+        /// </summary>
+        public ActionResult Template()
+        {
+            try
+            {
+                var baseurl = System.Configuration.ConfigurationManager.AppSettings["base_url"];
+                var list = GetArticleTemp().OrderBy(x => x.ID).ToList();
+                var newlist = (from l in list
+                               select new
+                               {
+                                   ID = l.ID,
+                                   Name = l.Name,
+                                   MarginTop = l.MarginTop,
+                                   TitleColor = l.TitleColor,
+                                   TemplateType = l.TemplateType,
+                                   ThumbUrl = baseurl + l.ThumbUrl,
+                                   Cover = baseurl + l.Cover
+                               }).ToList();
+                var result = new
+                {
+                    currpage = 1,
+                    records = list.Count(),
+                    totalpage = 1,
+                    list = newlist
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("ArticleController_Template:" + ex.Message);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }

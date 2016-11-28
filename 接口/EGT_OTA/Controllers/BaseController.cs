@@ -192,27 +192,27 @@ namespace EGT_OTA.Controllers
         /// <summary>
         /// 文章模板
         /// </summary>
-        protected List<ArticleTemp> GetArticleTemp()
+        protected List<Template> GetArticleTemp()
         {
-            List<ArticleTemp> list = new List<ArticleTemp>();
-            if (CacheHelper.Exists("ArticleTemp"))
+            List<Template> list = new List<Template>();
+            if (CacheHelper.Exists("Template"))
             {
-                list = (List<ArticleTemp>)CacheHelper.GetCache("ArticleTemp");
+                list = (List<Template>)CacheHelper.GetCache("Template");
             }
             else
             {
                 string str = string.Empty;
-                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/articletemp.config");
+                string filePath = System.Web.HttpContext.Current.Server.MapPath("/Config/template.config");
                 if (System.IO.File.Exists(filePath))
                 {
                     StreamReader sr = new StreamReader(filePath, Encoding.Default);
                     str = sr.ReadToEnd();
                     sr.Close();
                 }
-                list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ArticleTemp>>(str);
-                CacheHelper.Insert("ArticleTemp", list);
+                list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Template>>(str);
+                CacheHelper.Insert("Template", list);
             }
-            return list.FindAll(x => x.Status == Enum_Status.Approved);
+            return list;
         }
     }
 }

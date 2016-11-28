@@ -142,6 +142,11 @@ namespace EGT_OTA.Models
         /// </summary>
         public int Background { get; set; }
 
+        /// <summary>
+        /// 模板
+        /// </summary>
+        public int Template { get; set; }
+
         #region 扩展
 
         /// <summary>
