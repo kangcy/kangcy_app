@@ -66,6 +66,7 @@ namespace EGT_OTA.Models
             repo.Single<SendSMS>(x => x.ID == 0);//短信发送记录
             repo.Single<ApplyMoney>(x => x.ID == 0);//提现申请记录
             repo.Single<Report>(x => x.ID == 0);//举报记录
+            repo.Single<ArticleRecommend>(x => x.ID == 0);//举报记录
         }
     }
 }

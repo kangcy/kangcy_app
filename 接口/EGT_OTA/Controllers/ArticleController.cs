@@ -753,5 +753,51 @@ namespace EGT_OTA.Controllers
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
         }
+
+        /// <summary>
+        /// 投稿
+        /// </summary>
+        public ActionResult Recommend()
+        {
+            try
+            {
+                User user = GetUserInfo();
+                if (user == null)
+                {
+                    return Json(new { result = false, message = "用户信息验证失败" }, JsonRequestBehavior.AllowGet);
+                }
+                var id = ZNRequest.GetInt("ArticleID");
+                if (id == 0)
+                {
+                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+                var article = db.Single<Article>(x => x.ID == id);
+                if (article == null)
+                {
+                    return Json(new { result = false, message = "文章信息异常" }, JsonRequestBehavior.AllowGet);
+                }
+                var time = DateTime.Now.AddDays(-7);
+                var log = db.Single<ArticleRecommend>(x => x.CreateUserID == user.ID && x.CreateDate > time);
+                if (log != null)
+                {
+                    return Json(new { result = false, message = "每7日只有一次投稿机会，上次投稿时间为：" + log.CreateDate.ToString("yyyy-MM-dd") }, JsonRequestBehavior.AllowGet);
+                }
+                ArticleRecommend model = new ArticleRecommend();
+                model.ArticleID = id;
+                model.CreateUserID = user.ID;
+                model.CreateDate = DateTime.Now;
+                model.CreateIP = Tools.GetClientIP;
+                var result = Tools.SafeInt(db.Add<ArticleRecommend>(model)) > 0;
+                if (result)
+                {
+                    return Json(new { result = true, message = "成功" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.ErrorLoger.Error("ArticleController_Recommend:" + ex.Message);
+            }
+            return Json(new { result = false, message = "失败" }, JsonRequestBehavior.AllowGet);
+        }
     }
 }
