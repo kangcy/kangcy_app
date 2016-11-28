@@ -150,6 +150,12 @@ namespace EGT_OTA.Models
         #region 扩展
 
         /// <summary>
+        /// 模板配置
+        /// </summary>
+        [SubSonicIgnore]
+        public Template TemplateJson { get; set; }
+
+        /// <summary>
         /// 创建人头像
         /// </summary>
         [SubSonicIgnore]

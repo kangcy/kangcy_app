@@ -297,6 +297,26 @@ namespace EGT_OTA.Controllers
                 model.CreateDateText = DateTime.Now.ToString("yyyy-MM-dd");
                 model.ShareUrl = System.Configuration.ConfigurationManager.AppSettings["share_url"] + model.Number;
 
+                //模板配置
+                if (model.Template > 0)
+                {
+                    model.TemplateJson = GetArticleTemp().SingleOrDefault(x => x.ID == model.Template);
+                    if (model.TemplateJson == null)
+                    {
+                        model.TemplateJson = new Template();
+                    }
+                    else
+                    {
+                        var baseurl = System.Configuration.ConfigurationManager.AppSettings["base_url"];
+                        model.TemplateJson.ThumbUrl = baseurl + model.TemplateJson.ThumbUrl;
+                        model.TemplateJson.Cover = baseurl + model.TemplateJson.Cover;
+                    }
+                }
+                else
+                {
+                    model.TemplateJson = new Template();
+                }
+
                 return Json(new { result = true, message = model }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
