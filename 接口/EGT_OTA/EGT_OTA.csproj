@@ -154,6 +154,7 @@
     <Compile Include="Controllers\UserLoginController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Controllers\ShareLogController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Enum\EnumAttribute.cs" />
     <Compile Include="Enum\EnumBase.cs" />
     <Compile Include="Enum\Enum_Price.cs" />
@@ -211,6 +212,7 @@
     <Compile Include="Models\App\ShareLog.cs" />
     <Compile Include="Models\App\ApplyMoney.cs" />
     <Compile Include="Models\App\Template.cs" />
+    <Compile Include="Models\App\Report.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Base\Repository.cs" />
     <Compile Include="Models\Base\WebApplication.cs" />
